@@ -242,6 +242,10 @@ body.big #addrSug div{padding:14px 12px;font-size:17px}
 .cw.vok input{color:var(--ok);font-weight:600}.cw.vbad input{color:var(--bad);font-weight:700}
 @media print{.cw.vbad::after{content:"\2717 FAIL";font-size:9px;font-weight:800;margin-left:4px}}
 .mtab{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0}.mtab th,.mtab td{border:1px solid var(--line);padding:4px 6px;text-align:left}.mtab tr.mrow{cursor:pointer}
+#syncbar{position:fixed;left:0;right:0;bottom:0;z-index:25;background:#b3261e;color:#fff;padding:12px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;font-weight:600;box-shadow:0 -3px 14px rgba(0,0,0,.35)}
+#syncbar[hidden]{display:none}#syncbar.off{background:#6b4e00}#syncbar .sbtn{display:flex;gap:8px}#syncbar button{background:#fff;color:#b3261e;border:0;font-weight:700;padding:9px 16px;border-radius:7px}#syncbar button.s{background:transparent;color:#fff;border:1px solid #fff}
+#syncbar:not([hidden])~.toast{bottom:84px}
+body:has(#syncbar:not([hidden])){padding-bottom:70px}
 </style>
 </head>
 <body>
@@ -257,7 +261,7 @@ body.big #addrSug div{padding:14px 12px;font-size:17px}
  <button id="eml">Email</button>
  <button class="p" id="prn">Print / save PDF</button>
 </div>
-<div id="syncbar" class="bkbar noprint" hidden><span id="synctxt"></span><button class="s" id="syncNow">Sync now</button></div>
+<div id="syncbar" class="noprint" hidden><span id="synctxt"></span><span class="sbtn"><button id="syncNow">Sync now</button><button class="s" id="syncLater">Later</button></span></div>
 <div id="bkbar" class="bkbar noprint" hidden><span id="bktxt">It has been over 30 days since your last backup. Jobs are stored only in this browser.</span><button class="s" id="bkNow">Back up now</button><button class="s" id="bkLater">Remind me in a week</button></div>
 
 <!-- PAGE 1 -->
@@ -336,7 +340,7 @@ body.big #addrSug div{padding:14px 12px;font-size:17px}
 <!-- PAGE 2 -->
 <section class="page" id="p2">
  <h1>ACTUAL TEST RESULTS</h1>
- <div class="sub"><span><span id="nc">8</span> circuits | actual values | <span class="lm"></span> + <span class="dm"></span></span><b id="pg2">2 / 2</b></div>
+ <div class="sub"><span><span id="nc">8</span> circuit(s) | actual values | <span class="lm"></span> + <span class="dm"></span></span><b id="pg2">2 / 2</b></div>
  <div class="row">
   <label class="f">Date<input type="date" id="date2" readonly></label>
   <label class="f" style="flex:2">Site / address<input type="text" id="addr2" readonly></label>
@@ -594,7 +598,7 @@ function updModels(){const d=$('#dmod').value.trim()||'dead tester',l=$('#lmod')
 const JK='ev_jobs',TK='ev_trash';let viewTrash=false;
 function hasData(s){return !!(s.addr||s.job||s.work||Object.keys(s).some(k=>/^(pe|zs|ir|r\d+[abcr]|c\d+n|r\d+n)/.test(k)&&String(s[k]).trim())||Object.keys(s).some(k=>/^([cd]\d|f[rzo]\d)$/.test(k)&&s[k]===true))}
 function upsertJob(s){if(!hasData(s)){updBadge();return}const j=LS.get(JK,{});if(!(j[s.jid]&&JSON.stringify(j[s.jid].state)===JSON.stringify(s)))j[s.jid]={updated:Date.now(),state:s};{const d=LS.get('ev_bkd',{});if(!d[s.jid]){d[s.jid]=1;LS.set('ev_bkd',d);setTimeout(bkN,0)}}const ids=Object.keys(j);if(ids.length>150)ids.sort((a,b)=>j[a].updated-j[b].updated).slice(0,ids.length-150).forEach(k=>delete j[k]);LS.set(JK,j);updBadge()}
-function updBadge(){const j=LS.get(JK,{});const n=Object.values(j).filter(v=>!(v.state.job||'').trim()).length;$('#jobs').textContent='Saved jobs'+(n?' ('+n+' need COES)':'')}
+function updBadge(){const j=LS.get(JK,{});const n=Object.values(j).filter(v=>!(v.state.job||'').trim()).length;const u=unsynced();$('#jobs').textContent='Saved jobs'+(n?' ('+n+' need COES)':'')+(u?' · '+u+' unsynced':'')}
 function purgeTrash(){const t=LS.get(TK,{});let ch=false;Object.keys(t).forEach(k=>{if(Date.now()-t[k].deleted>30*864e5){delete t[k];ch=true}});if(ch)LS.set(TK,t);return t}
 function showTrash(t){const ids=Object.keys(t).sort((a,b)=>t[b].deleted-t[a].deleted);$('#jlist').innerHTML=ids.length?ids.map(id=>{const s=t[id].job.state;const left=Math.max(0,30-Math.floor((Date.now()-t[id].deleted)/864e5));return `<div class="jrow" data-id="${id}"><div><b>${esc(s.addr||'No address')}</b><br><span class="note">${esc(s.date||'')} | ${(s.job||'').trim()?'COES '+esc(s.job):'COES not entered'} | removed in ${left} day${left===1?'':'s'}</span></div><div class="jb2"><button class="s" data-a="restore">Restore</button><button class="s" data-a="purge">Delete forever</button></div></div>`}).join(''):'<div class="note">Nothing recently deleted. Deleted jobs stay here for 30 days.</div>';$('#jb').hidden=false}
 const hasRead=s=>Object.keys(s).some(k=>/^(pe\d+|zs\d+|ir\d+|r\d+[abcr])$/.test(k)&&String(s[k]).trim()!=='');
@@ -730,11 +734,13 @@ $('#gsync').onclick=()=>gSync(true);
 let gTimer;document.addEventListener('input',()=>{if(!gtok)return;clearTimeout(gTimer);gTimer=setTimeout(()=>gSync(false),8000)});
 // reminder bar: shown when online, you have synced before, and some jobs changed since the last sync
 function unsynced(){const j=LS.get(JK,{}),t=LS.get('ev_gat',0);return Object.values(j).filter(v=>v.updated>t).length}
-function syncBar(){const n=unsynced(),ok=navigator.onLine&&LS.get('ev_gat',0)&&n>0&&!gbusy&&!(gtok&&Date.now()<gexp-60000);$('#syncbar').hidden=!ok;if(ok)$('#synctxt').textContent=n+' job'+(n===1?'':'s')+' not synced to Google Drive yet. Tap Sync now.'}
+function syncBar(){const n=unsynced(),valid=gtok&&Date.now()<gexp-60000,snz=Date.now()<LS.get('ev_syncsnz',0);const show=n>0&&!gbusy&&!valid&&!snz;const bar=$('#syncbar');bar.hidden=!show;if(!show)return;const on=navigator.onLine;bar.className='noprint'+(on?'':' off');$('#syncNow').hidden=!on;$('#syncLater').hidden=!on;
+ const nm=n+' job'+(n===1?'':'s');$('#synctxt').textContent=on?(LS.get('ev_gat',0)?'⚠ '+nm+' not synced to Google Drive. Sync now so nothing is lost.':'⚠ '+nm+' not backed up to Google Drive yet. Tap Sync now.'):'⚠ '+nm+' not backed up yet. You are offline; sync when you have signal.'}
 $('#syncNow').onclick=async()=>{await gSync(true);syncBar()};
-addEventListener('online',()=>setTimeout(syncBar,800));document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncBar()});
+$('#syncLater').onclick=()=>{LS.set('ev_syncsnz',Date.now()+30*60000);syncBar()};
+addEventListener('online',()=>{LS.set('ev_syncsnz',0);setTimeout(syncBar,800)});addEventListener('offline',syncBar);document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncBar()});
 {let st;document.addEventListener('input',()=>{clearTimeout(st);st=setTimeout(syncBar,5000)})}
-setTimeout(syncBar,1500);
+setInterval(syncBar,60000);setTimeout(syncBar,1500);
 const _sj=showJobs;showJobs=function(){_sj.apply(this,arguments);setG()};
 // ---- remember the breaker used for each circuit name (not case sensitive) ----
 const cbKey=n=>String(n||'').trim().toLowerCase().replace(/\s+/g,' ');
@@ -768,7 +774,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v19'; // keep in step with VERSION in sw.js
+const APP_VERSION='v20'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
