@@ -177,6 +177,67 @@ body.big .cp{font-size:14px;padding:6px 10px}
 #addrSug{position:absolute;left:0;right:0;top:100%;z-index:20;background:var(--paper);border:1px solid var(--line);border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,.25);max-height:260px;overflow:auto}
 #addrSug div{padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--line);font-size:14px}#addrSug div:last-child{border:0}#addrSug div:hover,#addrSug div:focus{background:var(--band)}
 body.big #addrSug div{padding:14px 12px;font-size:17px}
+
+.stt{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:10px;border:1px solid var(--line);vertical-align:middle}
+.stt.s0{background:var(--band);color:var(--mute)}.stt.s1{background:#fff3cd;color:#7a5b00;border-color:#e0c15a}.stt.s2{background:#dbeafe;color:#124a96;border-color:#8fb6ee}.stt.s3{background:var(--okbg);color:var(--ok);border-color:var(--ok)}
+.stf{color:var(--bad);font-weight:700;font-size:12px;margin-left:6px}
+.eodi{margin:4px 0 0 0;padding:0;list-style:none;font-size:13px}.eodi li{margin:2px 0}.eodi .bad{color:var(--bad);font-weight:700}.eodi .warn{color:#9a6700}.eodi .info{color:var(--mute)}.eodi .ok{color:var(--ok)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .stt.s1{background:#4a3b00;color:#ffd866}:root:not([data-theme="light"]) .stt.s2{background:#14315c;color:#9cc4ff}}
+
+/* ---- phone layout (screen only; printing is unchanged) ---- */
+@media screen and (max-width:700px){
+ body{font-size:16px}
+ .page,#xtra{margin:0;border-left:0;border-right:0;border-radius:0;padding:16px 14px}
+ .page+.page,.pb{margin-top:10px}
+ h1{font-size:20px}
+ .sub{display:flex;gap:8px;align-items:flex-start}.sub b{white-space:nowrap}
+ .bar{flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:8px 10px;-webkit-overflow-scrolling:touch}
+ .bar>b{display:none}.bar button{flex:none;white-space:nowrap}
+ label.f{min-width:calc(50% - 10px)}
+ label.f[style*="flex:2"],label.f[style*="flex:3"]{min-width:100%}
+ input[type=text],input[type=date],input[type=time],input[type=number],select,textarea{font-size:16px}
+ .scroll{overflow:visible}
+ #t1,#t2{display:block;min-width:0;width:100%;border:0}
+ #t1 tbody,#t2 tbody{display:block}
+ #t1 tr:has(th),#t2 tr:has(th){display:none}
+ #t1{counter-reset:cc}#t2{counter-reset:rc}
+ #t1 tr,#t2 tr{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:10px;margin:0 0 12px;overflow:hidden;background:var(--paper)}
+ #t1 tr{counter-increment:cc}#t2 tr{counter-increment:rc}
+ #t1 td,#t2 td{display:block;border:0;border-top:1px solid var(--line);padding:6px 10px 8px;min-width:0}
+ #t1 td::before,#t2 td::before{content:attr(data-l);display:block;font-size:12px;color:var(--mute);margin-bottom:3px}
+ #t1 td:first-child,#t2 td:first-child{grid-column:1/-1;border-top:0;background:var(--band)}
+ #t1 td:first-child::before{content:"Circuit " counter(cc);font-weight:700;color:var(--ink);font-size:13px}
+ #t2 td:first-child::before{content:"Circuit " counter(rc);font-weight:700;color:var(--ink);font-size:13px}
+ #t1 td:nth-child(3){grid-column:1/-1;order:4}
+ #t1 td:nth-child(4){order:3}
+ #t1 td:nth-child(2){order:2}
+ #t1 td.mt{grid-column:1/-1;order:5}
+ #t2 td:nth-child(2){grid-column:1/-1}
+ #t2 tr{grid-template-columns:repeat(3,1fr)}
+ #t2 td:nth-child(3){grid-column:1/-1}
+ #t2 td:last-child{grid-column:1/-1}
+ #t2 td .cw input{padding:11px 6px!important}
+ #t2 td .cw .unit{min-width:0;padding:0}
+ #t1 td:first-child input.bk{margin-top:6px}
+ #t1 td input,#t2 td input,#t2 td select{width:100%}
+ #t1 td input[type=text],#t1 td input[type=number],#t2 td input[type=text],#t2 td input[type=number],#t2 td select{border:1px solid var(--line);background:var(--inp);padding:11px 10px;border-radius:6px;font-size:17px}
+ #t1 td .cw,#t2 td .cw{justify-content:flex-start;width:100%}
+ #t1 td .cw input,#t2 td .cw input{width:100%!important;flex:1;text-align:left;padding-right:10px!important}
+ #t1 td .cw .unit,#t2 td .cw .unit{min-width:2.2ch}
+ #t1 .irw{justify-content:flex-start;gap:8px}#t1 .irw .cw{flex:1}
+ .mx{text-align:left}
+ #t1 td:first-child input,#t2 td:first-child input{background:var(--paper)}
+ .mt label{display:inline-flex;align-items:center;gap:8px;margin-right:16px;font-size:16px}
+ .inline.noprint{display:flex;flex-wrap:wrap;gap:8px}
+ .tplbox{width:100%}.tplbox select{flex:1 1 100%}
+ .cp{margin-top:6px}
+ .wbox{max-width:none;width:calc(100% - 16px);margin:8px auto}
+ .jrow{flex-direction:column;align-items:stretch}.jrow .jb2{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}.jrow .jb2 button{width:100%}
+ .wbtn{display:grid;grid-template-columns:1fr 1fr;gap:8px}.wbtn button{width:100%}.wbtn .p{grid-column:1/-1;order:-1}
+ #sigPad{width:100%;height:auto;touch-action:none}
+}
+#snd,#eod{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;display:flex;align-items:center;justify-content:center}#snd[hidden],#eod[hidden]{display:none}
+#snd textarea{font-size:12px;word-break:break-all}
 </style>
 </head>
 <body>
@@ -192,6 +253,7 @@ body.big #addrSug div{padding:14px 12px;font-size:17px}
  <button id="eml">Email</button>
  <button class="p" id="prn">Print / save PDF</button>
 </div>
+<div id="syncbar" class="bkbar noprint" hidden><span id="synctxt"></span><button class="s" id="syncNow">Sync now</button></div>
 <div id="bkbar" class="bkbar noprint" hidden><span id="bktxt">It has been over 30 days since your last backup. Jobs are stored only in this browser.</span><button class="s" id="bkNow">Back up now</button><button class="s" id="bkLater">Remind me in a week</button></div>
 
 <!-- PAGE 1 -->
@@ -324,12 +386,13 @@ body.big #addrSug div{padding:14px 12px;font-size:17px}
 <div id="warn" class="noprint" hidden><div class="wbox"><b>Check before printing</b><ul id="wl"></ul><div class="wbtn"><button id="wback">Go back</button><button class="p" id="wgo">Print anyway</button></div></div></div>
 <div id="dp" class="noprint" hidden><div class="wbox dbox"><b>Defaults</b><div class="note">Prefilled on every new job. Readings already entered are not changed.</div><div id="dform"></div><div class="wbtn"><button id="dcan">Cancel</button><button class="p" id="dsave">Save defaults</button></div></div></div>
 <div id="em" class="noprint" hidden><div class="wbox dbox"><b>Email details</b><div class="note">Tap Open email app, or Copy all and paste into a new email. Attach the saved PDF before sending.</div><label>To<input type="text" id="emTo"></label><label>Subject<input type="text" id="emSub"></label><label>Message<textarea id="emBody"></textarea></label><div class="wbtn"><button id="emClose">Close</button><button id="emShare" hidden>Share…</button><button id="emCopy">Copy all</button><button id="emOpen">Open email app</button><button class="p" id="emGmail">Open Gmail</button></div></div></div>
-<div id="jb" class="noprint" hidden><div class="wbox dbox"><b>Saved jobs</b><div class="note">Jobs save automatically as you type. Open one later to add the COES number, then print it. Backups include your jobs and defaults. To move jobs to another device, share or export a backup there and import it here; newer copies of a job win.</div><div class="row"><input type="text" id="jq" placeholder="Search address or COES" style="flex:2"><select id="jf" style="flex:1"><option value="">All</option><option value="coes">COES missing</option><option value="unsent">Not sent</option></select></div><div class="note" id="gstat"></div><div id="jlist"></div><div class="wbtn"><button id="jtrash">Recently deleted</button><button id="jshare" hidden>Share backup</button><button id="jexp">Export backup</button><button id="jimpb">Import backup</button><button id="gsync" class="p">Sync with Google Drive</button><input type="file" id="jimp" accept=".json,.txt,application/json,text/plain" hidden><button id="jclose">Close</button></div></div></div>
+<div id="jb" class="noprint" hidden><div class="wbox dbox"><b>Saved jobs</b><div class="note">Jobs save automatically as you type. Open one later to add the COES number, then print it. Backups include your jobs and defaults. To move jobs to another device, share or export a backup there and import it here; newer copies of a job win.</div><div class="row"><input type="text" id="jq" placeholder="Search address or COES" style="flex:2"><select id="jf" style="flex:1"><option value="">All</option><option value="Draft">Status: Draft</option><option value="Tested">Status: Tested (no COES)</option><option value="COES entered">Status: COES entered (not sent)</option><option value="Sent">Status: Sent</option><option value="coes">COES missing</option><option value="unsent">Not sent</option></select></div><div class="note" id="gstat"></div><div class="wbtn" style="justify-content:flex-start;margin:0 0 8px"><button id="eodGo">End-of-day check</button></div><div id="jlist"></div><div class="wbtn"><button id="jtrash">Recently deleted</button><button id="jshare" hidden>Share backup</button><button id="jexp">Export backup</button><button id="jimpb">Import backup</button><button id="gsync" class="p">Sync with Google Drive</button><input type="file" id="jimp" accept=".json,.txt,application/json,text/plain" hidden><button id="jclose">Close</button></div></div></div>
 <div id="snd" class="noprint" hidden><div class="wbox dbox"><b>Send this job to another device</b><div class="note" id="sndAddr"></div>
 <div class="note">Copy the link, then send it to yourself (WhatsApp, Messages, Gmail, Google Keep…). Open the link on your PC and the job loads into the form, ready to add the COES number and print. Photos are not included; use Export backup for those.</div>
 <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="sndSig" checked> Include signature</label>
 <label>Link<textarea id="sndLink" readonly rows="4"></textarea></label><div class="note" id="sndSize"></div>
 <div class="wbtn"><button id="sndClose">Close</button><button id="sndFile">Save job file</button><button id="sndMail">Email to me</button><button id="sndShare" hidden>Share…</button><button class="p" id="sndCopy">Copy link</button></div></div></div>
+<div id="eod" class="noprint" hidden><div class="wbox dbox"><b>End-of-day check</b><div class="note">What is still missing on each job for the chosen day, before you submit.</div><label>Day<input type="date" id="eodDate"></label><div id="eodSum" class="note" style="font-weight:700;margin:6px 0"></div><div id="eodList"></div><div class="wbtn"><button id="eodClose">Close</button></div></div></div>
 <div class="note noprint" style="text-align:center;margin:12px 0 24px">App version <span id="appver"></span> | <span id="net"></span></div>
 <div id="updbar" class="bkbar noprint" hidden style="position:fixed;left:0;right:0;bottom:0;z-index:30"><span>A new version was installed.</span><button class="s" id="updGo">Reload now</button></div>
 <div class="toast" id="toast"></div>
@@ -368,17 +431,17 @@ function peMax(v){const k=devKey(v);if(!k)return null;const t=tbl(rzText())[k];i
 function wrapU(i){const u=i.dataset.u||(/r$/.test(i.dataset.k||'')?'mA':'ms');const w=document.createElement('div');w.className='cw';i.parentNode.insertBefore(w,i);w.appendChild(i);const s=document.createElement('span');s.className='unit';s.dataset.u=u;w.appendChild(s)}
 function addRow(i){
  $('#t1').insertAdjacentHTML('beforeend',`<tr><td><input type="text" data-k="c${i}n" list="cnames" placeholder="Circuit ${i}"><input type="text" class="bk" data-k="bk${i}" list="brk" placeholder="Breaker e.g. C20">${i>1?'<button type="button" class="cp noprint" data-cp="'+i+'">Copy breaker/ticks from above</button>':''}</td>
- <td data-chk="pe"><input type="number" step="0.01" data-k="pe${i}" data-u="Ω"><div class="mx"></div></td>
- <td data-chk="ir"><div class="irw"><input type="text" inputmode="decimal" data-k="ir${i}" data-u="MΩ"><span>/</span><input type="number" data-k="irv${i}" data-u="V"></div></td>
- <td><input type="number" step="0.01" data-k="zs${i}" data-u="Ω"><div class="mx"></div></td>
- <td class="mt"><label><input type="checkbox" data-k="fr${i}"> RCD</label><label><input type="checkbox" data-k="fz${i}"> Zs</label><label><input type="checkbox" data-k="fo${i}"> Other</label></td></tr>`);
+ <td data-chk="pe" data-l="PE continuity (Ω)"><input type="number" step="0.01" data-k="pe${i}" data-u="Ω"><div class="mx"></div></td>
+ <td data-chk="ir" data-l="Insulation resistance (MΩ / V)"><div class="irw"><input type="text" inputmode="decimal" data-k="ir${i}" data-u="MΩ"><span>/</span><input type="number" data-k="irv${i}" data-u="V"></div></td>
+ <td data-l="Zs loop impedance (Ω)"><input type="number" step="0.01" data-k="zs${i}" data-u="Ω"><div class="mx"></div></td>
+ <td class="mt" data-l="Fault protection verified"><label><input type="checkbox" data-k="fr${i}"> RCD</label><label><input type="checkbox" data-k="fz${i}"> Zs</label><label><input type="checkbox" data-k="fo${i}"> Other</label></td></tr>`);
  $('#t2').insertAdjacentHTML('beforeend',`<tr><td><input type="text" data-k="r${i}n" list="cnames" placeholder="Circuit ${i}"></td>
- <td><input type="text" data-k="r${i}t"></td>
- <td data-chk="nt"><select data-k="r${i}h"><option value=""></option><option>No trip</option><option>Tripped</option></select></td>
- <td data-chk="1x"><input type="number" data-k="r${i}a"></td>
- <td data-chk="2x"><input type="number" data-k="r${i}b"></td>
- <td data-chk="5x"><input type="number" data-k="r${i}c"></td>
- <td><input type="number" step="0.1" data-k="r${i}r"></td></tr>`);
+ <td data-l="RCD / RCBO type"><input type="text" data-k="r${i}t"></td>
+ <td data-chk="nt" data-l="0.5x (no trip)"><select data-k="r${i}h"><option value=""></option><option>No trip</option><option>Tripped</option></select></td>
+ <td data-chk="1x" data-l="1x ms (max 300)"><input type="number" data-k="r${i}a"></td>
+ <td data-chk="2x" data-l="2x ms (max 150)"><input type="number" data-k="r${i}b"></td>
+ <td data-chk="5x" data-l="5x ms (max 40)"><input type="number" data-k="r${i}c"></td>
+ <td data-l="Ramp (mA)"><input type="number" step="0.1" data-k="r${i}r"></td></tr>`);
  [$(`[data-k=c${i}n]`).closest('tr'),$(`[data-k=r${i}n]`).closest('tr')].forEach(r=>r.querySelectorAll('[data-u],input[type=number]').forEach(wrapU));
  $(`[data-k=r${i}t]`).value=defs.rcd||'';$(`[data-k=r${i}h]`).value=defs.nt!==undefined?defs.nt:'No trip';
 }
@@ -526,9 +589,20 @@ function upsertJob(s){if(!hasData(s)){updBadge();return}const j=LS.get(JK,{});if
 function updBadge(){const j=LS.get(JK,{});const n=Object.values(j).filter(v=>!(v.state.job||'').trim()).length;$('#jobs').textContent='Saved jobs'+(n?' ('+n+' need COES)':'')}
 function purgeTrash(){const t=LS.get(TK,{});let ch=false;Object.keys(t).forEach(k=>{if(Date.now()-t[k].deleted>30*864e5){delete t[k];ch=true}});if(ch)LS.set(TK,t);return t}
 function showTrash(t){const ids=Object.keys(t).sort((a,b)=>t[b].deleted-t[a].deleted);$('#jlist').innerHTML=ids.length?ids.map(id=>{const s=t[id].job.state;const left=Math.max(0,30-Math.floor((Date.now()-t[id].deleted)/864e5));return `<div class="jrow" data-id="${id}"><div><b>${esc(s.addr||'No address')}</b><br><span class="note">${esc(s.date||'')} | ${(s.job||'').trim()?'COES '+esc(s.job):'COES not entered'} | removed in ${left} day${left===1?'':'s'}</span></div><div class="jb2"><button class="s" data-a="restore">Restore</button><button class="s" data-a="purge">Delete forever</button></div></div>`}).join(''):'<div class="note">Nothing recently deleted. Deleted jobs stay here for 30 days.</div>';$('#jb').hidden=false}
+const hasRead=s=>Object.keys(s).some(k=>/^(pe\d+|zs\d+|ir\d+|r\d+[abcr])$/.test(k)&&String(s[k]).trim()!=='');
+const jstat=s=>s.sent?['Sent',3]:(s.job||'').trim()?['COES entered',2]:hasRead(s)?['Tested',1]:['Draft',0];
+function failsOf(s){const f=[],g=k=>String(s[k]===undefined?'':s[k]).trim();for(let i=1;i<=(s.n||8);i++){const nm=g('c'+i+'n')||g('r'+i+'n')||('Circuit '+i);
+ const ir=g('ir'+i);if(ir){const v=parseFloat(ir.replace(/[^0-9.]/g,'').split('/')[0]);if(!isNaN(v)&&v<1)f.push(nm+' IR')}
+ const pl=peMax(g('bk'+i));if(g('pe'+i)!==''&&pl!=null&&parseFloat(g('pe'+i))>pl)f.push(nm+' PE');
+ const zm=zsMax(g('bk'+i));if(g('zs'+i)!==''&&zm!=null&&parseFloat(g('zs'+i))>zm)f.push(nm+' Zs');
+ [['a',300,'1x'],['b',150,'2x'],['c',40,'5x']].forEach(([x,l,t])=>{const v=g('r'+i+x);if(v!==''&&parseFloat(v)>l)f.push(nm+' RCD '+t)});
+ const h=g('r'+i+'h');if(g('r'+i+'a')===''&&h==='No trip'){}else if(h==='Tripped')f.push(nm+' RCD 0.5x tripped')}return f}
+function issuesOf(s,hasPh){const o=[],f=failsOf(s);if(f.length)o.push(['bad','Out of limits: '+f.join(', ')]);if(!(s.job||'').trim())o.push(['warn','COES number missing']);if(!(s.sig||'').trim()&&!s.sigImg)o.push(['warn','Not signed']);if(!s.pol)o.push(['warn','Polarity not selected']);if(!s.con)o.push(['warn','Connections not selected']);
+ const un=['c1','c2','c3','c4','c5','c6','c7','c8','d1','d3','d4'].filter(k=>s[k]!==true).length;if(un)o.push(['warn',un+' checklist item(s) not ticked']);if(!hasRead(s))o.push(['warn','No test readings entered']);
+ if(!s.sent)o.push(['info','Not sent yet']);if(hasPh===false)o.push(['info','No photos saved']);return o}
 var showJobs=function showJobs0(){const t0=purgeTrash(),tn=Object.keys(t0).length;$('#jtrash').textContent=viewTrash?'Back to jobs':'Recently deleted'+(tn?' ('+tn+')':'');if(viewTrash)return showTrash(t0);const j=LS.get(JK,{});const q=($('#jq').value||'').toLowerCase(),f=$('#jf').value;
- const ids=Object.keys(j).sort((a,b)=>j[b].updated-j[a].updated).filter(id=>{const s=j[id].state;if(f==='coes'&&(s.job||'').trim())return false;if(f==='unsent'&&s.sent)return false;return !q||[s.addr,s.job,s.work,s.pnotes].join(' ').toLowerCase().includes(q)});
- $('#jlist').innerHTML=ids.length?ids.map(id=>{const s=j[id].state;const pend=!(s.job||'').trim();return `<div class="jrow" data-id="${id}"><div><b>${esc(s.addr||'No address')}</b><br><span class="note">${esc(s.date||'')} | ${pend?'<span style="color:var(--bad)">COES not entered</span>':'COES '+esc(s.job)} | ${s.sent?'Sent '+esc(s.sent):'Not sent'}${id===state.jid?' | open now':''}</span></div><div class="jb2"><button class="s" data-a="open">Open</button><button class="s" data-a="send">Send</button><button class="s" data-a="dup">Duplicate</button><button class="s" data-a="sent">${s.sent?'Unmark sent':'Mark sent'}</button><button class="s" data-a="del">Delete</button></div></div>`}).join(''):'<div class="note">'+(Object.keys(j).length?'No matching jobs.':'No saved jobs yet. Fill in a form and it will appear here.')+'</div>';
+ const ids=Object.keys(j).sort((a,b)=>j[b].updated-j[a].updated).filter(id=>{const s=j[id].state;if(f==='coes'&&(s.job||'').trim())return false;if(f==='unsent'&&s.sent)return false;if(/^(Draft|Tested|COES entered|Sent)$/.test(f)&&jstat(s)[0]!==f)return false;return !q||[s.addr,s.job,s.work,s.pnotes].join(' ').toLowerCase().includes(q)});
+ $('#jlist').innerHTML=ids.length?ids.map(id=>{const s=j[id].state;const pend=!(s.job||'').trim();const st=jstat(s),nf=failsOf(s).length;return `<div class="jrow" data-id="${id}"><div><b>${esc(s.addr||'No address')}</b> <span class="stt s${st[1]}">${st[0]}</span>${nf?'<span class="stf">✗ '+nf+' out of limits</span>':''}<br><span class="note">${esc(s.date||'')} | ${pend?'<span style="color:var(--bad)">COES not entered</span>':'COES '+esc(s.job)} | ${s.sent?'Sent '+esc(s.sent):'Not sent'}${id===state.jid?' | open now':''}</span></div><div class="jb2"><button class="s" data-a="open">Open</button><button class="s" data-a="send">Send</button><button class="s" data-a="dup">Duplicate</button><button class="s" data-a="sent">${s.sent?'Unmark sent':'Mark sent'}</button><button class="s" data-a="del">Delete</button></div></div>`}).join(''):'<div class="note">'+(Object.keys(j).length?'No matching jobs.':'No saved jobs yet. Fill in a form and it will appear here.')+'</div>';
  $('#jb').hidden=false;updBadge()}
 function dupFrom(src){const keep=/^(c\d+n|r\d+n|bk\d+|r\d+t)$/,fixed=['addr','work','dmod','kyo','lmod','met','elec','n','calD','calL'];const o={};Object.keys(src).forEach(k=>{if(keep.test(k)||fixed.includes(k))o[k]=src[k]});state=o;LS.set('ev_state',o);init();save();toast('Duplicated. Readings, ticks, COES and signature are cleared.')}
 $('#dup').onclick=()=>{save();if(confirm('Duplicate this job? Circuit names, breakers, address and testers are kept. Readings, ticks, COES number and signature are cleared.'))dupFrom(state)};
@@ -642,12 +716,27 @@ async function gSync(interactive){if(gbusy)return;gbusy=true;let rel=false;try{c
   if(lu>ru){await gPut(tok,fid,rf,fn,{p:await phGet(id)},{u:String(lu)})}
   else if(ru>lu){const d=await gGet(tok,rf.id);await phSet(id,phN(d.p),true);phu[id]=ru;LS.set('ev_phu',phu);gotPh++;if(id===state.jid)rel=true}}}
  LS.set('ev_gat',Date.now());if(rel){init();}
- setG();updBadge();if(!$('#jb').hidden)showJobs();if(interactive)toast('Synced: '+m.got+' job(s)'+(gotPh?', photos for '+gotPh+' job(s)':'')+(gotDef?', settings':'')+' received. Folder "'+GFOLDER+'" in My Drive.')}catch(e){setG();if(interactive)toast(e.message||'Sync failed');else console.warn(e)}finally{gbusy=false}}
+ setG();updBadge();if(!$('#jb').hidden)showJobs();syncBar();if(interactive)toast('Synced: '+m.got+' job(s)'+(gotPh?', photos for '+gotPh+' job(s)':'')+(gotDef?', settings':'')+' received. Folder "'+GFOLDER+'" in My Drive.')}catch(e){setG();if(interactive)toast(e.message||'Sync failed');else console.warn(e)}finally{gbusy=false}}
 function setG(t){const n=LS.get('ev_gat',0);$('#gstat').textContent=t||(n?'Last synced '+new Date(n).toLocaleString()+'. Files are in the "'+GFOLDER+'" folder in My Drive.':'Not synced yet. Tap Sync with Google Drive.')}
 $('#gsync').onclick=()=>gSync(true);
 let gTimer;document.addEventListener('input',()=>{if(!gtok)return;clearTimeout(gTimer);gTimer=setTimeout(()=>gSync(false),8000)});
+// reminder bar: shown when online, you have synced before, and some jobs changed since the last sync
+function unsynced(){const j=LS.get(JK,{}),t=LS.get('ev_gat',0);return Object.values(j).filter(v=>v.updated>t).length}
+function syncBar(){const n=unsynced(),ok=navigator.onLine&&LS.get('ev_gat',0)&&n>0&&!gbusy&&!(gtok&&Date.now()<gexp-60000);$('#syncbar').hidden=!ok;if(ok)$('#synctxt').textContent=n+' job'+(n===1?'':'s')+' not synced to Google Drive yet. Tap Sync now.'}
+$('#syncNow').onclick=async()=>{await gSync(true);syncBar()};
+addEventListener('online',()=>setTimeout(syncBar,800));document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncBar()});
+{let st;document.addEventListener('input',()=>{clearTimeout(st);st=setTimeout(syncBar,5000)})}
+setTimeout(syncBar,1500);
 const _sj=showJobs;showJobs=function(){_sj.apply(this,arguments);setG()};
-const APP_VERSION='v12'; // keep in step with VERSION in sw.js
+// ---- end-of-day check ----
+async function eodShow(){const d=$('#eodDate').value||today(),j=LS.get(JK,{});const ph=await phAll();const ids=Object.keys(j).filter(id=>(j[id].state.date||'')===d).sort((a,b)=>(j[a].state.time||'').localeCompare(j[b].state.time||''));let need=0;
+ const html=ids.map(id=>{const s=j[id].state,st=jstat(s),is=issuesOf(s,!!(ph[id]&&ph[id].length)),bad=is.filter(x=>x[0]!=='info');if(bad.length)need++;return `<div class="jrow" data-id="${id}"><div><b>${esc(s.addr||'No address')}</b> <span class="stt s${st[1]}">${st[0]}</span>${(s.job||'').trim()?' <span class="note">COES '+esc(s.job)+'</span>':''}<ul class="eodi">${bad.length?'':'<li class="ok">✓ Nothing missing</li>'}${is.map(([c,m])=>`<li class="${c}">${c==='bad'?'✗':c==='warn'?'•':'–'} ${esc(m)}</li>`).join('')}</ul></div><div class="jb2"><button class="s" data-a="eopen">Open</button></div></div>`}).join('');
+ $('#eodSum').textContent=ids.length?ids.length+' job(s) on '+d+': '+(need?need+' need attention':'all complete'):'';$('#eodList').innerHTML=html||'<div class="note">No jobs saved for '+d+'.</div>'}
+$('#eodGo').onclick=()=>{$('#eodDate').value=$('#eodDate').value||today();$('#jb').hidden=true;$('#eod').hidden=false;eodShow()};
+$('#eodDate').onchange=eodShow;
+$('#eodClose').onclick=()=>{$('#eod').hidden=true};
+$('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
+const APP_VERSION='v15'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
