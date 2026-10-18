@@ -174,6 +174,9 @@ body.big .cp{font-size:14px;padding:6px 10px}
 #thumbs button{position:absolute;top:2px;right:2px;padding:0 7px;font-size:16px;line-height:22px}
 #pp{display:none}
 @media print{html.pp #pp{display:block}#pp .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:6mm}#pp img{width:100%;max-height:115mm;object-fit:contain;border:1px solid #888}#pp figcaption{font-size:10px;margin-top:2px;min-height:12px}#pp figure{break-inside:avoid}}
+#addrSug{position:absolute;left:0;right:0;top:100%;z-index:20;background:var(--paper);border:1px solid var(--line);border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,.25);max-height:260px;overflow:auto}
+#addrSug div{padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--line);font-size:14px}#addrSug div:last-child{border:0}#addrSug div:hover,#addrSug div:focus{background:var(--band)}
+body.big #addrSug div{padding:14px 12px;font-size:17px}
 </style>
 </head>
 <body>
@@ -204,7 +207,7 @@ body.big .cp{font-size:14px;padding:6px 10px}
   <label class="f">COES / job #<input type="text" id="job"></label>
  </div>
  <div class="row" id="newAddrRow" hidden>
-  <label class="f" style="flex:3">New address<input type="text" id="newAddr" placeholder="Type address, then press Save address"></label>
+  <label class="f" style="flex:3;position:relative">New address<input type="text" id="newAddr" autocomplete="off" placeholder="Start typing, e.g. 12 King William St Adelaide"><div id="addrSug" class="noprint" hidden></div><span class="note noprint" id="addrHint">Suggestions need internet. You can also type the full address yourself (add unit number, suburb, state, postcode), then press Save address.</span></label>
   <button class="s noprint" id="saveAddr" style="align-self:flex-end">Save address</button>
  </div>
  <label class="f" style="margin:8px 0">Work completed<input type="text" id="work" list="workList"></label>
@@ -459,6 +462,15 @@ document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.datase
 
 // address
 $('#addr').addEventListener('change',e=>{const n=e.target.value===NEW;$('#newAddrRow').hidden=!n;if(n)$('#newAddr').focus();sync()});
+// address suggestions (OpenStreetMap data via Photon; needs internet, falls back to manual typing)
+const STS={'new south wales':'NSW','victoria':'VIC','queensland':'QLD','south australia':'SA','western australia':'WA','tasmania':'TAS','northern territory':'NT','australian capital territory':'ACT'};
+function fmtAddr(p){const st=STS[String(p.state||'').toLowerCase()]||p.state||'';const road=p.street||(p.osm_key==='highway'?p.name:'')||'';let l1=[p.housenumber,road].filter(Boolean).join(' ');if(!l1)l1=p.name||'';const sub=p.locality||p.district||p.city||p.county||'';const tail=[sub,st,p.postcode].filter(Boolean).join(' ');return [l1,tail].filter(Boolean).join(', ')}
+let sugT,sugC;
+async function sugGo(q){if(sugC)sugC.abort();sugC=new AbortController();try{const r=await fetch('https://photon.komoot.io/api/?limit=10&lang=en&lat=-34.93&lon=138.6&bbox=112,-44,154,-9&q='+encodeURIComponent(q),{signal:sugC.signal});if(!r.ok)throw 0;const d=await r.json();const seen={},out=[];(d.features||[]).forEach(f=>{const p=f.properties||{};if(p.countrycode&&p.countrycode!=='AU')return;const a=fmtAddr(p);if(a&&!seen[a]){seen[a]=1;out.push(a)}});const box=$('#addrSug');if(!out.length){box.hidden=true;return}box.innerHTML=out.slice(0,6).map(a=>`<div tabindex="0">${esc(a)}</div>`).join('');box.hidden=false}catch(e){if(e&&e.name==='AbortError')return;$('#addrSug').hidden=true}}
+$('#newAddr').addEventListener('input',e=>{clearTimeout(sugT);const q=e.target.value.trim();if(q.length<4||!navigator.onLine){$('#addrSug').hidden=true;return}sugT=setTimeout(()=>sugGo(q),450)});
+$('#addrSug').addEventListener('click',e=>{const d=e.target.closest('div[tabindex]');if(!d)return;$('#newAddr').value=d.textContent;$('#addrSug').hidden=true;$('#newAddr').focus()});
+$('#addrSug').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e.target.click()}});
+document.addEventListener('click',e=>{if(!e.target.closest('#addrSug,#newAddr'))$('#addrSug').hidden=true});
 $('#saveAddr').onclick=()=>{const v=$('#newAddr').value.trim();if(!v)return;if(!defs.addrs.includes(v))defs.addrs.unshift(v);LS.set('ev_defs',defs);fillAddr(v);$('#newAddr').value='';$('#newAddrRow').hidden=true;sync();save();toast('Address saved')};
 // signing
 $('#sig').addEventListener('change',()=>{if($('#sig').value&&!$('#sigTime').value){$('#sigTime').value=nowT();save()}});
@@ -483,7 +495,7 @@ function warnings(){const w=[];
  if(!$('#elec').value.trim())w.push('Electrician / licence is empty.');
  if(!$('#sig').value.trim()&&!inked)w.push('Not signed yet.');
  if(document.body.classList.contains('showcal'))[['calD','Continuity / IR tester'],['calL','Live / RCD tester']].forEach(([id,n])=>{const v=$('#'+id).value;if(v&&v<today())w.push(n+' calibration was due '+v+'.')});
- const un=$$('input[type=checkbox][data-k]').filter(e=>/^[cd]\d$/.test(e.dataset.k)&&!e.checked).length;if(un)w.push(un+' checklist item(s) on page 1 not ticked.');
+ const un=$$('input[type=checkbox][data-k]').filter(e=>/^[cd]\d$/.test(e.dataset.k)&&e.dataset.k!=='d2'&&!e.checked).length;if(un)w.push(un+' checklist item(s) on page 1 not ticked.');
  for(let i=1;i<=N;i++){const has=['pe','ir','zs'].some(k=>$(`[data-k=${k}${i}]`).value.trim());if(has&&!['fr','fz','fo'].some(k=>$(`[data-k=${k}${i}]`).checked))w.push('Circuit '+i+': no fault protection method ticked.')}
  for(let i=1;i<=N;i++){if($(`[data-k=fo${i}]`).checked&&!$('#notes2').value.trim()){w.push('"Other" ticked on circuit '+i+' but no explanation in the notes.');break}}
  if(lastFails.length)w.unshift('OUT OF LIMITS ('+lastFails.length+'): '+lastFails.join(', '));
@@ -635,7 +647,7 @@ function setG(t){const n=LS.get('ev_gat',0);$('#gstat').textContent=t||(n?'Last 
 $('#gsync').onclick=()=>gSync(true);
 let gTimer;document.addEventListener('input',()=>{if(!gtok)return;clearTimeout(gTimer);gTimer=setTimeout(()=>gSync(false),8000)});
 const _sj=showJobs;showJobs=function(){_sj.apply(this,arguments);setG()};
-const APP_VERSION='v10'; // keep in step with VERSION in sw.js
+const APP_VERSION='v12'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
