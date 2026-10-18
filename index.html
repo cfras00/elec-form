@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Residential Electrical Verification</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b5cab">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#eef0f2;--paper:#fff;--ink:#16181b;--mute:#5d646c;--line:#c9ced4;--band:#e3e6e9;--acc:#0b5cab;--ok:#146c2e;--bad:#b3261e;--okbg:#e3f3e7;--badbg:#fbe4e2;--inp:#f6f9fc}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121416;--paper:#1c1f23;--ink:#eceff2;--mute:#9aa3ad;--line:#3a4048;--band:#2a2f35;--acc:#6db3f2;--ok:#6fd08a;--bad:#ff8a80;--okbg:#18321f;--badbg:#3d1f1c;--inp:#242930}}
+:root[data-theme="dark"]{--bg:#121416;--paper:#1c1f23;--ink:#eceff2;--mute:#9aa3ad;--line:#3a4048;--band:#2a2f35;--acc:#6db3f2;--ok:#6fd08a;--bad:#ff8a80;--okbg:#18321f;--badbg:#3d1f1c;--inp:#242930}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 "Helvetica Neue",Arial,sans-serif}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 16px;background:var(--paper);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--paper);z-index:10}
+.bar b{margin-right:auto;font-size:16px}
+button{font:inherit;padding:8px 14px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:6px;cursor:pointer}
+button.p{background:var(--acc);color:var(--paper);border-color:var(--acc);font-weight:600}
+button.s{padding:4px 9px;font-size:13px}
+.page{max-width:900px;margin:16px auto;background:var(--paper);padding:26px 28px;border:1px solid var(--line)}
+h1{margin:0;font-size:26px;letter-spacing:.2px}
+.sub{color:var(--mute);font-size:13px;margin:2px 0 14px;display:flex;justify-content:space-between}
+.sec{background:var(--band);font-weight:700;padding:7px 10px;margin:18px 0 10px}
+.row{display:flex;gap:14px;flex-wrap:wrap;margin:8px 0}
+label.f{display:flex;flex-direction:column;font-size:12px;color:var(--mute);gap:3px;flex:1;min-width:150px}
+input[type=text],input[type=date],input[type=time],input[type=number],select,textarea{font:inherit;color:var(--ink);background:var(--inp);border:1px solid var(--line);border-radius:5px;padding:7px 8px;width:100%;min-width:0}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--acc);outline-offset:0}
+.ck{display:flex;gap:10px;align-items:flex-start;padding:7px 0}
+.ck input{width:20px;height:20px;margin-top:1px;flex:none}
+.ref{border:1px solid var(--line);padding:8px 12px;font-size:12.5px;margin:10px 0}
+.ref b{display:block;margin-bottom:2px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th,td{border:1px solid var(--line);padding:4px;text-align:left;font-size:13px}
+th{background:var(--band);font-size:12.5px}
+td input[type=text],td input[type=number]{border:0;background:transparent;padding:6px 4px}
+td.pass{background:var(--okbg)} td.fail{background:var(--badbg)}
+td.pass input{color:var(--ok);font-weight:600} td.fail input{color:var(--bad);font-weight:600}
+.mt{white-space:nowrap}.mt label{margin-right:10px}
+.opt{display:inline-flex;gap:5px;align-items:center;margin-right:14px}
+.inline{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.inline input[type=text],.inline input[type=number]{width:90px}
+.note{font-size:12px;color:var(--mute);margin:6px 0}
+.limits td,.limits th{font-size:13px}
+.pb{height:1px;background:var(--line);margin:30px 0}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:6px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+#warn,#em,#jb{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;display:flex;align-items:center;justify-content:center}#warn[hidden],#em[hidden],#jb[hidden]{display:none}.jrow{display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid var(--line);padding:9px 0}.jb2{display:flex;gap:6px;flex:none}.wbox{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:16px 18px;max-width:420px;margin:16px;max-height:80vh;overflow:auto}.wbox li{margin:5px 0}.wbtn{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap}
+#dp{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;display:flex;align-items:center;justify-content:center}#dp[hidden]{display:none}.dbox{max-width:520px;width:100%}.dbox label{display:flex;flex-direction:column;font-size:12px;color:var(--mute);gap:3px;margin:9px 0}.dbox textarea{min-height:72px}
+.sec .dm,.sec .lm{text-transform:uppercase}
+.foot{display:none}
+#t1 td:first-child{white-space:nowrap}#t1 td:first-child input[data-k^=c]{width:58%}.bk{width:40%!important;margin-left:2%;font-size:12px!important;color:var(--mute)}
+.mx{font-size:11px;color:var(--mute);text-align:center}
+.sumbox:empty{display:none}.sumbox{border:1px solid var(--line);padding:6px 10px;margin:8px 0;font-weight:700}.sumbox.bad{background:var(--badbg);color:var(--bad)}.sumbox.ok{background:var(--okbg);color:var(--ok)}
+.jb2{flex-wrap:wrap;max-width:200px;justify-content:flex-end}
+#sigPad{width:100%;max-width:340px;height:96px;border:1px dashed var(--line);background:#fff;touch-action:none;border-radius:5px;display:block}
+.sigl{font-size:12px;color:var(--mute);display:block;margin-bottom:3px}
+.cw{display:flex;align-items:center;justify-content:center;gap:3px}.cw input[type=number]{width:5ch!important;flex:none;text-align:right;padding-right:0!important}.cw .unit{padding:0}.irw{display:flex;align-items:center;justify-content:center;gap:4px}.cw input[type=text]{width:6ch!important;flex:none;text-align:right;padding-right:0!important}.cw input[type=number],.cw input[type=text]{width:7.5ch!important}#t2 th:nth-child(3){width:78px}#t2 td[data-chk="nt"] select{width:100%;padding:6px 2px!important;white-space:nowrap}.unit{color:var(--mute);font-size:12px;padding-right:6px;white-space:nowrap}
+body:not(.showcal) .calf{display:none!important}
+.bkbar{background:var(--badbg);color:var(--bad);padding:8px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:14px}.bkbar[hidden]{display:none}
+@media screen{
+body.big{font-size:17px}
+body.big input[type=text],body.big input[type=date],body.big input[type=time],body.big input[type=number],body.big select,body.big textarea{font-size:17px;padding:11px 10px}
+body.big button{font-size:16px;padding:12px 16px}body.big button.s{padding:9px 12px;font-size:15px}
+body.big .ck input,body.big .mt input,body.big .opt input{width:26px;height:26px}
+body.big .ck{padding:10px 0}
+body.big .bar{position:static}body.big .bar button{font-size:14px;padding:8px 11px}body.big .bar b{font-size:15px}
+body.big td input[type=text],body.big td input[type=number]{padding:10px 6px}
+}
+@page multi{size:A4;margin:9mm;@bottom-right{content:"Page " counter(page) " of " counter(pages);font:9px Helvetica,Arial,sans-serif;color:#333}}
+@media print{
+ html.multi .page{page:multi}
+ html.multi #pg1,html.multi #pg2{display:none}
+ :root{--bg:#fff;--paper:#fff;--ink:#000;--mute:#333;--line:#888;--band:#e6e6e6;--inp:#fff;--acc:#000;--ok:#000;--bad:#000}
+ .bar,.toast,body::before,.noprint{display:none!important}
+ body{background:#fff;font-size:11px}
+ .page{border:0;margin:0;padding:6mm 4mm;max-width:none;page-break-after:always}
+ .page:last-of-type{page-break-after:auto}
+ .pb{display:none}
+ input,select,textarea{border:0!important;border-bottom:1px solid #888!important;background:#fff!important;padding:2px!important;-webkit-appearance:none;appearance:none}
+ td.pass,td.fail{background:#fff}
+ .scroll{overflow:visible} table{min-width:0}
+ @page{size:A4;margin:9mm}
+ *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ body{font-family:Helvetica,Arial,sans-serif;font-size:10.5px;line-height:1.3}
+ .page{padding:0;break-inside:avoid;page-break-inside:avoid}
+ h1{font-size:21px;font-weight:800;margin:0}
+ .sub{font-size:10px;margin:2px 0 8px;padding-bottom:6px;border-bottom:1px solid #999}
+ .sec{background:#e3e3e3!important;border-top:1px solid #bbb;font-size:11px;margin:9px 0 5px;padding:5px 8px}
+ .ck{padding:3px 0;gap:7px;align-items:center}
+ .row{margin:4px 0;gap:10px}
+ label.f{flex-direction:row;align-items:baseline;gap:5px;font-size:10.5px;color:#000;min-width:0}
+ .ref{border:1px solid #000;padding:5px 8px;font-size:9.5px;margin:6px 0}
+ .ref b{font-size:10px}
+ input::placeholder,textarea::placeholder{color:transparent}
+ input[type=checkbox],input[type=radio]{-webkit-appearance:none!important;appearance:none!important;width:11px!important;height:11px!important;min-width:11px;border:1px solid #000!important;border-radius:0!important;background:#fff!important;padding:0!important;position:relative;flex:none;margin:0 3px 0 0}
+ input[type=radio]{border-radius:50%!important}
+ input[type=checkbox]:checked::after,input[type=radio]:checked::after{content:"\2713";position:absolute;left:1px;top:-4px;font-size:13px;font-weight:900;color:#000}
+ input[type=radio]:checked::after{left:0}
+ select,textarea{resize:none;font-size:10.5px}
+ th,td{border:1px solid #888;font-size:10px;padding:3px}
+ th{background:#e3e3e3!important}
+ td input,td select{font-size:10.5px}
+ #t1 td,#t2 td{height:22px}
+ .mt label{margin-right:8px;display:inline-flex;align-items:center}
+ .limits{border:1px solid #000;margin-top:10px}
+ .limits caption{font-size:11px;padding:6px 8px}
+ .note{font-size:9px;color:#000;margin:4px 0}
+ .inline{margin:5px 0;gap:6px}
+ .foot{display:block!important;border-top:1px solid #999;margin-top:10px;padding-top:4px;font-size:9px;color:#333}
+ #newAddrRow{display:none!important}
+ input[type=radio]{border-radius:0!important}
+ input[type=checkbox],input[type=radio]{width:12px!important;height:12px!important;min-width:12px}
+ label.f{white-space:nowrap;font-size:11px}
+ label.f:has(textarea){align-items:flex-start;white-space:normal}
+ td input,td select{border:0!important;background:transparent!important}
+ input[type=date]::-webkit-calendar-picker-indicator,input[type=time]::-webkit-calendar-picker-indicator{display:none}
+ body{font-size:11.5px}
+ .ck{padding:4px 0;font-size:11.5px}
+ .sec{font-size:12px;padding:6px 8px;margin:12px 0 7px}
+ .ref{font-size:10.5px;padding:6px 9px}
+ .ref b{font-size:11px}
+ th,td{font-size:11px;padding:4px}
+ td input,td select{font-size:11.5px}
+ #t1 td,#t2 td{height:27px}
+ .limits td,.limits th{font-size:11.5px}
+ .note{font-size:9.5px}
+ .inline{font-size:11.5px;margin:7px 0}
+ .sub{font-size:10.5px}
+ .row{margin:6px 0}
+ input[type=text],input[type=number],input[type=date],input[type=time],select,textarea,td.pass input,td.fail input{font-weight:700!important;color:#000!important}
+ .unit{font-weight:400!important;color:#000!important}
+ tr.blank input[type=text],tr.blank select{color:transparent!important}
+ .bk{font-size:10px!important;color:#000!important;font-weight:700}
+ #p1 .sec{margin:8px 0 5px}
+ #p1 .ck{padding:2px 0}
+ #p1 .ref{padding:4px 8px;margin:5px 0}
+ #p1 .row{margin:3px 0}
+ #sigPad{height:46px!important;max-width:300px}
+ .sigl{display:none}
+ #sigWrap{margin:2px 0}
+ input::-webkit-inner-spin-button,input::-webkit-outer-spin-button{-webkit-appearance:none!important;display:none!important;margin:0}
+ input:focus,select:focus,textarea:focus{outline:none!important;box-shadow:none!important}
+ #t1 td,#t2 td{height:19px!important;padding:2px 3px!important}
+ #t2 td input,#t2 td select,#t1 td input{padding:1px 2px!important}
+ #p2 .sec{margin:7px 0 4px}
+ #p2 .row{margin:2px 0}
+ #p2 .inline{margin:3px 0}
+ .sumbox{margin:4px 0}
+ .mx{font-size:8.5px;color:#000}
+ td.fail{outline:2px solid #000;outline-offset:-2px}
+ td.fail::after{content:"\2717 FAIL";display:block;font-size:8px;font-weight:800;text-align:center;color:#000}
+ .sumbox{border:1px solid #000!important;background:#fff!important;color:#000!important;font-size:11px;padding:4px 8px;margin:6px 0}
+ #p2.page{break-inside:auto!important;page-break-inside:auto!important}
+ tr{break-inside:avoid;page-break-inside:avoid}
+ #sigWrap.empty{display:none!important}
+ #sigPad{border:0!important;border-bottom:1px solid #888!important;border-radius:0}
+ .sigl{color:#000;font-size:10px}
+}
+</style>
+</head>
+<body>
+<div class="bar">
+ <b>Electrical verification form</b>
+ <button id="defs" class="s">Edit defaults</button>
+ <button id="jobs">Saved jobs</button>
+ <button id="dup">Duplicate job</button>
+ <button id="clr">New job</button>
+ <button id="eml">Email</button>
+ <button class="p" id="prn">Print / save PDF</button>
+</div>
+<div id="bkbar" class="bkbar noprint" hidden><span>It has been over 30 days since your last backup. Jobs are stored only in this browser.</span><button class="s" id="bkNow">Back up now</button><button class="s" id="bkLater">Remind me in a week</button></div>
+
+<!-- PAGE 1 -->
+<section class="page" id="p1">
+ <h1>RESIDENTIAL ELECTRICAL VERIFICATION</h1>
+ <div class="sub"><span>Quick job checklist | ordered workflow | tick only when verified</span><b id="pg1">1 / 2</b></div>
+ <div class="row">
+  <label class="f">Date<input type="date" id="date"></label>
+  <label class="f">Time<select id="time"></select></label>
+  <label class="f" style="flex:2">Site / address
+   <select id="addr"></select>
+  </label>
+  <label class="f">COES / job #<input type="text" id="job"></label>
+ </div>
+ <div class="row" id="newAddrRow" hidden>
+  <label class="f" style="flex:3">New address<input type="text" id="newAddr" placeholder="Type address, then press Save address"></label>
+  <button class="s noprint" id="saveAddr" style="align-self:flex-end">Save address</button>
+ </div>
+ <label class="f" style="margin:8px 0">Work completed<input type="text" id="work" list="workList"></label>
+ <div class="note noprint" id="fname"></div>
+ <datalist id="workList"></datalist><datalist id="cnames"></datalist><datalist id="brk"></datalist>
+
+ <div class="sec">1 VISUAL + SAFE ISOLATION</div>
+ <label class="ck"><input type="checkbox" data-k="c1"> Visually inspect work, protection, earthing, equipment, terminations and labelling.</label>
+ <label class="ck"><input type="checkbox" data-k="c2"> Identify correct circuit; isolate, secure and PROVE-TEST-PROVE dead.</label>
+
+ <div class="sec">2 DEAD TESTS | <span class="dm"></span></div>
+ <label class="ck"><input type="checkbox" data-k="c3"> Protective earth continuity: 200 mA test; compensate/check trailing-lead resistance.</label>
+ <label class="ck"><input type="checkbox" data-k="c4"> Insulation resistance: appropriate test voltage; protect or disconnect sensitive devices.</label>
+ <label class="ck"><input type="checkbox" data-k="c5"> Verify polarity and correct circuit connections, including switched actives and neutrals.</label>
+ <div class="ref"><b>QUICK REFERENCE: IR generally &ge; 1 M&Omega; at 500 V DC (230/400 V wiring).</b>
+ PE continuity – AS/NZS 3000 Cl 8.3.5; main earthing/bonding generally &le; 0.5 &Omega;.<br>
+ Final-circuit PE: no universal ohm limit; assess circuit, PE and fault protection.<br>
+ References: Table 8.2 (final-circuit R1+R2); IR Cl 8.3.6; polarity 8.3.7; connections 8.3.8.</div>
+
+ <div class="sec">3 RE-ENERGISE + LIVE VERIFICATION | <span class="lm"></span></div>
+ <label class="ck"><input type="checkbox" data-k="c6"> Make safe, re-energise and complete required voltage / functional checks.</label>
+ <label class="ck"><input type="checkbox" data-k="c7"> Verify automatic disconnection / earth-fault loop as applicable; use suitable no-trip mode.</label>
+ <label class="ck"><input type="checkbox" data-k="c8"> Test each applicable RCD/RCBO with correct type, rated current and test settings.</label>
+ <div class="ref"><b>STANDARD NON-DELAYED 30 mA RCD (confirm type and test settings):</b>
+ 0.5x: no trip | 1x: &le; 300 ms | 5x: &le; 40 ms (device/test-specific criteria).<br>
+ EFLI: maximum total Zs – Table 8.1; final-circuit resistance method – Table 8.2.<br>
+ Standards: EFLI Cl 8.3.9; RCD operation Cl 8.3.10; verification records Cl 8.4.</div>
+
+ <div class="sec">4 COMPLETION + EXCEPTIONS</div>
+ <div class="row">
+  <label class="ck" style="flex:1"><input type="checkbox" data-k="d1"> All applicable checks satisfactory</label>
+  <label class="ck" style="flex:1"><input type="checkbox" data-k="d2"> Defects rectified + retested</label>
+ </div>
+ <div class="row">
+  <label class="ck" style="flex:1"><input type="checkbox" data-k="d3"> Test readings entered on page 2</label>
+  <label class="ck" style="flex:1"><input type="checkbox" data-k="d4"> Photos / records linked to COES as applicable</label>
+ </div>
+ <label class="f" style="margin:8px 0">Failures, omissions, rectification / notes<textarea id="notes" rows="3"></textarea></label>
+ <div class="row">
+  <label class="f" style="flex:2">Electrician / licence<input type="text" id="elec" list="elecList"></label>
+  <datalist id="elecList"></datalist>
+  <label class="f">Signature<input type="text" id="sig" placeholder="Type name to sign"></label>
+  <label class="f">Time<input type="time" id="sigTime"></label>
+ </div>
+ <div class="row" id="sigWrap"><div style="flex:1"><span class="sigl">Signature (draw with finger or mouse)</span><canvas id="sigPad" width="680" height="190"></canvas></div><button class="s noprint" id="sigClr" style="align-self:flex-end">Clear drawing</button></div>
+ <table class="limits" style="margin-top:14px;min-width:0">
+  <caption style="text-align:left;font-weight:700;padding:6px 0">RCD / RCBO QUICK TRIP-TIME LIMITS <span style="font-weight:400;color:var(--mute);font-size:12px">– standard non-delayed 30 mA Type A / AC</span></caption>
+  <tr><th><span class="lm"></span> setting</th><th>Test current</th><th>Expected result</th><th>Maximum time</th></tr>
+  <tr><td>0.5 x I&Delta;n</td><td>15 mA</td><td>NO TRIP</td><td>No trip</td></tr>
+  <tr><td>1 x I&Delta;n</td><td>30 mA</td><td>TRIP</td><td>300 ms</td></tr>
+  <tr><td>2 x I&Delta;n</td><td>60 mA</td><td>TRIP</td><td>150 ms</td></tr>
+  <tr><td>5 x I&Delta;n</td><td>150 mA</td><td>TRIP</td><td>40 ms</td></tr>
+ </table>
+ <p class="note">For delayed/special devices use maker criteria; confirm required poles isolate (AS/NZS 3000 cl 8.3.10).</p>
+ <div class="foot">Supplementary record only | Perform all applicable AS/NZS 3000 Part 8 checks before certifying.</div>
+</section>
+
+<div class="pb"></div>
+
+<!-- PAGE 2 -->
+<section class="page" id="p2">
+ <h1>ACTUAL TEST RESULTS</h1>
+ <div class="sub"><span><span id="nc">8</span> circuits | actual values | <span class="lm"></span> + <span class="dm"></span></span><b id="pg2">2 / 2</b></div>
+ <div class="row">
+  <label class="f">Date<input type="date" id="date2" readonly></label>
+  <label class="f" style="flex:2">Site / address<input type="text" id="addr2" readonly></label>
+  <label class="f">COES / job #<input type="text" id="job2" readonly></label>
+ </div>
+ <div class="row">
+  <label class="f">Continuity / IR tester<input type="text" id="dmod"></label>
+  <label class="f">S/N<input type="text" id="kyo"></label>
+  <label class="f calf">Calibration due<input type="date" id="calD"></label>
+  </div>
+ <div class="row">
+  <label class="f">Live / RCD tester<input type="text" id="lmod"></label>
+  <label class="f">S/N<input type="text" id="met"></label>
+  <label class="f calf">Calibration due<input type="date" id="calL"></label>
+ </div>
+
+ <div class="sec">1 CIRCUIT MEASUREMENTS | enter actual readings</div>
+ <div class="scroll"><table id="t1">
+  <tr><th>Circuit / test point</th><th>PE &Omega;</th><th>IR M&Omega; / V</th><th>Zs &Omega;</th><th>Fault protection verified</th></tr>
+ </table></div>
+ <p class="note">RCD = 30 mA RCD/RCBO operation + protective earth verified | Zs = loop impedance | Other = explain below. IR below 1 M&Omega; is flagged red. Max Zs and max PE resistance come from AS/NZS 3000 Tables 8.1 and 8.2 when a breaker is entered (e.g. C20, or F32 for an HRC fuse at 0.4 s, F32/5s for 5 s). Table 8.2 assumes the cable sizes printed in it.</p>
+ <div class="inline noprint"><button class="s" id="addC">+ Add circuit</button><button class="s" id="delC">Remove last circuit</button><span class="note">Circuits beyond 8 continue onto an extra printed page.</span></div>
+ <div class="inline">
+  <span>Main earth / bond (if tested):</span><input type="number" step="0.01" id="main" data-u="Ω"><span id="mainFlag"></span>
+  <label class="opt"><input type="checkbox" data-k="trail"> Trailing lead compensated / accounted for</label>
+ </div>
+
+ <div class="sec">2 <span class="lm"></span> | RCD / RCBO RESULTS</div>
+ <div class="scroll"><table id="t2">
+  <tr><th>Circuit / RCD ID</th><th>RCD / RCBO<br><small>e.g. A/C40/30mA</small></th><th>0.5x<br>No trip</th><th>1x ms<br><small>&le;300</small></th><th>2x ms<br><small>&le;150</small></th><th>5x ms<br><small>&le;40</small></th><th>Ramp mA</th></tr>
+ </table></div>
+ <p class="note">Typical non-delayed 30 mA RCD: 0.5x = NO TRIP | 1x &le; 300 ms | 2x &le; 150 ms | 5x &le; 40 ms. Use applicable device/test-waveform requirements. Example: A/C40/30mA = Type A RCD, C-curve 40 A breaker, 30 mA trip sensitivity. Cells turn green/red against these limits.</p>
+ <div id="sum" class="sumbox"></div>
+
+ <div class="sec">3 FINAL CHECKS / EXCEPTIONS</div>
+ <div class="inline"><b>Polarity:</b>
+  <label class="opt"><input type="radio" name="pol" value="Correct"> Correct</label><label class="opt"><input type="radio" name="pol" value="Fail"> Fail</label><label class="opt"><input type="radio" name="pol" value="N/A"> N/A</label>
+  <b>Connections:</b>
+  <label class="opt"><input type="radio" name="con" value="Correct"> Correct</label><label class="opt"><input type="radio" name="con" value="Fail"> Fail</label><label class="opt"><input type="radio" name="con" value="N/A"> N/A</label></div>
+ <div class="inline"><b>Functional:</b>
+  <label class="opt"><input type="radio" name="fun" value="OK"> OK</label><label class="opt"><input type="radio" name="fun" value="N/A"> N/A</label>
+  L-N <input type="number" id="ln" data-u="V"> &nbsp;L-E <input type="number" id="le" data-u="V"> &nbsp;N-E <input type="number" id="ne" data-u="V"></div>
+ <label class="f">Defects, repairs/retest, other ADS method or N/A explanations<textarea id="notes2" rows="3"></textarea></label>
+ <div class="foot">Supplementary record only | Apply AS/NZS 3000 Part 8 and correct device-specific limits.</div>
+</section>
+<div id="warn" class="noprint" hidden><div class="wbox"><b>Check before printing</b><ul id="wl"></ul><div class="wbtn"><button id="wback">Go back</button><button class="p" id="wgo">Print anyway</button></div></div></div>
+<div id="dp" class="noprint" hidden><div class="wbox dbox"><b>Defaults</b><div class="note">Prefilled on every new job. Readings already entered are not changed.</div><div id="dform"></div><div class="wbtn"><button id="dcan">Cancel</button><button class="p" id="dsave">Save defaults</button></div></div></div>
+<div id="em" class="noprint" hidden><div class="wbox dbox"><b>Email details</b><div class="note">Tap Open email app, or Copy all and paste into a new email. Attach the saved PDF before sending.</div><label>To<input type="text" id="emTo"></label><label>Subject<input type="text" id="emSub"></label><label>Message<textarea id="emBody"></textarea></label><div class="wbtn"><button id="emClose">Close</button><button id="emShare" hidden>Share…</button><button id="emCopy">Copy all</button><button id="emOpen">Open email app</button><button class="p" id="emGmail">Open Gmail</button></div></div></div>
+<div id="jb" class="noprint" hidden><div class="wbox dbox"><b>Saved jobs</b><div class="note">Jobs save automatically as you type. Open one later to add the COES number, then print it. Backups include your jobs and defaults. To move jobs to another device, share or export a backup there and import it here; newer copies of a job win.</div><div class="row"><input type="text" id="jq" placeholder="Search address or COES" style="flex:2"><select id="jf" style="flex:1"><option value="">All</option><option value="coes">COES missing</option><option value="unsent">Not sent</option></select></div><div id="jlist"></div><div class="wbtn"><button id="jtrash">Recently deleted</button><button id="jshare" hidden>Share backup</button><button id="jexp">Export backup</button><button id="jimpb">Import backup</button><input type="file" id="jimp" accept=".json,application/json" hidden><button id="jclose">Close</button></div></div></div>
+<div class="note noprint" style="text-align:center;margin:12px 0 24px">App version <span id="appver"></span> | <span id="net"></span></div>
+<div id="updbar" class="bkbar noprint" hidden style="position:fixed;left:0;right:0;bottom:0;z-index:30"><span>A new version was installed.</span><button class="s" id="updGo">Reload now</button></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1800)};
+const NEW='__new__';
+let state=LS.get('ev_state',{}); let defs=LS.get('ev_defs',{kyo:'W8531880',met:'',elec:'',addrs:[],elecs:[],rcd:'A/30mA'});
+const pad=n=>String(n).padStart(2,'0');
+const nowT=()=>{const d=new Date();return pad(d.getHours())+':'+pad(d.getMinutes())};
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
+
+// build tables
+let N=0;
+const ZM={B:4,C:7.5,D:12.5};
+const ZST_OLD=['B','C','D'].flatMap(c=>[6,10,16,20,25,32].map(n=>c+n+'='+(230/(ZM[c]*n)).toFixed(2))).join('\n');
+// AS/NZS 3000:2018 Table 8.1, Zs ohms: MCB type B, C, D (0.4 s), then HRC fuse 0.4 s and 5 s, as printed
+const T81={6:[9.6,5.1,3.1,11.5,15.3],10:[5.8,3.1,1.8,6.4,9.2],16:[3.6,1.9,1.2,3.1,5.0],20:[2.9,1.5,0.9,2.1,3.6],25:[2.3,1.2,0.7,1.6,2.7],32:[1.8,1.0,0.6,1.3,2.2],40:[1.4,0.8,0.5,1.0,1.6],50:[1.2,0.6,0.4,0.7,1.3],63:[0.9,0.5,0.3,0.6,0.9],80:[0.7,0.4,0.2,0.4,0.7],100:[0.6,0.3,0.2,0.3,0.5],125:[0.5,0.2,0.1,0.2,0.4],160:[0.4,0.2,0.1,0.2,0.3],200:[0.3,0.2,0.1,0.1,0.2]};
+// Table 8.2, max final subcircuit resistance ohms: per rating, [Rphe (R1+R2), Re (R2)] for B, C, D, fuse 0.4 s, fuse 5 s
+const T82={6:[[6.1,3.1],[3.3,1.6],[2.0,1.0],[7.4,3.7],[9.8,4.9]],10:[[3.7,1.8],[2.0,1.0],[1.2,0.6],[4.1,2.0],[5.9,2.9]],16:[[2.3,1.2],[1.2,0.6],[0.7,0.4],[2.0,1.0],[3.2,1.6]],20:[[1.8,0.9],[1.0,0.5],[0.6,0.3],[1.3,0.7],[2.3,1.1]],25:[[1.5,0.9],[0.8,0.5],[0.5,0.3],[1.0,0.6],[1.7,1.1]],32:[[1.2,0.7],[0.6,0.4],[0.4,0.2],[0.8,0.5],[1.4,0.9]],40:[[0.9,0.6],[0.5,0.3],[0.3,0.2],[0.6,0.4],[1.0,0.7]],50:[[0.7,0.5],[0.4,0.3],[0.2,0.2],[0.5,0.3],[0.8,0.6]],63:[[0.6,0.4],[0.3,0.2],[0.2,0.1],[0.4,0.3],[0.6,0.4]]};
+const DEVN=['B','C','D','F','F'],DEVS=['','','','','/5s'];
+const ZST_V1=['B','C','D'].flatMap((c,k)=>Object.keys(T81).map(n=>c+n+'='+T81[n][k].toFixed(1))).join('\n');
+const ZST0=DEVN.flatMap((c,k)=>Object.keys(T81).map(n=>c+n+DEVS[k]+'='+T81[n][k].toFixed(1))).join('\n');
+const R82_0=DEVN.flatMap((c,k)=>Object.keys(T82).map(n=>c+n+DEVS[k]+'='+T82[n][k][0].toFixed(1)+'/'+T82[n][k][1].toFixed(1))).join('\n');
+const zsText=()=>(defs.zst===undefined||defs.zst===ZST_OLD||defs.zst===ZST_V1)?ZST0:defs.zst;
+const rzText=()=>defs.rzt!==undefined?defs.rzt:R82_0;
+function devKey(v){const m=String(v||'').match(/([A-Za-z])\s*-?\s*(\d+)(.*)$/);if(!m)return null;let L=m[1].toUpperCase();if(L==='F'&&/5\s*s/i.test(m[3]))L='FS';return L+m[2]}
+const devLab=k=>k.startsWith('FS')?'F'+k.slice(2)+'/5s':k;
+const _tc={};
+function tbl(t){return _tc[t]||(_tc[t]=(()=>{const m={};String(t).split('\n').forEach(l=>{const r=l.match(/^(.*?)[=:]\s*([\d.]+)(?:\s*\/\s*([\d.]+))?\s*$/);if(!r)return;const k=devKey(r[1]);if(k)m[k]=[parseFloat(r[2]),r[3]!==undefined?parseFloat(r[3]):null]});return m})())}
+function zsMap(){const m={},t=tbl(zsText());Object.keys(t).forEach(k=>m[k]=t[k][0]);return m}
+function zsMax(v){const k=devKey(v);if(!k)return null;const x=zsMap()[k];return x==null?null:x}
+function peMax(v){const k=devKey(v);if(!k)return null;const t=tbl(rzText())[k];if(!t)return null;const x=defs.pemode==='R1R2'?t[0]:t[1];return x==null?null:x}
+function wrapU(i){const u=i.dataset.u||(/r$/.test(i.dataset.k||'')?'mA':'ms');const w=document.createElement('div');w.className='cw';i.parentNode.insertBefore(w,i);w.appendChild(i);const s=document.createElement('span');s.className='unit';s.dataset.u=u;w.appendChild(s)}
+function addRow(i){
+ $('#t1').insertAdjacentHTML('beforeend',`<tr><td><input type="text" data-k="c${i}n" list="cnames" placeholder="Circuit ${i}"><input type="text" class="bk" data-k="bk${i}" list="brk" placeholder="Breaker e.g. C20"></td>
+ <td data-chk="pe"><input type="number" step="0.01" data-k="pe${i}" data-u="Ω"><div class="mx"></div></td>
+ <td data-chk="ir"><div class="irw"><input type="text" inputmode="decimal" data-k="ir${i}" data-u="MΩ"><span>/</span><input type="number" data-k="irv${i}" data-u="V"></div></td>
+ <td><input type="number" step="0.01" data-k="zs${i}" data-u="Ω"><div class="mx"></div></td>
+ <td class="mt"><label><input type="checkbox" data-k="fr${i}"> RCD</label><label><input type="checkbox" data-k="fz${i}"> Zs</label><label><input type="checkbox" data-k="fo${i}"> Other</label></td></tr>`);
+ $('#t2').insertAdjacentHTML('beforeend',`<tr><td><input type="text" data-k="r${i}n" list="cnames" placeholder="Circuit ${i}"></td>
+ <td><input type="text" data-k="r${i}t"></td>
+ <td data-chk="nt"><select data-k="r${i}h"><option value=""></option><option>No trip</option><option>Tripped</option></select></td>
+ <td data-chk="1x"><input type="number" data-k="r${i}a"></td>
+ <td data-chk="2x"><input type="number" data-k="r${i}b"></td>
+ <td data-chk="5x"><input type="number" data-k="r${i}c"></td>
+ <td><input type="number" step="0.1" data-k="r${i}r"></td></tr>`);
+ [$(`[data-k=c${i}n]`).closest('tr'),$(`[data-k=r${i}n]`).closest('tr')].forEach(r=>r.querySelectorAll('[data-u],input[type=number]').forEach(wrapU));
+ $(`[data-k=r${i}t]`).value=defs.rcd||'';$(`[data-k=r${i}h]`).value=defs.nt!==undefined?defs.nt:'No trip';
+}
+function setN(n){n=(n|0)||8;n=Math.max(1,Math.min(30,n));while(N<n){N++;addRow(N)}while(N>n){$(`[data-k=c${N}n]`).closest('tr').remove();$(`[data-k=r${N}n]`).closest('tr').remove();N--}$('#nc').textContent=N}
+$$('.inline [data-u]').forEach(wrapU);
+$('#addC').onclick=()=>{if(N>=30)return toast('Maximum 30 circuits');setN(N+1);check();save();toast('Circuit '+N+' added')};
+$('#delC').onclick=()=>{if(N<=1)return;const i=N;const used=[`c${i}n`,`pe${i}`,`ir${i}`,`zs${i}`,`bk${i}`,`r${i}a`,`r${i}b`,`r${i}c`,`r${i}r`].some(k=>$(`[data-k=${k}]`).value.trim())||['fr','fz','fo'].some(k=>$(`[data-k=${k}${i}]`).checked);if(used&&!confirm('Circuit '+i+' has entries. Remove it anyway?'))return;setN(N-1);check();save()};
+// signature pad
+let inked=false,sigData='',drawing=false;
+const sp=$('#sigPad'),sx=sp.getContext('2d');sx.lineWidth=4;sx.lineCap='round';sx.lineJoin='round';sx.strokeStyle='#111';
+const spt=e=>{const r=sp.getBoundingClientRect();return [(e.clientX-r.left)*sp.width/r.width,(e.clientY-r.top)*sp.height/r.height]};
+function sigState(){$('#sigWrap').classList.toggle('empty',!inked)}
+sp.addEventListener('pointerdown',e=>{drawing=true;try{sp.setPointerCapture(e.pointerId)}catch(x){}const [x,y]=spt(e);sx.beginPath();sx.moveTo(x,y);sx.lineTo(x+.1,y+.1);sx.stroke();e.preventDefault()});
+sp.addEventListener('pointermove',e=>{if(!drawing)return;const [x,y]=spt(e);sx.lineTo(x,y);sx.stroke();e.preventDefault()});
+const sigEnd=()=>{if(!drawing)return;drawing=false;inked=true;sigData=sp.toDataURL('image/png');sigState();save()};
+sp.addEventListener('pointerup',sigEnd);sp.addEventListener('pointercancel',sigEnd);
+$('#sigClr').onclick=()=>{sx.clearRect(0,0,sp.width,sp.height);inked=false;sigData='';sigState();save()};
+function loadSig(d){sx.clearRect(0,0,sp.width,sp.height);inked=false;sigData='';if(d){const im=new Image();im.onload=()=>{sx.drawImage(im,0,0);inked=true;sigData=d;sigState()};im.src=d}sigState()}
+// dropdowns
+const ts=$('#time'); for(let h=0;h<24;h++)for(let m=0;m<60;m+=15){const v=pad(h)+':'+pad(m);ts.insertAdjacentHTML('beforeend',`<option>${v}</option>`)}
+function fillAddr(sel){const a=$('#addr');a.innerHTML='<option value="">Select address…</option>'+defs.addrs.map(x=>`<option>${x.replace(/</g,'&lt;')}</option>`).join('')+`<option value="${NEW}">+ Add new address…</option>`;if(sel!==undefined)a.value=sel}
+function fillElec(){$('#elecList').innerHTML=defs.elecs.map(x=>`<option value="${x.replace(/"/g,'&quot;')}">`).join('')}
+function roundTime(t){const [h,m]=t.split(':').map(Number);return pad(h)+':'+pad(Math.round(m/15)%4*15)}
+
+// init values
+function init(){
+ setN(state.n||8); document.body.classList.toggle('showcal',defs.cal==='show'); applyBig();
+ fillAddr(); fillElec(); fillLists(); $('#newAddrRow').hidden=true; $('#newAddr').value='';$$('[data-k^=irv],[data-k^=fr],[data-k^=fz],[data-k^=fo]').forEach(e=>delete e.dataset.touched); $('#date').value=state.date||today();
+ $('#time').value=state.time||roundTime(nowT()).replace(/^(\d\d):60/,'$1:00');
+ if(!$('#time').value)$('#time').value=ts.options[0].value;
+ const addr=state.addr||''; if(addr&&!defs.addrs.includes(addr)){defs.addrs.push(addr);fillAddr()} $('#addr').value=addr;
+ $('#job').value=state.job||''; $('#work').value=state.work!==undefined?state.work:(defs.work||'');
+ $('#elec').value=state.elec??defs.elec; $('#sig').value=state.sig||''; $('#sigTime').value=state.sigTime||'';
+ $('#kyo').value=state.kyo??defs.kyo; $('#met').value=state.met??defs.met; $('#dmod').value=state.dmod??(defs.dmod??'Kyoritsu 3132A'); $('#lmod').value=state.lmod??(defs.lmod??'Metrel MI 3122'); $('#calD').value=state.calD??(defs.calD||''); $('#calL').value=state.calL??(defs.calL||'');
+ $('#notes').value=state.notes||''; $('#notes2').value=state.notes2||''; $('#main').value=state.main||'';
+ ['ln','le','ne'].forEach(k=>$('#'+k).value=state[k]!==undefined?state[k]:(defs[k]||''));
+ $$('[data-k]').forEach(el=>{const v=state[el.dataset.k];
+  if(el.type==='checkbox')el.checked=!!v; else if(v!==undefined)el.value=v;
+  else if(/^r\d+t$/.test(el.dataset.k))el.value=defs.rcd; else if(/^r\d+h$/.test(el.dataset.k))el.value=defs.nt!==undefined?defs.nt:'No trip'; else el.value='';});
+ ['pol','con','fun'].forEach(n=>$$(`input[name=${n}]`).forEach(r=>r.checked=(state[n]!==undefined?state[n]:(defs[n]||''))===r.value));
+ loadSig(state.sigImg||''); sync(); check(); updBadge();
+}
+function sync(){updModels();$('#fname').textContent='PDF file name: '+fname()+'.pdf';$('#date2').value=$('#date').value;$('#addr2').value=$('#addr').value===NEW?'':$('#addr').value;$('#job2').value=$('#job').value}
+
+// checks
+function mark(td,ok){td=td.closest('td');td.classList.remove('pass','fail');if(ok===true)td.classList.add('pass');if(ok===false)td.classList.add('fail')}
+function check(){
+ const fails=[];let any=false;
+ for(let i=1;i<=N;i++){const a=$(`[data-k=ir${i}]`),v=$(`[data-k=irv${i}]`);if(a.value.trim()&&v.value===''&&!v.dataset.touched)v.value=defs.irv||'500';fpAuto(i);a.closest('.irw').querySelector('span:not(.unit)').style.visibility=(a.value.trim()||v.value)?'visible':'hidden'}
+ for(let i=1;i<=N;i++){const n=$(`[data-k=r${i}n]`);n.closest('tr').classList.toggle('blank',['n','a','b','c','r'].every(s=>$(`[data-k=r${i}${s}]`).value.trim()===''))}
+ $$('.unit').forEach(s=>{s.textContent=s.previousElementSibling.value!==''?s.dataset.u:''});
+ for(let i=1;i<=N;i++){
+  const nm=$(`[data-k=c${i}n]`).value.trim()||$(`[data-k=r${i}n]`).value.trim()||('Circuit '+i);
+  const ir=$(`[data-k=ir${i}]`).value.trim(); let ok=null;
+  if(ir){any=true;const n=parseFloat(ir.replace(/[^0-9.]/g,'').split(/[\/]/)[0]);if(!isNaN(n))ok=n>=1}
+  mark($(`[data-k=ir${i}]`).parentElement,ok);if(ok===false)fails.push(nm+' IR');
+  const pe=$(`[data-k=pe${i}]`),pl=peMax($(`[data-k=bk${i}]`).value);pe.closest('td').querySelector('.mx').textContent=pl!=null?'max '+pl+' Ω':'';
+  let pk=null;if(pe.value!==''){any=true;if(pl!=null)pk=parseFloat(pe.value)<=pl}mark(pe,pk);if(pk===false)fails.push(nm+' PE');
+  const z=$(`[data-k=zs${i}]`),mx=zsMax($(`[data-k=bk${i}]`).value);z.closest('td').querySelector('.mx').textContent=mx!=null?'max '+mx+' Ω':'';
+  let zok=null;if(z.value!==''){any=true;if(mx!=null)zok=parseFloat(z.value)<=mx}
+  mark(z,zok);if(zok===false)fails.push(nm+' Zs');
+  [['a',300,'1x'],['b',150,'2x'],['c',40,'5x']].forEach(([s,l,t])=>{const e=$(`[data-k=r${i}${s}]`);let k=null;if(e.value!==''){any=true;k=parseFloat(e.value)<=l}mark(e.parentElement,k);if(k===false)fails.push(nm+' RCD '+t)});
+  if(+$(`[data-k=pe${i}]`).value||$(`[data-k=pe${i}]`).value!=='')any=true;
+  const h=$(`[data-k=r${i}h]`);const hk=$(`[data-k=r${i}a]`).value===''&&h.value==='No trip'?null:h.value===''?null:h.value==='No trip';mark(h.parentElement,hk);if(hk===false)fails.push(nm+' RCD 0.5x tripped');
+ }
+ const m=parseFloat($('#main').value);$('#mainFlag').textContent=isNaN(m)?'':(m<=0.5?'OK (≤ 0.5 Ω)':'Above 0.5 Ω – assess');
+ document.documentElement.classList.toggle('multi',N>8);{const two=N<=8;$('#pg1').textContent=two?'1 / 2':'Page 1';$('#pg2').textContent=two?'2 / 2':'Page 2'}
+ const sm=$('#sum');if(!any){sm.textContent='';sm.className='sumbox'}else if(fails.length){sm.textContent='✗ OUT OF LIMITS: '+fails.join(', ');sm.className='sumbox bad'}else{sm.textContent='✓ All entered readings are within the limits shown on this form.';sm.className='sumbox ok'}
+}
+function save(){
+ const s={date:$('#date').value,time:$('#time').value,addr:$('#addr').value===NEW?'':$('#addr').value,job:$('#job').value,work:$('#work').value,elec:$('#elec').value,sig:$('#sig').value,sigTime:$('#sigTime').value,kyo:$('#kyo').value,met:$('#met').value,dmod:$('#dmod').value,lmod:$('#lmod').value,notes:$('#notes').value,notes2:$('#notes2').value,main:$('#main').value,ln:$('#ln').value,le:$('#le').value,ne:$('#ne').value,calD:$('#calD').value,calL:$('#calL').value};
+ $$('[data-k]').forEach(el=>s[el.dataset.k]=el.type==='checkbox'?el.checked:el.value);
+ ['pol','con','fun'].forEach(n=>{const c=$(`input[name=${n}]:checked`);s[n]=c?c.value:''});
+ s.n=N;s.sent=state.sent||'';s.sigImg=sigData;s.jid=state.jid||('j'+Date.now().toString(36));state=s;LS.set('ev_state',s);upsertJob(s);
+}
+document.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.k;if(k&&k.startsWith('irv'))e.target.dataset.touched=1;sync();check();save()});
+document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.k;if(k&&/^f[rzo]\d/.test(k))e.target.dataset.touched=1;sync();check();save()});
+
+// address
+$('#addr').addEventListener('change',e=>{const n=e.target.value===NEW;$('#newAddrRow').hidden=!n;if(n)$('#newAddr').focus();sync()});
+$('#saveAddr').onclick=()=>{const v=$('#newAddr').value.trim();if(!v)return;if(!defs.addrs.includes(v))defs.addrs.unshift(v);LS.set('ev_defs',defs);fillAddr(v);$('#newAddr').value='';$('#newAddrRow').hidden=true;sync();save();toast('Address saved')};
+// signing
+$('#sig').addEventListener('change',()=>{if($('#sig').value&&!$('#sigTime').value){$('#sigTime').value=nowT();save()}});
+$('#elec').addEventListener('change',()=>{const v=$('#elec').value.trim();if(v&&!defs.elecs.includes(v)){defs.elecs.unshift(v);LS.set('ev_defs',defs);fillElec()}});
+
+// defaults
+$('#defs').onclick=()=>{
+ const k=prompt('Kyoritsu 3132A serial number (prefilled each job):',defs.kyo);if(k===null)return;defs.kyo=k.trim();
+ const m=prompt('Metrel MI 3122 serial number:',defs.met);if(m===null)return;defs.met=m.trim();
+ const e=prompt('Your name / licence number:',defs.elec);if(e===null)return;defs.elec=e.trim();if(e.trim()&&!defs.elecs.includes(e.trim()))defs.elecs.unshift(e.trim());
+ const r=prompt('Default RCD/RCBO type (e.g. A/30mA or A/C40/30mA):',defs.rcd);if(r===null)return;defs.rcd=r.trim();
+ const em=prompt('Your email address (used by the Email button):',defs.email||'');if(em===null)return;defs.email=em.trim();
+ const rm=prompt('Remove a saved address? Type it exactly, or leave blank:','');if(rm&&defs.addrs.includes(rm.trim()))defs.addrs=defs.addrs.filter(a=>a!==rm.trim());
+ LS.set('ev_defs',defs);state.kyo=defs.kyo;state.met=defs.met;state.elec=defs.elec;fillElec();init();toast('Defaults saved');
+};
+$('#clr').onclick=()=>{if(!confirm('Start a new job? The current job stays in Saved jobs.'))return;state={};LS.set('ev_state',{});init();toast('New job ready')};
+const slug=s=>(s||'').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+function fname(){const ad=$('#addr').value;const a=slug(ad&&ad!==NEW?ad.split(',')[0]:'');const j=slug($('#job').value);return [$('#date').value||today(),a,j?(/^coes/i.test(j)?j:'COES-'+j):''].filter(Boolean).join('_')}
+function warnings(){const w=[];
+ if(!$('#date').value)w.push('Date is empty.');
+ const ad=$('#addr').value;if(!ad||ad===NEW)w.push('Site / address is empty.');
+ if(!$('#elec').value.trim())w.push('Electrician / licence is empty.');
+ if(!$('#sig').value.trim()&&!inked)w.push('Not signed yet.');
+ if(document.body.classList.contains('showcal'))[['calD','Continuity / IR tester'],['calL','Live / RCD tester']].forEach(([id,n])=>{const v=$('#'+id).value;if(v&&v<today())w.push(n+' calibration was due '+v+'.')});
+ const un=$$('input[type=checkbox][data-k]').filter(e=>/^[cd]\d$/.test(e.dataset.k)&&!e.checked).length;if(un)w.push(un+' checklist item(s) on page 1 not ticked.');
+ for(let i=1;i<=N;i++){const has=['pe','ir','zs'].some(k=>$(`[data-k=${k}${i}]`).value.trim());if(has&&!['fr','fz','fo'].some(k=>$(`[data-k=${k}${i}]`).checked))w.push('Circuit '+i+': no fault protection method ticked.')}
+ for(let i=1;i<=N;i++){if($(`[data-k=fo${i}]`).checked&&!$('#notes2').value.trim()){w.push('"Other" ticked on circuit '+i+' but no explanation in the notes.');break}}
+ const bad=$$('#t1 td.fail,#t2 td.fail').length;if(bad)w.push(bad+' reading(s) outside limits (shown red).');
+ const m=parseFloat($('#main').value);if(!isNaN(m)&&m>0.5)w.push('Main earth is above 0.5 Ω – assess.');
+ if(!$('input[name=pol]:checked'))w.push('Polarity not selected.');
+ if(!$('input[name=con]:checked'))w.push('Connections not selected.');
+ return w}
+function doPrint(){sync();save();const old=document.title;document.title=fname();const back=()=>{document.title=old;window.removeEventListener('afterprint',back)};window.addEventListener('afterprint',back);setTimeout(back,60000);try{window.print();setTimeout(()=>toast('If no print dialog opened, open this form as a file in Chrome (see chat)'),600)}catch(e){back();toast('Printing is blocked here. Open the form as a file in Chrome.')}}
+$('#prn').onclick=()=>{sync();save();const w=warnings();if(!w.length)return doPrint();$('#wl').innerHTML=w.map(x=>'<li>'+x+'</li>').join('');$('#warn').hidden=false};
+$('#wback').onclick=()=>{$('#warn').hidden=true};
+$('#wgo').onclick=()=>{$('#warn').hidden=true;doPrint()};
+$('#eml').onclick=()=>{sync();save();const ad=$('#addr').value;const s='Electrical verification – '+(ad&&ad!==NEW?ad:'no address')+' – '+($('#date').value||today());const b='Job: '+($('#job').value||'(COES not entered yet)')+'\nWork: '+$('#work').value+'\n\nAttach the saved PDF ('+fname()+'.pdf) before sending.';location.href='mailto:'+(defs.email||'')+'?subject='+encodeURIComponent(s)+'&body='+encodeURIComponent(b)};
+const WORKS0=['New circuit(s)','Switchboard upgrade','Alterations / additions','Fault finding and repair','Smoke alarm installation','Light / power point replacement'];
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+function fillLists(){$('#workList').innerHTML=(defs.works||WORKS0).map(x=>`<option value="${esc(x)}">`).join('');$('#cnames').innerHTML=(defs.cn||[]).map(x=>`<option value="${esc(x)}">`).join('');$('#brk').innerHTML=Object.keys(zsMap()).map(x=>`<option value="${devLab(x)}">`).join('')}
+function fpAuto(i){const f=defs.fp;if(!f)return;const bx=['fr','fz','fo'].map(k=>$(`[data-k=${k}${i}]`));const has=['pe','ir','zs'].some(k=>$(`[data-k=${k}${i}]`).value.trim());if(has&&!bx.some(x=>x.checked||x.dataset.touched)){if(f.includes('RCD'))bx[0].checked=true;if(f.includes('Zs'))bx[1].checked=true}}
+const NONE=[['','Not selected']];
+const DF=[['dmod','Continuity / IR tester (type)','t'],['kyo','Continuity / IR tester serial number','t'],['lmod','Live / RCD tester (type)','t'],['met','Live / RCD tester serial number','t'],['elec','Electrician / licence','t'],['email','Your email (for the Email button)','t'],['work','Work completed (prefill)','t'],['rcd','RCD / RCBO type (e.g. A/30mA)','t'],['nt','0.5x result','s',[['No trip','No trip'],['','Blank']]],['irv','IR test voltage (V)','t'],['ln','L-N voltage (V)','t'],['le','L-E voltage (V)','t'],['ne','N-E voltage (V)','t'],['fp','Auto-tick fault protection when a circuit is used','s',[['','Off'],['RCD','RCD'],['Zs','Zs'],['RCD + Zs','RCD + Zs']]],['pol','Polarity','s',NONE.concat([['Correct','Correct'],['Fail','Fail'],['N/A','N/A']])],['con','Connections','s',NONE.concat([['Correct','Correct'],['Fail','Fail'],['N/A','N/A']])],['fun','Functional','s',NONE.concat([['OK','OK'],['N/A','N/A']])],['zst','Max Zs table (AS/NZS 3000 Table 8.1). One per line like C20=1.5 or F32/5s=2.2','a'],['rzt','Max PE resistance table (AS/NZS 3000 Table 8.2). One per line like C20=1.0/0.5 meaning R1+R2 / R2. Table 8.2 assumes its own cable sizes','a'],['pemode','The PE reading on page 2 is','s',[['R2','Earth conductor only (R2), compared with Re'],['R1R2','Active + earth (R1+R2), compared with Rphe']]],['big','Large buttons and fields','s',[['','Automatic (on for phones)'],['1','Always on'],['0','Off']]],['cal','Calibration due dates','s',[['','Hidden'],['show','Show on the form']]],['calD','Continuity / IR tester calibration due (YYYY-MM-DD)','t'],['calL','Live / RCD tester calibration due (YYYY-MM-DD)','t'],['cn','Circuit name suggestions (one per line)','a'],['works','Work completed suggestions (one per line)','a'],['addrs','Saved addresses (one per line)','a'],['elecs','Saved names / licences (one per line)','a']];
+function openDefs(){$('#dform').innerHTML=DF.map(([k,l,t,o])=>{let v=defs[k];if(Array.isArray(v))v=v.join('\n');if(v===undefined)v=k==='irv'?'500':k==='dmod'?'Kyoritsu 3132A':k==='lmod'?'Metrel MI 3122':k==='nt'?'No trip':k==='works'?WORKS0.join('\n'):k==='zst'?zsText():k==='rzt'?R82_0:k==='pemode'?'R2':'';
+ if(t==='s')return `<label>${l}<select data-d="${k}">${o.map(([a,b])=>`<option value="${esc(a)}"${a===v?' selected':''}>${b}</option>`).join('')}</select></label>`;
+ if(t==='a')return `<label>${l}<textarea data-d="${k}">${esc(v)}</textarea></label>`;
+ return `<label>${l}<input type="text" data-d="${k}" value="${esc(v)}"></label>`}).join('');$('#dp').hidden=false}
+function emailJob(){sync();save();const ad=$('#addr').value;const s='Electrical verification - '+(ad&&ad!==NEW?ad:'no address')+' - '+($('#date').value||today());const b='Job: '+($('#job').value||'(COES not entered yet)')+'\nWork: '+$('#work').value+'\n\nAttach the saved PDF ('+fname()+'.pdf) before sending.';const url='mailto:'+(defs.email||'')+'?subject='+encodeURIComponent(s)+'&body='+encodeURIComponent(b);try{navigator.clipboard&&navigator.clipboard.writeText(s+'\n\n'+b).catch(()=>{})}catch(e){}const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();toast('Opening email app. If nothing opens, the details are copied - paste them into an email.')}
+function updModels(){const d=$('#dmod').value.trim()||'dead tester',l=$('#lmod').value.trim()||'live tester';$$('.dm').forEach(e=>e.textContent=d);$$('.lm').forEach(e=>e.textContent=l)}
+const JK='ev_jobs',TK='ev_trash';let viewTrash=false;
+function hasData(s){return !!(s.addr||s.job||s.work||Object.keys(s).some(k=>/^(pe|zs|ir|r\d+[abcr]|c\d+n|r\d+n)/.test(k)&&String(s[k]).trim())||Object.keys(s).some(k=>/^([cd]\d|f[rzo]\d)$/.test(k)&&s[k]===true))}
+function upsertJob(s){if(!hasData(s)){updBadge();return}const j=LS.get(JK,{});j[s.jid]={updated:Date.now(),state:s};const ids=Object.keys(j);if(ids.length>150)ids.sort((a,b)=>j[a].updated-j[b].updated).slice(0,ids.length-150).forEach(k=>delete j[k]);LS.set(JK,j);updBadge()}
+function updBadge(){const j=LS.get(JK,{});const n=Object.values(j).filter(v=>!(v.state.job||'').trim()).length;$('#jobs').textContent='Saved jobs'+(n?' ('+n+' need COES)':'')}
+function purgeTrash(){const t=LS.get(TK,{});let ch=false;Object.keys(t).forEach(k=>{if(Date.now()-t[k].deleted>30*864e5){delete t[k];ch=true}});if(ch)LS.set(TK,t);return t}
+function showTrash(t){const ids=Object.keys(t).sort((a,b)=>t[b].deleted-t[a].deleted);$('#jlist').innerHTML=ids.length?ids.map(id=>{const s=t[id].job.state;const left=Math.max(0,30-Math.floor((Date.now()-t[id].deleted)/864e5));return `<div class="jrow" data-id="${id}"><div><b>${esc(s.addr||'No address')}</b><br><span class="note">${esc(s.date||'')} | ${(s.job||'').trim()?'COES '+esc(s.job):'COES not entered'} | removed in ${left} day${left===1?'':'s'}</span></div><div class="jb2"><button class="s" data-a="restore">Restore</button><button class="s" data-a="purge">Delete forever</button></div></div>`}).join(''):'<div class="note">Nothing recently deleted. Deleted jobs stay here for 30 days.</div>';$('#jb').hidden=false}
+function showJobs(){const t0=purgeTrash(),tn=Object.keys(t0).length;$('#jtrash').textContent=viewTrash?'Back to jobs':'Recently deleted'+(tn?' ('+tn+')':'');if(viewTrash)return showTrash(t0);const j=LS.get(JK,{});const q=($('#jq').value||'').toLowerCase(),f=$('#jf').value;
+ const ids=Object.keys(j).sort((a,b)=>j[b].updated-j[a].updated).filter(id=>{const s=j[id].state;if(f==='coes'&&(s.job||'').trim())return false;if(f==='unsent'&&s.sent)return false;return !q||[s.addr,s.job,s.work].join(' ').toLowerCase().includes(q)});
+ $('#jlist').innerHTML=ids.length?ids.map(id=>{const s=j[id].state;const pend=!(s.job||'').trim();return `<div class="jrow" data-id="${id}"><div><b>${esc(s.addr||'No address')}</b><br><span class="note">${esc(s.date||'')} | ${pend?'<span style="color:var(--bad)">COES not entered</span>':'COES '+esc(s.job)} | ${s.sent?'Sent '+esc(s.sent):'Not sent'}${id===state.jid?' | open now':''}</span></div><div class="jb2"><button class="s" data-a="open">Open</button><button class="s" data-a="dup">Duplicate</button><button class="s" data-a="sent">${s.sent?'Unmark sent':'Mark sent'}</button><button class="s" data-a="del">Delete</button></div></div>`}).join(''):'<div class="note">'+(Object.keys(j).length?'No matching jobs.':'No saved jobs yet. Fill in a form and it will appear here.')+'</div>';
+ $('#jb').hidden=false;updBadge()}
+function dupFrom(src){const keep=/^(c\d+n|r\d+n|bk\d+|r\d+t)$/,fixed=['addr','work','dmod','kyo','lmod','met','elec','n','calD','calL'];const o={};Object.keys(src).forEach(k=>{if(keep.test(k)||fixed.includes(k))o[k]=src[k]});state=o;LS.set('ev_state',o);init();save();toast('Duplicated. Readings, ticks, COES and signature are cleared.')}
+$('#dup').onclick=()=>{save();if(confirm('Duplicate this job? Circuit names, breakers, address and testers are kept. Readings, ticks, COES number and signature are cleared.'))dupFrom(state)};
+$('#jobs').onclick=()=>{save();viewTrash=false;showJobs()};
+$('#jtrash').onclick=()=>{viewTrash=!viewTrash;showJobs()};
+$('#jclose').onclick=()=>{$('#jb').hidden=true;viewTrash=false};
+$('#jq').oninput=showJobs;$('#jf').onchange=showJobs;
+$('#jlist').onclick=e=>{const b=e.target.closest('button');if(!b)return;const id=b.closest('.jrow').dataset.id;const j=LS.get(JK,{});const a=b.dataset.a;
+ if(a==='restore'){const t=LS.get(TK,{});if(t[id]){j[id]=t[id].job;j[id].updated=Date.now();LS.set(JK,j);delete t[id];LS.set(TK,t)}showJobs();toast('Job restored')}
+ else if(a==='purge'){if(b.dataset.sure){const t=LS.get(TK,{});delete t[id];LS.set(TK,t);showJobs()}else{b.dataset.sure=1;b.textContent='Sure?'}}
+ else if(a==='open'&&j[id]){state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#jb').hidden=true;toast('Job opened')}
+ else if(a==='dup'&&j[id]){dupFrom(j[id].state);$('#jb').hidden=true}
+ else if(a==='sent'&&j[id]){const v=j[id].state.sent?'':today();j[id].state.sent=v;LS.set(JK,j);if(id===state.jid){state.sent=v;LS.set('ev_state',state)}showJobs()}
+ else if(a==='del'){if(b.dataset.sure){const t=LS.get(TK,{});if(j[id]){t[id]={deleted:Date.now(),job:j[id]};LS.set(TK,t)}delete j[id];LS.set(JK,j);toast('Moved to Recently deleted');if(state.jid===id){state={};LS.set('ev_state',{});init()}showJobs()}else{b.dataset.sure=1;b.textContent='Sure?'}}};
+$('#jexp').onclick=()=>{save();const data={app:'electrical-verification',v:2,exported:new Date().toISOString(),defs,jobs:LS.get(JK,{})};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));a.download='electrical-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);LS.set('ev_bk',Date.now());$('#bkbar').hidden=true;toast('Backup downloaded')};
+$('#jimpb').onclick=()=>$('#jimp').click();
+try{if(navigator.canShare&&navigator.canShare({files:[new File(['x'],'a.json',{type:'application/json'})]}))$('#jshare').hidden=false}catch(e){}
+$('#jshare').onclick=async()=>{save();const data={app:'electrical-verification',v:2,exported:new Date().toISOString(),defs,jobs:LS.get(JK,{})};const f=new File([JSON.stringify(data)],'electrical-backup-'+today()+'.json',{type:'application/json'});try{await navigator.share({files:[f],title:'Electrical form backup'});LS.set('ev_bk',Date.now());$('#bkbar').hidden=true;toast('Backup shared')}catch(e){if(!e||e.name!=='AbortError')toast('Sharing is not available here. Use Export backup.')}};
+$('#jimp').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(d.app!=='electrical-verification')throw 0;const j=LS.get(JK,{});let add=0;Object.entries(d.jobs||{}).forEach(([id,v])=>{if(!j[id]||j[id].updated<v.updated){j[id]=v;add++}});LS.set(JK,j);if(d.defs&&confirm('Also replace your defaults (testers, addresses, Zs table, etc.) with the ones in the backup?')){defs=d.defs;LS.set('ev_defs',defs)}init();showJobs();toast(add+' job(s) imported')}catch(err){toast('That file is not a valid backup')}e.target.value=''};
+// Enter moves to next field
+document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t.closest('#dp,#em,#jb,#warn'))return;const ok=(t.tagName==='INPUT'&&['text','number','time','date'].includes(t.type))||t.tagName==='SELECT';if(!ok)return;const f=$$('input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=file]),select').filter(x=>!x.readOnly&&!x.disabled&&!x.closest('[hidden]')&&x.offsetParent!==null);const k=f.indexOf(t);if(k>=0&&f[k+1]){e.preventDefault();f[k+1].focus()}});
+function emailModal(){sync();save();const ad=$('#addr').value;const s='Electrical verification - '+(ad&&ad!==NEW?ad:'no address')+' - '+($('#date').value||today());const b='Job: '+($('#job').value||'(COES not entered yet)')+'\nWork: '+$('#work').value+'\n\nAttach the saved PDF ('+fname()+'.pdf) before sending.';$('#emTo').value=defs.email||'';$('#emSub').value=s;$('#emBody').value=b;$('#emShare').hidden=!navigator.share;$('#em').hidden=false}
+$('#eml').onclick=emailModal;
+$('#emClose').onclick=()=>{$('#em').hidden=true};
+$('#emGmail').onclick=()=>{const u='https://mail.google.com/mail/?view=cm&fs=1&to='+encodeURIComponent($('#emTo').value.trim())+'&su='+encodeURIComponent($('#emSub').value)+'&body='+encodeURIComponent($('#emBody').value);const a=document.createElement('a');a.href=u;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove()};
+$('#emOpen').onclick=()=>{location.href='mailto:'+$('#emTo').value.trim()+'?subject='+encodeURIComponent($('#emSub').value)+'&body='+encodeURIComponent($('#emBody').value)};
+$('#emShare').onclick=()=>{try{navigator.share({title:$('#emSub').value,text:$('#emBody').value}).catch(()=>{})}catch(e){}};
+$('#emCopy').onclick=async()=>{const t='To: '+$('#emTo').value+'\nSubject: '+$('#emSub').value+'\n\n'+$('#emBody').value;try{await navigator.clipboard.writeText(t)}catch(e){const ta=$('#emBody');ta.select();document.execCommand('copy')}toast('Copied')};
+$('#defs').onclick=openDefs;
+$('#dcan').onclick=()=>{$('#dp').hidden=true};
+$('#dsave').onclick=()=>{$$('#dform [data-d]').forEach(e=>{const k=e.dataset.d;let v=e.value;if(['addrs','elecs','cn','works'].includes(k))v=v.split('\n').map(s=>s.trim()).filter(Boolean);else if(e.tagName!=='SELECT')v=v.trim();defs[k]=v});defs.elecs=defs.elecs||[];if(defs.elec&&!defs.elecs.includes(defs.elec))defs.elecs.unshift(defs.elec);LS.set('ev_defs',defs);save();state.kyo=defs.kyo;state.met=defs.met;state.dmod=defs.dmod;state.lmod=defs.lmod;state.calD=defs.calD;state.calL=defs.calL;state.elec=defs.elec;$('#dp').hidden=true;init();toast('Defaults saved')};
+function applyBig(){const b=defs.big;const on=b==='1'||((b===undefined||b==='')&&matchMedia('(pointer:coarse)').matches);document.body.classList.toggle('big',!!on)}
+function bkCheck(){const j=LS.get(JK,{}),ids=Object.keys(j);if(!ids.length)return;const last=LS.get('ev_bk',0),first=Math.min(...ids.map(id=>j[id].updated)),ref=last||first;if(Date.now()-ref>30*864e5&&Date.now()>LS.get('ev_bksnooze',0))$('#bkbar').hidden=false}
+$('#bkNow').onclick=()=>$('#jexp').click();
+$('#bkLater').onclick=()=>{LS.set('ev_bksnooze',Date.now()+7*864e5);$('#bkbar').hidden=true};
+const APP_VERSION='v1'; // keep in step with VERSION in sw.js
+$('#appver').textContent=APP_VERSION;
+const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
+addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
+// ask the browser not to clear saved jobs when storage is low
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{})}catch(e){}
+if('serviceWorker' in navigator){
+  const hadSW=!!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(hadSW)$('#updbar').hidden=false});
+  $('#updGo').onclick=()=>location.reload();
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').then(r=>{r.update().catch(()=>{})}).catch(()=>{})});
+}
+init();bkCheck();
+</script>
+</body>
+</html>
