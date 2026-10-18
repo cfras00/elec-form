@@ -77,7 +77,7 @@ body.big td input[type=text],body.big td input[type=number]{padding:10px 6px}
 @media print{
  html.multi .page{page:multi}
  html.multi #pg1,html.multi #pg2{display:none}
- :root{--bg:#fff;--paper:#fff;--ink:#000;--mute:#333;--line:#888;--band:#e6e6e6;--inp:#fff;--acc:#000;--ok:#000;--bad:#000}
+ :root:root:root{--bg:#fff;--paper:#fff;--ink:#000;--mute:#333;--line:#888;--band:#e6e6e6;--inp:#fff;--acc:#000;--ok:#000;--bad:#000}
  .bar,.toast,body::before,.noprint{display:none!important}
  body{background:#fff;font-size:11px}
  .page{border:0;margin:0;padding:6mm 4mm;max-width:none;page-break-after:always}
@@ -163,6 +163,16 @@ body.big td input[type=text],body.big td input[type=number]{padding:10px 6px}
  #sigPad{border:0!important;border-bottom:1px solid #888!important;border-radius:0}
  .sigl{color:#000;font-size:10px}
 }
+
+.cp{display:block;margin-top:3px;font-size:11px;padding:2px 6px;background:transparent;color:var(--acc);border:1px dashed var(--line);border-radius:5px;cursor:pointer}
+body.big .cp{font-size:14px;padding:6px 10px}
+#xtra{max-width:900px;margin:16px auto;background:var(--paper);padding:16px 20px;border:1px solid var(--line)}
+#xtra textarea{width:100%;min-height:70px}
+#thumbs{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+#thumbs .th{position:relative}#thumbs img{height:90px;border:1px solid var(--line);border-radius:4px;display:block}
+#thumbs button{position:absolute;top:2px;right:2px;padding:0 7px;font-size:16px;line-height:22px}
+#pp{display:none}
+@media print{html.pp #pp{display:block}#pp .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:6mm}#pp img{width:100%;max-height:120mm;object-fit:contain;border:1px solid #888}}
 </style>
 </head>
 <body>
@@ -170,12 +180,13 @@ body.big td input[type=text],body.big td input[type=number]{padding:10px 6px}
  <b>Electrical verification form</b>
  <button id="defs" class="s">Edit defaults</button>
  <button id="jobs">Saved jobs</button>
+ <button id="xgo" class="s">Notes / photos</button>
  <button id="dup">Duplicate job</button>
  <button id="clr">New job</button>
  <button id="eml">Email</button>
  <button class="p" id="prn">Print / save PDF</button>
 </div>
-<div id="bkbar" class="bkbar noprint" hidden><span>It has been over 30 days since your last backup. Jobs are stored only in this browser.</span><button class="s" id="bkNow">Back up now</button><button class="s" id="bkLater">Remind me in a week</button></div>
+<div id="bkbar" class="bkbar noprint" hidden><span id="bktxt">It has been over 30 days since your last backup. Jobs are stored only in this browser.</span><button class="s" id="bkNow">Back up now</button><button class="s" id="bkLater">Remind me in a week</button></div>
 
 <!-- PAGE 1 -->
 <section class="page" id="p1">
@@ -299,6 +310,11 @@ body.big td input[type=text],body.big td input[type=number]{padding:10px 6px}
  <label class="f">Defects, repairs/retest, other ADS method or N/A explanations<textarea id="notes2" rows="3"></textarea></label>
  <div class="foot">Supplementary record only | Apply AS/NZS 3000 Part 8 and correct device-specific limits.</div>
 </section>
+<section id="pp" class="page"><h1 style="font-size:16px">PHOTOS</h1><div class="sub"><span id="ppsub"></span></div><div class="pgrid" id="ppgrid"></div></section>
+<div id="xtra" class="noprint"><b>Private notes and photos</b> <span class="note">(notes are never printed; photos are stored on this device)</span>
+ <label class="f" style="display:block;margin:8px 0">Private notes (access, contact, follow-ups)<textarea id="pnotes"></textarea></label>
+ <div><button class="s" id="phAdd">Add photo</button> <input type="file" id="phIn" accept="image/*" multiple hidden> <label style="margin-left:8px"><input type="checkbox" id="phPrint"> Include photos as an extra page when printing</label></div>
+ <div id="thumbs"></div></div>
 <div id="warn" class="noprint" hidden><div class="wbox"><b>Check before printing</b><ul id="wl"></ul><div class="wbtn"><button id="wback">Go back</button><button class="p" id="wgo">Print anyway</button></div></div></div>
 <div id="dp" class="noprint" hidden><div class="wbox dbox"><b>Defaults</b><div class="note">Prefilled on every new job. Readings already entered are not changed.</div><div id="dform"></div><div class="wbtn"><button id="dcan">Cancel</button><button class="p" id="dsave">Save defaults</button></div></div></div>
 <div id="em" class="noprint" hidden><div class="wbox dbox"><b>Email details</b><div class="note">Tap Open email app, or Copy all and paste into a new email. Attach the saved PDF before sending.</div><label>To<input type="text" id="emTo"></label><label>Subject<input type="text" id="emSub"></label><label>Message<textarea id="emBody"></textarea></label><div class="wbtn"><button id="emClose">Close</button><button id="emShare" hidden>Share…</button><button id="emCopy">Copy all</button><button id="emOpen">Open email app</button><button class="p" id="emGmail">Open Gmail</button></div></div></div>
@@ -340,7 +356,7 @@ function zsMax(v){const k=devKey(v);if(!k)return null;const x=zsMap()[k];return 
 function peMax(v){const k=devKey(v);if(!k)return null;const t=tbl(rzText())[k];if(!t)return null;const x=defs.pemode==='R1R2'?t[0]:t[1];return x==null?null:x}
 function wrapU(i){const u=i.dataset.u||(/r$/.test(i.dataset.k||'')?'mA':'ms');const w=document.createElement('div');w.className='cw';i.parentNode.insertBefore(w,i);w.appendChild(i);const s=document.createElement('span');s.className='unit';s.dataset.u=u;w.appendChild(s)}
 function addRow(i){
- $('#t1').insertAdjacentHTML('beforeend',`<tr><td><input type="text" data-k="c${i}n" list="cnames" placeholder="Circuit ${i}"><input type="text" class="bk" data-k="bk${i}" list="brk" placeholder="Breaker e.g. C20"></td>
+ $('#t1').insertAdjacentHTML('beforeend',`<tr><td><input type="text" data-k="c${i}n" list="cnames" placeholder="Circuit ${i}"><input type="text" class="bk" data-k="bk${i}" list="brk" placeholder="Breaker e.g. C20">${i>1?'<button type="button" class="cp noprint" data-cp="'+i+'">Copy breaker/ticks from above</button>':''}</td>
  <td data-chk="pe"><input type="number" step="0.01" data-k="pe${i}" data-u="Ω"><div class="mx"></div></td>
  <td data-chk="ir"><div class="irw"><input type="text" inputmode="decimal" data-k="ir${i}" data-u="MΩ"><span>/</span><input type="number" data-k="irv${i}" data-u="V"></div></td>
  <td><input type="number" step="0.01" data-k="zs${i}" data-u="Ω"><div class="mx"></div></td>
@@ -366,10 +382,11 @@ const spt=e=>{const r=sp.getBoundingClientRect();return [(e.clientX-r.left)*sp.w
 function sigState(){$('#sigWrap').classList.toggle('empty',!inked)}
 sp.addEventListener('pointerdown',e=>{drawing=true;try{sp.setPointerCapture(e.pointerId)}catch(x){}const [x,y]=spt(e);sx.beginPath();sx.moveTo(x,y);sx.lineTo(x+.1,y+.1);sx.stroke();e.preventDefault()});
 sp.addEventListener('pointermove',e=>{if(!drawing)return;const [x,y]=spt(e);sx.lineTo(x,y);sx.stroke();e.preventDefault()});
-const sigEnd=()=>{if(!drawing)return;drawing=false;inked=true;sigData=sp.toDataURL('image/png');sigState();save()};
+const sigEnd=()=>{if(!drawing)return;drawing=false;inked=true;sigData=smallSig();sigState();save()};
 sp.addEventListener('pointerup',sigEnd);sp.addEventListener('pointercancel',sigEnd);
 $('#sigClr').onclick=()=>{sx.clearRect(0,0,sp.width,sp.height);inked=false;sigData='';sigState();save()};
-function loadSig(d){sx.clearRect(0,0,sp.width,sp.height);inked=false;sigData='';if(d){const im=new Image();im.onload=()=>{sx.drawImage(im,0,0);inked=true;sigData=d;sigState()};im.src=d}sigState()}
+function smallSig(){const c=document.createElement('canvas');c.width=sp.width/2;c.height=sp.height/2;const x=c.getContext('2d');x.drawImage(sp,0,0,c.width,c.height);return c.toDataURL('image/png')}
+function loadSig(d){sx.clearRect(0,0,sp.width,sp.height);inked=false;sigData='';if(d){const im=new Image();im.onload=()=>{sx.drawImage(im,0,0,sp.width,sp.height);inked=true;sigData=d;sigState()};im.src=d}sigState()}
 // dropdowns
 const ts=$('#time'); for(let h=0;h<24;h++)for(let m=0;m<60;m+=15){const v=pad(h)+':'+pad(m);ts.insertAdjacentHTML('beforeend',`<option>${v}</option>`)}
 function fillAddr(sel){const a=$('#addr');a.innerHTML='<option value="">Select address…</option>'+defs.addrs.map(x=>`<option>${x.replace(/</g,'&lt;')}</option>`).join('')+`<option value="${NEW}">+ Add new address…</option>`;if(sel!==undefined)a.value=sel}
@@ -386,6 +403,7 @@ function init(){
  $('#job').value=state.job||''; $('#work').value=state.work!==undefined?state.work:(defs.work||'');
  $('#elec').value=state.elec??defs.elec; $('#sig').value=state.sig||''; $('#sigTime').value=state.sigTime||'';
  $('#kyo').value=state.kyo??defs.kyo; $('#met').value=state.met??defs.met; $('#dmod').value=state.dmod??(defs.dmod??'Kyoritsu 3132A'); $('#lmod').value=state.lmod??(defs.lmod??'Metrel MI 3122'); $('#calD').value=state.calD??(defs.calD||''); $('#calL').value=state.calL??(defs.calL||'');
+ $('#pnotes').value=state.pnotes||'';$('#phPrint').checked=!!state.phPrint;loadPhotos(state.jid);
  $('#notes').value=state.notes||''; $('#notes2').value=state.notes2||''; $('#main').value=state.main||'';
  ['ln','le','ne'].forEach(k=>$('#'+k).value=state[k]!==undefined?state[k]:(defs[k]||''));
  $$('[data-k]').forEach(el=>{const v=state[el.dataset.k];
@@ -398,6 +416,7 @@ function sync(){updModels();$('#fname').textContent='PDF file name: '+fname()+'.
 
 // checks
 function mark(td,ok){td=td.closest('td');td.classList.remove('pass','fail');if(ok===true)td.classList.add('pass');if(ok===false)td.classList.add('fail')}
+let lastFails=[];
 function check(){
  const fails=[];let any=false;
  for(let i=1;i<=N;i++){const a=$(`[data-k=ir${i}]`),v=$(`[data-k=irv${i}]`);if(a.value.trim()&&v.value===''&&!v.dataset.touched)v.value=defs.irv||'500';fpAuto(i);a.closest('.irw').querySelector('span:not(.unit)').style.visibility=(a.value.trim()||v.value)?'visible':'hidden'}
@@ -418,11 +437,11 @@ function check(){
   const h=$(`[data-k=r${i}h]`);const hk=$(`[data-k=r${i}a]`).value===''&&h.value==='No trip'?null:h.value===''?null:h.value==='No trip';mark(h.parentElement,hk);if(hk===false)fails.push(nm+' RCD 0.5x tripped');
  }
  const m=parseFloat($('#main').value);$('#mainFlag').textContent=isNaN(m)?'':(m<=0.5?'OK (≤ 0.5 Ω)':'Above 0.5 Ω – assess');
- document.documentElement.classList.toggle('multi',N>8);{const two=N<=8;$('#pg1').textContent=two?'1 / 2':'Page 1';$('#pg2').textContent=two?'2 / 2':'Page 2'}
- const sm=$('#sum');if(!any){sm.textContent='';sm.className='sumbox'}else if(fails.length){sm.textContent='✗ OUT OF LIMITS: '+fails.join(', ');sm.className='sumbox bad'}else{sm.textContent='✓ All entered readings are within the limits shown on this form.';sm.className='sumbox ok'}
+ const ppOn=photos.length>0&&$('#phPrint').checked;document.documentElement.classList.toggle('pp',ppOn);document.documentElement.classList.toggle('multi',N>8||ppOn);{const two=N<=8&&!ppOn;$('#pg1').textContent=two?'1 / 2':'Page 1';$('#pg2').textContent=two?'2 / 2':'Page 2'}
+ lastFails=fails;const sm=$('#sum');if(!any){sm.textContent='';sm.className='sumbox'}else if(fails.length){sm.textContent='✗ OUT OF LIMITS: '+fails.join(', ');sm.className='sumbox bad'}else{sm.textContent='✓ All entered readings are within the limits shown on this form.';sm.className='sumbox ok'}
 }
 function save(){
- const s={date:$('#date').value,time:$('#time').value,addr:$('#addr').value===NEW?'':$('#addr').value,job:$('#job').value,work:$('#work').value,elec:$('#elec').value,sig:$('#sig').value,sigTime:$('#sigTime').value,kyo:$('#kyo').value,met:$('#met').value,dmod:$('#dmod').value,lmod:$('#lmod').value,notes:$('#notes').value,notes2:$('#notes2').value,main:$('#main').value,ln:$('#ln').value,le:$('#le').value,ne:$('#ne').value,calD:$('#calD').value,calL:$('#calL').value};
+ const s={date:$('#date').value,time:$('#time').value,addr:$('#addr').value===NEW?'':$('#addr').value,job:$('#job').value,work:$('#work').value,elec:$('#elec').value,sig:$('#sig').value,sigTime:$('#sigTime').value,kyo:$('#kyo').value,met:$('#met').value,dmod:$('#dmod').value,lmod:$('#lmod').value,notes:$('#notes').value,notes2:$('#notes2').value,main:$('#main').value,ln:$('#ln').value,le:$('#le').value,ne:$('#ne').value,calD:$('#calD').value,calL:$('#calL').value,pnotes:$('#pnotes').value,phPrint:$('#phPrint').checked};
  $$('[data-k]').forEach(el=>s[el.dataset.k]=el.type==='checkbox'?el.checked:el.value);
  ['pol','con','fun'].forEach(n=>{const c=$(`input[name=${n}]:checked`);s[n]=c?c.value:''});
  s.n=N;s.sent=state.sent||'';s.sigImg=sigData;s.jid=state.jid||('j'+Date.now().toString(36));state=s;LS.set('ev_state',s);upsertJob(s);
@@ -459,7 +478,7 @@ function warnings(){const w=[];
  const un=$$('input[type=checkbox][data-k]').filter(e=>/^[cd]\d$/.test(e.dataset.k)&&!e.checked).length;if(un)w.push(un+' checklist item(s) on page 1 not ticked.');
  for(let i=1;i<=N;i++){const has=['pe','ir','zs'].some(k=>$(`[data-k=${k}${i}]`).value.trim());if(has&&!['fr','fz','fo'].some(k=>$(`[data-k=${k}${i}]`).checked))w.push('Circuit '+i+': no fault protection method ticked.')}
  for(let i=1;i<=N;i++){if($(`[data-k=fo${i}]`).checked&&!$('#notes2').value.trim()){w.push('"Other" ticked on circuit '+i+' but no explanation in the notes.');break}}
- const bad=$$('#t1 td.fail,#t2 td.fail').length;if(bad)w.push(bad+' reading(s) outside limits (shown red).');
+ if(lastFails.length)w.unshift('OUT OF LIMITS ('+lastFails.length+'): '+lastFails.join(', '));
  const m=parseFloat($('#main').value);if(!isNaN(m)&&m>0.5)w.push('Main earth is above 0.5 Ω – assess.');
  if(!$('input[name=pol]:checked'))w.push('Polarity not selected.');
  if(!$('input[name=con]:checked'))w.push('Connections not selected.');
@@ -474,7 +493,7 @@ const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g
 function fillLists(){$('#workList').innerHTML=(defs.works||WORKS0).map(x=>`<option value="${esc(x)}">`).join('');$('#cnames').innerHTML=(defs.cn||[]).map(x=>`<option value="${esc(x)}">`).join('');$('#brk').innerHTML=Object.keys(zsMap()).map(x=>`<option value="${devLab(x)}">`).join('')}
 function fpAuto(i){const f=defs.fp;if(!f)return;const bx=['fr','fz','fo'].map(k=>$(`[data-k=${k}${i}]`));const has=['pe','ir','zs'].some(k=>$(`[data-k=${k}${i}]`).value.trim());if(has&&!bx.some(x=>x.checked||x.dataset.touched)){if(f.includes('RCD'))bx[0].checked=true;if(f.includes('Zs'))bx[1].checked=true}}
 const NONE=[['','Not selected']];
-const DF=[['dmod','Continuity / IR tester (type)','t'],['kyo','Continuity / IR tester serial number','t'],['lmod','Live / RCD tester (type)','t'],['met','Live / RCD tester serial number','t'],['elec','Electrician / licence','t'],['email','Your email (for the Email button)','t'],['work','Work completed (prefill)','t'],['rcd','RCD / RCBO type (e.g. A/30mA)','t'],['nt','0.5x result','s',[['No trip','No trip'],['','Blank']]],['irv','IR test voltage (V)','t'],['ln','L-N voltage (V)','t'],['le','L-E voltage (V)','t'],['ne','N-E voltage (V)','t'],['fp','Auto-tick fault protection when a circuit is used','s',[['','Off'],['RCD','RCD'],['Zs','Zs'],['RCD + Zs','RCD + Zs']]],['pol','Polarity','s',NONE.concat([['Correct','Correct'],['Fail','Fail'],['N/A','N/A']])],['con','Connections','s',NONE.concat([['Correct','Correct'],['Fail','Fail'],['N/A','N/A']])],['fun','Functional','s',NONE.concat([['OK','OK'],['N/A','N/A']])],['zst','Max Zs table (AS/NZS 3000 Table 8.1). One per line like C20=1.5 or F32/5s=2.2','a'],['rzt','Max PE resistance table (AS/NZS 3000 Table 8.2). One per line like C20=1.0/0.5 meaning R1+R2 / R2. Table 8.2 assumes its own cable sizes','a'],['pemode','The PE reading on page 2 is','s',[['R2','Earth conductor only (R2), compared with Re'],['R1R2','Active + earth (R1+R2), compared with Rphe']]],['big','Large buttons and fields','s',[['','Automatic (on for phones)'],['1','Always on'],['0','Off']]],['cal','Calibration due dates','s',[['','Hidden'],['show','Show on the form']]],['calD','Continuity / IR tester calibration due (YYYY-MM-DD)','t'],['calL','Live / RCD tester calibration due (YYYY-MM-DD)','t'],['cn','Circuit name suggestions (one per line)','a'],['works','Work completed suggestions (one per line)','a'],['addrs','Saved addresses (one per line)','a'],['elecs','Saved names / licences (one per line)','a']];
+const DF=[['dmod','Continuity / IR tester (type)','t'],['kyo','Continuity / IR tester serial number','t'],['lmod','Live / RCD tester (type)','t'],['met','Live / RCD tester serial number','t'],['elec','Electrician / licence','t'],['email','Your email (for the Email button)','t'],['work','Work completed (prefill)','t'],['rcd','RCD / RCBO type (e.g. A/30mA)','t'],['nt','0.5x result','s',[['No trip','No trip'],['','Blank']]],['irv','IR test voltage (V)','t'],['ln','L-N voltage (V)','t'],['le','L-E voltage (V)','t'],['ne','N-E voltage (V)','t'],['fp','Auto-tick fault protection when a circuit is used','s',[['','Off'],['RCD','RCD'],['Zs','Zs'],['RCD + Zs','RCD + Zs']]],['pol','Polarity','s',NONE.concat([['Correct','Correct'],['Fail','Fail'],['N/A','N/A']])],['con','Connections','s',NONE.concat([['Correct','Correct'],['Fail','Fail'],['N/A','N/A']])],['fun','Functional','s',NONE.concat([['OK','OK'],['N/A','N/A']])],['zst','Max Zs table (AS/NZS 3000 Table 8.1). One per line like C20=1.5 or F32/5s=2.2','a'],['rzt','Max PE resistance table (AS/NZS 3000 Table 8.2). One per line like C20=1.0/0.5 meaning R1+R2 / R2. Table 8.2 assumes its own cable sizes','a'],['pemode','The PE reading on page 2 is','s',[['R2','Earth conductor only (R2), compared with Re'],['R1R2','Active + earth (R1+R2), compared with Rphe']]],['big','Large buttons and fields','s',[['','Automatic (on for phones)'],['1','Always on'],['0','Off']]],['abk','Remind me to back up after this many changed jobs (0 = off)','t'],['cal','Calibration due dates','s',[['','Hidden'],['show','Show on the form']]],['calD','Continuity / IR tester calibration due (YYYY-MM-DD)','t'],['calL','Live / RCD tester calibration due (YYYY-MM-DD)','t'],['cn','Circuit name suggestions (one per line)','a'],['works','Work completed suggestions (one per line)','a'],['addrs','Saved addresses (one per line)','a'],['elecs','Saved names / licences (one per line)','a']];
 function openDefs(){$('#dform').innerHTML=DF.map(([k,l,t,o])=>{let v=defs[k];if(Array.isArray(v))v=v.join('\n');if(v===undefined)v=k==='irv'?'500':k==='dmod'?'Kyoritsu 3132A':k==='lmod'?'Metrel MI 3122':k==='nt'?'No trip':k==='works'?WORKS0.join('\n'):k==='zst'?zsText():k==='rzt'?R82_0:k==='pemode'?'R2':'';
  if(t==='s')return `<label>${l}<select data-d="${k}">${o.map(([a,b])=>`<option value="${esc(a)}"${a===v?' selected':''}>${b}</option>`).join('')}</select></label>`;
  if(t==='a')return `<label>${l}<textarea data-d="${k}">${esc(v)}</textarea></label>`;
@@ -483,12 +502,12 @@ function emailJob(){sync();save();const ad=$('#addr').value;const s='Electrical 
 function updModels(){const d=$('#dmod').value.trim()||'dead tester',l=$('#lmod').value.trim()||'live tester';$$('.dm').forEach(e=>e.textContent=d);$$('.lm').forEach(e=>e.textContent=l)}
 const JK='ev_jobs',TK='ev_trash';let viewTrash=false;
 function hasData(s){return !!(s.addr||s.job||s.work||Object.keys(s).some(k=>/^(pe|zs|ir|r\d+[abcr]|c\d+n|r\d+n)/.test(k)&&String(s[k]).trim())||Object.keys(s).some(k=>/^([cd]\d|f[rzo]\d)$/.test(k)&&s[k]===true))}
-function upsertJob(s){if(!hasData(s)){updBadge();return}const j=LS.get(JK,{});j[s.jid]={updated:Date.now(),state:s};const ids=Object.keys(j);if(ids.length>150)ids.sort((a,b)=>j[a].updated-j[b].updated).slice(0,ids.length-150).forEach(k=>delete j[k]);LS.set(JK,j);updBadge()}
+function upsertJob(s){if(!hasData(s)){updBadge();return}const j=LS.get(JK,{});j[s.jid]={updated:Date.now(),state:s};{const d=LS.get('ev_bkd',{});if(!d[s.jid]){d[s.jid]=1;LS.set('ev_bkd',d);setTimeout(bkN,0)}}const ids=Object.keys(j);if(ids.length>150)ids.sort((a,b)=>j[a].updated-j[b].updated).slice(0,ids.length-150).forEach(k=>delete j[k]);LS.set(JK,j);updBadge()}
 function updBadge(){const j=LS.get(JK,{});const n=Object.values(j).filter(v=>!(v.state.job||'').trim()).length;$('#jobs').textContent='Saved jobs'+(n?' ('+n+' need COES)':'')}
 function purgeTrash(){const t=LS.get(TK,{});let ch=false;Object.keys(t).forEach(k=>{if(Date.now()-t[k].deleted>30*864e5){delete t[k];ch=true}});if(ch)LS.set(TK,t);return t}
 function showTrash(t){const ids=Object.keys(t).sort((a,b)=>t[b].deleted-t[a].deleted);$('#jlist').innerHTML=ids.length?ids.map(id=>{const s=t[id].job.state;const left=Math.max(0,30-Math.floor((Date.now()-t[id].deleted)/864e5));return `<div class="jrow" data-id="${id}"><div><b>${esc(s.addr||'No address')}</b><br><span class="note">${esc(s.date||'')} | ${(s.job||'').trim()?'COES '+esc(s.job):'COES not entered'} | removed in ${left} day${left===1?'':'s'}</span></div><div class="jb2"><button class="s" data-a="restore">Restore</button><button class="s" data-a="purge">Delete forever</button></div></div>`}).join(''):'<div class="note">Nothing recently deleted. Deleted jobs stay here for 30 days.</div>';$('#jb').hidden=false}
 function showJobs(){const t0=purgeTrash(),tn=Object.keys(t0).length;$('#jtrash').textContent=viewTrash?'Back to jobs':'Recently deleted'+(tn?' ('+tn+')':'');if(viewTrash)return showTrash(t0);const j=LS.get(JK,{});const q=($('#jq').value||'').toLowerCase(),f=$('#jf').value;
- const ids=Object.keys(j).sort((a,b)=>j[b].updated-j[a].updated).filter(id=>{const s=j[id].state;if(f==='coes'&&(s.job||'').trim())return false;if(f==='unsent'&&s.sent)return false;return !q||[s.addr,s.job,s.work].join(' ').toLowerCase().includes(q)});
+ const ids=Object.keys(j).sort((a,b)=>j[b].updated-j[a].updated).filter(id=>{const s=j[id].state;if(f==='coes'&&(s.job||'').trim())return false;if(f==='unsent'&&s.sent)return false;return !q||[s.addr,s.job,s.work,s.pnotes].join(' ').toLowerCase().includes(q)});
  $('#jlist').innerHTML=ids.length?ids.map(id=>{const s=j[id].state;const pend=!(s.job||'').trim();return `<div class="jrow" data-id="${id}"><div><b>${esc(s.addr||'No address')}</b><br><span class="note">${esc(s.date||'')} | ${pend?'<span style="color:var(--bad)">COES not entered</span>':'COES '+esc(s.job)} | ${s.sent?'Sent '+esc(s.sent):'Not sent'}${id===state.jid?' | open now':''}</span></div><div class="jb2"><button class="s" data-a="open">Open</button><button class="s" data-a="dup">Duplicate</button><button class="s" data-a="sent">${s.sent?'Unmark sent':'Mark sent'}</button><button class="s" data-a="del">Delete</button></div></div>`}).join(''):'<div class="note">'+(Object.keys(j).length?'No matching jobs.':'No saved jobs yet. Fill in a form and it will appear here.')+'</div>';
  $('#jb').hidden=false;updBadge()}
 function dupFrom(src){const keep=/^(c\d+n|r\d+n|bk\d+|r\d+t)$/,fixed=['addr','work','dmod','kyo','lmod','met','elec','n','calD','calL'];const o={};Object.keys(src).forEach(k=>{if(keep.test(k)||fixed.includes(k))o[k]=src[k]});state=o;LS.set('ev_state',o);init();save();toast('Duplicated. Readings, ticks, COES and signature are cleared.')}
@@ -499,16 +518,16 @@ $('#jclose').onclick=()=>{$('#jb').hidden=true;viewTrash=false};
 $('#jq').oninput=showJobs;$('#jf').onchange=showJobs;
 $('#jlist').onclick=e=>{const b=e.target.closest('button');if(!b)return;const id=b.closest('.jrow').dataset.id;const j=LS.get(JK,{});const a=b.dataset.a;
  if(a==='restore'){const t=LS.get(TK,{});if(t[id]){j[id]=t[id].job;j[id].updated=Date.now();LS.set(JK,j);delete t[id];LS.set(TK,t)}showJobs();toast('Job restored')}
- else if(a==='purge'){if(b.dataset.sure){const t=LS.get(TK,{});delete t[id];LS.set(TK,t);showJobs()}else{b.dataset.sure=1;b.textContent='Sure?'}}
+ else if(a==='purge'){if(b.dataset.sure){const t=LS.get(TK,{});delete t[id];LS.set(TK,t);phSet(id,[]);showJobs()}else{b.dataset.sure=1;b.textContent='Sure?'}}
  else if(a==='open'&&j[id]){state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#jb').hidden=true;toast('Job opened')}
  else if(a==='dup'&&j[id]){dupFrom(j[id].state);$('#jb').hidden=true}
  else if(a==='sent'&&j[id]){const v=j[id].state.sent?'':today();j[id].state.sent=v;LS.set(JK,j);if(id===state.jid){state.sent=v;LS.set('ev_state',state)}showJobs()}
  else if(a==='del'){if(b.dataset.sure){const t=LS.get(TK,{});if(j[id]){t[id]={deleted:Date.now(),job:j[id]};LS.set(TK,t)}delete j[id];LS.set(JK,j);toast('Moved to Recently deleted');if(state.jid===id){state={};LS.set('ev_state',{});init()}showJobs()}else{b.dataset.sure=1;b.textContent='Sure?'}}};
-$('#jexp').onclick=()=>{save();const data={app:'electrical-verification',v:2,exported:new Date().toISOString(),defs,jobs:LS.get(JK,{})};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));a.download='electrical-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);LS.set('ev_bk',Date.now());$('#bkbar').hidden=true;toast('Backup downloaded')};
+$('#jexp').onclick=async()=>{save();const data={app:'electrical-verification',v:2,exported:new Date().toISOString(),defs,jobs:LS.get(JK,{})};{const ph=await phAll();if(Object.keys(ph).length&&confirm('Include photos in the backup? (makes the file bigger)'))data.photos=ph}const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));a.download='electrical-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);LS.set('ev_bk',Date.now());LS.set('ev_bkd',{});$('#bkbar').hidden=true;toast('Backup downloaded')};
 $('#jimpb').onclick=()=>$('#jimp').click();
 try{if(navigator.canShare&&navigator.canShare({files:[new File(['x'],'a.json',{type:'application/json'})]}))$('#jshare').hidden=false}catch(e){}
-$('#jshare').onclick=async()=>{save();const data={app:'electrical-verification',v:2,exported:new Date().toISOString(),defs,jobs:LS.get(JK,{})};const js=JSON.stringify(data),nm='electrical-backup-'+today();const cands=[['.json','application/json'],['.txt','text/plain'],['.csv','text/csv']].map(([e,t])=>new File([js],nm+e,{type:t}));let pick=null;try{pick=cands.find(f=>navigator.canShare({files:[f]}))}catch(e){}const asText=$('#jshare').dataset.t==='1';const sh=(pick&&!asText)?{files:[pick]}:{title:'Electrical backup',text:js};try{await navigator.share(sh);LS.set('ev_bk',Date.now());$('#bkbar').hidden=true;toast('Backup shared')}catch(e){if(e&&e.name==='AbortError')return;{if(!asText){$('#jshare').dataset.t='1';toast('File share was blocked. Tap Share backup again to send as text (paste into Gmail/Notes), or use Export backup.')}else toast('Sharing failed ('+(e&&e.name||'error')+'). Use Export backup.')}}};
-$('#jimp').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(d.app!=='electrical-verification')throw 0;const j=LS.get(JK,{});let add=0;Object.entries(d.jobs||{}).forEach(([id,v])=>{if(!j[id]||j[id].updated<v.updated){j[id]=v;add++}});LS.set(JK,j);if(d.defs&&confirm('Also replace your defaults (testers, addresses, Zs table, etc.) with the ones in the backup?')){defs=d.defs;LS.set('ev_defs',defs)}init();showJobs();toast(add+' job(s) imported')}catch(err){toast('That file is not a valid backup')}e.target.value=''};
+$('#jshare').onclick=async()=>{save();const data={app:'electrical-verification',v:2,exported:new Date().toISOString(),defs,jobs:LS.get(JK,{})};const js=JSON.stringify(data),nm='electrical-backup-'+today();const cands=[['.json','application/json'],['.txt','text/plain'],['.csv','text/csv']].map(([e,t])=>new File([js],nm+e,{type:t}));let pick=null;try{pick=cands.find(f=>navigator.canShare({files:[f]}))}catch(e){}const asText=$('#jshare').dataset.t==='1';const sh=(pick&&!asText)?{files:[pick]}:{title:'Electrical backup',text:js};try{await navigator.share(sh);LS.set('ev_bk',Date.now());LS.set('ev_bkd',{});$('#bkbar').hidden=true;toast('Backup shared')}catch(e){if(e&&e.name==='AbortError')return;{if(!asText){$('#jshare').dataset.t='1';toast('File share was blocked. Tap Share backup again to send as text (paste into Gmail/Notes), or use Export backup.')}else toast('Sharing failed ('+(e&&e.name||'error')+'). Use Export backup.')}}};
+$('#jimp').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(d.app!=='electrical-verification')throw 0;const j=LS.get(JK,{});let add=0;Object.entries(d.jobs||{}).forEach(([id,v])=>{if(!j[id]||j[id].updated<v.updated){j[id]=v;add++}});LS.set(JK,j);if(d.photos)for(const [id,a] of Object.entries(d.photos)){const cur=await phGet(id);if(!cur.length)await phSet(id,a)}if(d.defs&&confirm('Also replace your defaults (testers, addresses, Zs table, etc.) with the ones in the backup?')){defs=d.defs;LS.set('ev_defs',defs)}init();showJobs();toast(add+' job(s) imported')}catch(err){toast('That file is not a valid backup')}e.target.value=''};
 // Enter moves to next field
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t.closest('#dp,#em,#jb,#warn'))return;const ok=(t.tagName==='INPUT'&&['text','number','time','date'].includes(t.type))||t.tagName==='SELECT';if(!ok)return;const f=$$('input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=file]),select').filter(x=>!x.readOnly&&!x.disabled&&!x.closest('[hidden]')&&x.offsetParent!==null);const k=f.indexOf(t);if(k>=0&&f[k+1]){e.preventDefault();f[k+1].focus()}});
 function emailModal(){sync();save();const ad=$('#addr').value;const s='Electrical verification - '+(ad&&ad!==NEW?ad:'no address')+' - '+($('#date').value||today());const b='Job: '+($('#job').value||'(COES not entered yet)')+'\nWork: '+$('#work').value+'\n\nAttach the saved PDF ('+fname()+'.pdf) before sending.';$('#emTo').value=defs.email||'';$('#emSub').value=s;$('#emBody').value=b;$('#emShare').hidden=!navigator.share;$('#em').hidden=false}
@@ -525,7 +544,25 @@ function applyBig(){const b=defs.big;const on=b==='1'||((b===undefined||b==='')&
 function bkCheck(){const j=LS.get(JK,{}),ids=Object.keys(j);if(!ids.length)return;const last=LS.get('ev_bk',0),first=Math.min(...ids.map(id=>j[id].updated)),ref=last||first;if(Date.now()-ref>30*864e5&&Date.now()>LS.get('ev_bksnooze',0))$('#bkbar').hidden=false}
 $('#bkNow').onclick=()=>$('#jexp').click();
 $('#bkLater').onclick=()=>{LS.set('ev_bksnooze',Date.now()+7*864e5);$('#bkbar').hidden=true};
-const APP_VERSION='v4'; // keep in step with VERSION in sw.js
+// ---- photos (IndexedDB) ----
+let photos=[],phTok=0;
+function idb(){return new Promise((res,rej)=>{try{const r=indexedDB.open('ev_photos',1);r.onupgradeneeded=()=>r.result.createObjectStore('p');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}})}
+async function phGet(id){try{const d=await idb();return await new Promise(r=>{const q=d.transaction('p').objectStore('p').get(id);q.onsuccess=()=>r(q.result||[]);q.onerror=()=>r([])})}catch(e){return[]}}
+async function phSet(id,a){try{const d=await idb();await new Promise((r,j)=>{const t=d.transaction('p','readwrite');a&&a.length?t.objectStore('p').put(a,id):t.objectStore('p').delete(id);t.oncomplete=r;t.onerror=j})}catch(e){toast('Could not store photo on this device')}}
+async function phAll(){try{const d=await idb();return await new Promise(r=>{const o={},q=d.transaction('p').objectStore('p').openCursor();q.onsuccess=()=>{const c=q.result;if(c){o[c.key]=c.value;c.continue()}else r(o)};q.onerror=()=>r(o)})}catch(e){return{}}}
+function drawPhotos(){$('#thumbs').innerHTML=photos.map((d,i)=>`<div class="th"><img src="${d}"><button class="s" data-ph="${i}" title="Remove">×</button></div>`).join('');$('#ppgrid').innerHTML=photos.map(d=>`<img src="${d}">`).join('');$('#ppsub').textContent=($('#addr').value&&$('#addr').value!==NEW?$('#addr').value+' | ':'')+($('#date').value||'')+($('#job').value?' | COES '+$('#job').value:'');check()}
+async function loadPhotos(id){const t=++phTok;photos=[];drawPhotos();if(!id)return;const a=await phGet(id);if(t!==phTok)return;photos=a;drawPhotos()}
+function shrink(file){return new Promise((res,rej)=>{const im=new Image(),u=URL.createObjectURL(file);im.onload=()=>{const m=1100,k=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL('image/jpeg',0.6))};im.onerror=rej;im.src=u})}
+$('#phAdd').onclick=()=>$('#phIn').click();
+$('#phIn').onchange=async e=>{save();const id=state.jid;for(const f of e.target.files){try{photos.push(await shrink(f))}catch(x){toast('Could not read that photo')}}e.target.value='';await phSet(id,photos);drawPhotos();bump(id);toast('Photo(s) added')};
+$('#thumbs').onclick=async e=>{const b=e.target.closest('[data-ph]');if(!b)return;photos.splice(+b.dataset.ph,1);await phSet(state.jid,photos);drawPhotos()};
+$('#xgo').onclick=()=>{$('#xtra').scrollIntoView({behavior:'smooth'})};
+// ---- copy from above ----
+$('#t1').addEventListener('click',e=>{const b=e.target.closest('[data-cp]');if(!b)return;const i=+b.dataset.cp,p=i-1;const cp=(k,pk)=>{const d=$(`[data-k=${k}${i}]`),s=$(`[data-k=${pk||k}${p}]`);if(!d||!s)return;if(d.type==='checkbox'){d.checked=s.checked;d.dataset.touched=1}else d.value=s.value};['bk','irv'].forEach(k=>cp(k));['fr','fz','fo'].forEach(k=>cp(k));$(`[data-k=irv${i}]`).dataset.touched=1;check();save();toast('Copied from circuit '+p)});
+// ---- backup after X changed jobs ----
+function bump(id){const d=LS.get('ev_bkd',{});d[id]=1;LS.set('ev_bkd',d);bkN()}
+function bkN(){const x=parseInt(defs.abk===undefined?'5':defs.abk,10);if(!(x>0))return;const n=Object.keys(LS.get('ev_bkd',{})).length;if(n>=x){$('#bktxt').textContent=n+' job(s) changed since your last backup. Jobs are stored only on this device.';$('#bkbar').hidden=false}}
+const APP_VERSION='v5'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
