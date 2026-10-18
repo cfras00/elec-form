@@ -170,9 +170,10 @@ body.big .cp{font-size:14px;padding:6px 10px}
 #xtra textarea{width:100%;min-height:70px}
 #thumbs{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
 #thumbs .th{position:relative}#thumbs img{height:90px;border:1px solid var(--line);border-radius:4px;display:block}
+#thumbs .phc{width:150px;margin-top:3px;font-size:12px}
 #thumbs button{position:absolute;top:2px;right:2px;padding:0 7px;font-size:16px;line-height:22px}
 #pp{display:none}
-@media print{html.pp #pp{display:block}#pp .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:6mm}#pp img{width:100%;max-height:120mm;object-fit:contain;border:1px solid #888}}
+@media print{html.pp #pp{display:block}#pp .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:6mm}#pp img{width:100%;max-height:115mm;object-fit:contain;border:1px solid #888}#pp figcaption{font-size:10px;margin-top:2px;min-height:12px}#pp figure{break-inside:avoid}}
 </style>
 </head>
 <body>
@@ -181,6 +182,7 @@ body.big .cp{font-size:14px;padding:6px 10px}
  <button id="defs" class="s">Edit defaults</button>
  <button id="jobs">Saved jobs</button>
  <button id="xgo" class="s">Notes / photos</button>
+ <button id="failpill" class="s" hidden style="color:var(--bad);border-color:var(--bad);font-weight:700"></button>
  <button id="dup">Duplicate job</button>
  <button id="clr">New job</button>
  <button id="eml">Email</button>
@@ -286,7 +288,7 @@ body.big .cp{font-size:14px;padding:6px 10px}
   <tr><th>Circuit / test point</th><th>PE &Omega;</th><th>IR M&Omega; / V</th><th>Zs &Omega;</th><th>Fault protection verified</th></tr>
  </table></div>
  <p class="note">RCD = 30 mA RCD/RCBO operation + protective earth verified | Zs = loop impedance | Other = explain below. IR below 1 M&Omega; is flagged red. Max Zs and max PE resistance come from AS/NZS 3000 Tables 8.1 and 8.2 when a breaker is entered (e.g. C20, or F32 for an HRC fuse at 0.4 s, F32/5s for 5 s). Table 8.2 assumes the cable sizes printed in it.</p>
- <div class="inline noprint"><button class="s" id="addC">+ Add circuit</button><button class="s" id="delC">Remove last circuit</button><span class="note">Circuits beyond 8 continue onto an extra printed page.</span></div>
+ <div class="inline noprint"><button class="s" id="addC">+ Add circuit</button><button class="s" id="delC">Remove last circuit</button><span class="tplbox" style="display:inline-flex;gap:6px;flex-wrap:wrap;align-items:center"><select id="tplSel"></select><button class="s" id="tplLoad">Load template</button><button class="s" id="tplSave">Save circuits as template</button><button class="s" id="tplDel">Delete template</button></span> <span class="note">Circuits beyond 8 continue onto an extra printed page.</span></div>
  <div class="inline">
   <span>Main earth / bond (if tested):</span><input type="number" step="0.01" id="main" data-u="Ω"><span id="mainFlag"></span>
   <label class="opt"><input type="checkbox" data-k="trail"> Trailing lead compensated / accounted for</label>
@@ -326,7 +328,7 @@ body.big .cp{font-size:14px;padding:6px 10px}
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1800)};
+const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),Math.max(1800,m.length*60))};
 const NEW='__new__';
 let state=LS.get('ev_state',{}); let defs=LS.get('ev_defs',{kyo:'W8531880',met:'',elec:'',addrs:[],elecs:[],rcd:'A/30mA'});
 const pad=n=>String(n).padStart(2,'0');
@@ -438,7 +440,7 @@ function check(){
  }
  const m=parseFloat($('#main').value);$('#mainFlag').textContent=isNaN(m)?'':(m<=0.5?'OK (≤ 0.5 Ω)':'Above 0.5 Ω – assess');
  const ppOn=photos.length>0&&$('#phPrint').checked;document.documentElement.classList.toggle('pp',ppOn);document.documentElement.classList.toggle('multi',N>8||ppOn);{const two=N<=8&&!ppOn;$('#pg1').textContent=two?'1 / 2':'Page 1';$('#pg2').textContent=two?'2 / 2':'Page 2'}
- lastFails=fails;const sm=$('#sum');if(!any){sm.textContent='';sm.className='sumbox'}else if(fails.length){sm.textContent='✗ OUT OF LIMITS: '+fails.join(', ');sm.className='sumbox bad'}else{sm.textContent='✓ All entered readings are within the limits shown on this form.';sm.className='sumbox ok'}
+ lastFails=fails;{const fp=$('#failpill');fp.hidden=!fails.length;fp.textContent='✗ '+fails.length+' out of limits'}const sm=$('#sum');if(!any){sm.textContent='';sm.className='sumbox'}else if(fails.length){sm.textContent='✗ OUT OF LIMITS: '+fails.join(', ');sm.className='sumbox bad'}else{sm.textContent='✓ All entered readings are within the limits shown on this form.';sm.className='sumbox ok'}
 }
 function save(){
  const s={date:$('#date').value,time:$('#time').value,addr:$('#addr').value===NEW?'':$('#addr').value,job:$('#job').value,work:$('#work').value,elec:$('#elec').value,sig:$('#sig').value,sigTime:$('#sigTime').value,kyo:$('#kyo').value,met:$('#met').value,dmod:$('#dmod').value,lmod:$('#lmod').value,notes:$('#notes').value,notes2:$('#notes2').value,main:$('#main').value,ln:$('#ln').value,le:$('#le').value,ne:$('#ne').value,calD:$('#calD').value,calL:$('#calL').value,pnotes:$('#pnotes').value,phPrint:$('#phPrint').checked};
@@ -550,19 +552,28 @@ function idb(){return new Promise((res,rej)=>{try{const r=indexedDB.open('ev_pho
 async function phGet(id){try{const d=await idb();return await new Promise(r=>{const q=d.transaction('p').objectStore('p').get(id);q.onsuccess=()=>r(q.result||[]);q.onerror=()=>r([])})}catch(e){return[]}}
 async function phSet(id,a){try{const d=await idb();await new Promise((r,j)=>{const t=d.transaction('p','readwrite');a&&a.length?t.objectStore('p').put(a,id):t.objectStore('p').delete(id);t.oncomplete=r;t.onerror=j})}catch(e){toast('Could not store photo on this device')}}
 async function phAll(){try{const d=await idb();return await new Promise(r=>{const o={},q=d.transaction('p').objectStore('p').openCursor();q.onsuccess=()=>{const c=q.result;if(c){o[c.key]=c.value;c.continue()}else r(o)};q.onerror=()=>r(o)})}catch(e){return{}}}
-function drawPhotos(){$('#thumbs').innerHTML=photos.map((d,i)=>`<div class="th"><img src="${d}"><button class="s" data-ph="${i}" title="Remove">×</button></div>`).join('');$('#ppgrid').innerHTML=photos.map(d=>`<img src="${d}">`).join('');$('#ppsub').textContent=($('#addr').value&&$('#addr').value!==NEW?$('#addr').value+' | ':'')+($('#date').value||'')+($('#job').value?' | COES '+$('#job').value:'');check()}
-async function loadPhotos(id){const t=++phTok;photos=[];drawPhotos();if(!id)return;const a=await phGet(id);if(t!==phTok)return;photos=a;drawPhotos()}
+const phN=a=>(a||[]).map(x=>typeof x==='string'?{d:x,c:''}:x);
+function drawPhotos(){$('#thumbs').innerHTML=photos.map((o,i)=>`<div class="th"><img src="${o.d}"><button class="s" data-ph="${i}" title="Remove">×</button><input type="text" class="phc" data-pc="${i}" placeholder="Caption" value="${esc(o.c||'')}"></div>`).join('');$('#ppgrid').innerHTML=photos.map(o=>`<figure style="margin:0"><img src="${o.d}"><figcaption>${esc(o.c||'')}</figcaption></figure>`).join('');$('#ppsub').textContent=($('#addr').value&&$('#addr').value!==NEW?$('#addr').value+' | ':'')+($('#date').value||'')+($('#job').value?' | COES '+$('#job').value:'');check()}
+async function loadPhotos(id){const t=++phTok;photos=[];drawPhotos();if(!id)return;const a=await phGet(id);if(t!==phTok)return;photos=phN(a);drawPhotos()}
 function shrink(file){return new Promise((res,rej)=>{const im=new Image(),u=URL.createObjectURL(file);im.onload=()=>{const m=1100,k=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL('image/jpeg',0.6))};im.onerror=rej;im.src=u})}
 $('#phAdd').onclick=()=>$('#phIn').click();
-$('#phIn').onchange=async e=>{save();const id=state.jid;for(const f of e.target.files){try{photos.push(await shrink(f))}catch(x){toast('Could not read that photo')}}e.target.value='';await phSet(id,photos);drawPhotos();bump(id);toast('Photo(s) added')};
+$('#phIn').onchange=async e=>{save();const id=state.jid;for(const f of e.target.files){try{photos.push({d:await shrink(f),c:''})}catch(x){toast('Could not read that photo')}}e.target.value='';await phSet(id,photos);drawPhotos();bump(id);toast('Photo(s) added')};
+$('#thumbs').addEventListener('input',e=>{const i=e.target.dataset.pc;if(i===undefined)return;photos[+i].c=e.target.value;$('#ppgrid').querySelectorAll('figcaption')[+i].textContent=e.target.value;clearTimeout(window._pt);window._pt=setTimeout(()=>phSet(state.jid,photos),400)});
 $('#thumbs').onclick=async e=>{const b=e.target.closest('[data-ph]');if(!b)return;photos.splice(+b.dataset.ph,1);await phSet(state.jid,photos);drawPhotos()};
+$('#failpill').onclick=()=>{toast('Out of limits: '+lastFails.join(', '));const t=document.querySelector('td.fail');if(t)t.scrollIntoView({block:'center',behavior:'smooth'})};
 $('#xgo').onclick=()=>{$('#xtra').scrollIntoView({behavior:'smooth'})};
 // ---- copy from above ----
 $('#t1').addEventListener('click',e=>{const b=e.target.closest('[data-cp]');if(!b)return;const i=+b.dataset.cp,p=i-1;const cp=(k,pk)=>{const d=$(`[data-k=${k}${i}]`),s=$(`[data-k=${pk||k}${p}]`);if(!d||!s)return;if(d.type==='checkbox'){d.checked=s.checked;d.dataset.touched=1}else d.value=s.value};['bk','irv'].forEach(k=>cp(k));['fr','fz','fo'].forEach(k=>cp(k));$(`[data-k=irv${i}]`).dataset.touched=1;check();save();toast('Copied from circuit '+p)});
 // ---- backup after X changed jobs ----
 function bump(id){const d=LS.get('ev_bkd',{});d[id]=1;LS.set('ev_bkd',d);bkN()}
 function bkN(){const x=parseInt(defs.abk===undefined?'5':defs.abk,10);if(!(x>0))return;const n=Object.keys(LS.get('ev_bkd',{})).length;if(n>=x){$('#bktxt').textContent=n+' job(s) changed since your last backup. Jobs are stored only on this device.';$('#bkbar').hidden=false}}
-const APP_VERSION='v5'; // keep in step with VERSION in sw.js
+// ---- circuit templates ----
+function tplFill(sel){const t=defs.tpls||{};$('#tplSel').innerHTML='<option value="">Circuit templates…</option>'+Object.keys(t).map(k=>`<option>${esc(k)}</option>`).join('');if(sel)$('#tplSel').value=sel}
+$('#tplSave').onclick=()=>{const rows=[];for(let i=1;i<=N;i++){const n=($(`[data-k=c${i}n]`).value||$(`[data-k=r${i}n]`).value).trim(),b=$(`[data-k=bk${i}]`).value.trim();rows.push({n,b})}while(rows.length&&!rows[rows.length-1].n&&!rows[rows.length-1].b)rows.pop();if(!rows.length)return toast('Enter circuit names / breakers first');const nm=(prompt('Template name (e.g. Standard house):','')||'').trim();if(!nm)return;defs.tpls=defs.tpls||{};if(defs.tpls[nm]&&!confirm('Replace template "'+nm+'"?'))return;defs.tpls[nm]=rows;LS.set('ev_defs',defs);tplFill(nm);toast('Template saved ('+rows.length+' circuits)')};
+$('#tplLoad').onclick=()=>{const nm=$('#tplSel').value,t=(defs.tpls||{})[nm];if(!t)return toast('Pick a template first');const used=$$('[data-k^=c][data-k$=n],[data-k^=bk]').some(e=>/^(c\d+n|bk\d+)$/.test(e.dataset.k)&&e.value.trim());if(used&&!confirm('Replace the circuit names and breakers with this template? Readings are kept.'))return;setN(Math.max(N,t.length));t.forEach((r,k)=>{const i=k+1;$(`[data-k=c${i}n]`).value=r.n;$(`[data-k=r${i}n]`).value=r.n;$(`[data-k=bk${i}]`).value=r.b});check();save();toast('Template loaded')};
+$('#tplDel').onclick=()=>{const nm=$('#tplSel').value;if(!nm||!(defs.tpls||{})[nm])return toast('Pick a template first');if(!confirm('Delete template "'+nm+'"?'))return;delete defs.tpls[nm];LS.set('ev_defs',defs);tplFill();toast('Template deleted')};
+tplFill();
+const APP_VERSION='v6'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
