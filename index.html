@@ -624,7 +624,7 @@ function check(){
   [['a',300,'1x'],['b',150,'2x'],['c',40,'5x']].forEach(([s,l,t])=>{const e=$(`[data-k=r${i}${s}]`);let k=null;if(e.value!==''){any=true;k=parseFloat(e.value)<=l}mark(e.parentElement,k);if(k===false)fails.push(nm+' RCD '+t)});
   if(+$(`[data-k=pe${i}]`).value||$(`[data-k=pe${i}]`).value!=='')any=true;
   const h=$(`[data-k=r${i}h]`);const hk=$(`[data-k=r${i}a]`).value===''&&h.value==='No trip'?null:h.value===''?null:h.value==='No trip';mark(h.parentElement,hk);if(hk===false)fails.push(nm+' RCD 0.5x tripped');
-  {const has=['ir','pe','zs'].some(k=>$(`[data-k=${k}${i}]`).value.trim()!=='')||['a','b','c','h'].some(k=>$(`[data-k=r${i}${k}]`).value!=='');const cs=fails.length>f0?'bad':has?'ok':'';[$(`[data-k=c${i}n]`),$(`[data-k=r${i}n]`)].forEach(e=>{const tr=e&&e.closest('tr');if(tr)tr.dataset.cs=cs})}
+  {const has=['ir','pe','zs'].some(k=>$(`[data-k=${k}${i}]`).value.trim()!=='')||['a','b','c'].some(k=>$(`[data-k=r${i}${k}]`).value!=='');const cs=fails.length>f0?'bad':has?'ok':'';[$(`[data-k=c${i}n]`),$(`[data-k=r${i}n]`)].forEach(e=>{const tr=e&&e.closest('tr');if(tr)tr.dataset.cs=cs})}
  }
  {const [vmn,vmx]=vlim();$('#vhint').textContent='Expected '+vmn+' to '+vmx+' V (L-N, L-E)';[['ln','L-N'],['le','L-E']].forEach(([k,n])=>{const el=$('#'+k),w=el.closest('.cw'),v=el.value;let ok=null;if(v!==''){any=true;ok=parseFloat(v)>=vmn&&parseFloat(v)<=vmx}w.classList.toggle('vok',ok===true);w.classList.toggle('vbad',ok===false);if(ok===false)fails.push(n+' voltage')})}
  const m=parseFloat($('#main').value);$('#mainFlag').textContent=isNaN(m)?'':(m<=0.5?'OK (≤ 0.5 Ω)':'Above 0.5 Ω – assess');
@@ -916,7 +916,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v24'; // keep in step with VERSION in sw.js
+const APP_VERSION='v25'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
