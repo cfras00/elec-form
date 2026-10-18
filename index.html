@@ -12,7 +12,7 @@
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 --bg:#eef0f2;--paper:#fff;--ink:#16181b;--mute:#5d646c;--line:#c9ced4;--band:#e3e6e9;--acc:#0b5cab;--ok:#146c2e;--bad:#b3261e;--okbg:#e3f3e7;--badbg:#fbe4e2;--inp:#f6f9fc}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121416;--paper:#1c1f23;--ink:#eceff2;--mute:#9aa3ad;--line:#3a4048;--band:#2a2f35;--acc:#6db3f2;--ok:#6fd08a;--bad:#ff8a80;--okbg:#18321f;--badbg:#3d1f1c;--inp:#242930}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="hc"]){--bg:#121416;--paper:#1c1f23;--ink:#eceff2;--mute:#9aa3ad;--line:#3a4048;--band:#2a2f35;--acc:#6db3f2;--ok:#6fd08a;--bad:#ff8a80;--okbg:#18321f;--badbg:#3d1f1c;--inp:#242930}}
 :root[data-theme="dark"]{--bg:#121416;--paper:#1c1f23;--ink:#eceff2;--mute:#9aa3ad;--line:#3a4048;--band:#2a2f35;--acc:#6db3f2;--ok:#6fd08a;--bad:#ff8a80;--okbg:#18321f;--badbg:#3d1f1c;--inp:#242930}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
@@ -182,7 +182,7 @@ body.big #addrSug div{padding:14px 12px;font-size:17px}
 .stt.s0{background:var(--band);color:var(--mute)}.stt.s1{background:#fff3cd;color:#7a5b00;border-color:#e0c15a}.stt.s2{background:#dbeafe;color:#124a96;border-color:#8fb6ee}.stt.s3{background:var(--okbg);color:var(--ok);border-color:var(--ok)}
 .stf{color:var(--bad);font-weight:700;font-size:12px;margin-left:6px}
 .eodi{margin:4px 0 0 0;padding:0;list-style:none;font-size:13px}.eodi li{margin:2px 0}.eodi .bad{color:var(--bad);font-weight:700}.eodi .warn{color:#9a6700}.eodi .info{color:var(--mute)}.eodi .ok{color:var(--ok)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .stt.s1{background:#4a3b00;color:#ffd866}:root:not([data-theme="light"]) .stt.s2{background:#14315c;color:#9cc4ff}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="hc"]) .stt.s1{background:#4a3b00;color:#ffd866}:root:not([data-theme="light"]):not([data-theme="hc"]) .stt.s2{background:#14315c;color:#9cc4ff}}
 
 /* ---- phone layout (screen only; printing is unchanged) ---- */
 @media screen and (max-width:700px){
@@ -246,21 +246,68 @@ body.big #addrSug div{padding:14px 12px;font-size:17px}
 #syncbar[hidden]{display:none}#syncbar.off{background:#6b4e00}#syncbar .sbtn{display:flex;gap:8px}#syncbar button{background:#fff;color:#b3261e;border:0;font-weight:700;padding:9px 16px;border-radius:7px}#syncbar button.s{background:transparent;color:#fff;border:1px solid #fff}
 #syncbar:not([hidden])~.toast{bottom:84px}
 body:has(#syncbar:not([hidden])){padding-bottom:70px}
+
+/* ===== polish (screen only) ===== */
+#newAddrRow[hidden]{display:none}
+:root[data-theme="hc"]{--bg:#fff;--paper:#fff;--ink:#000;--mute:#222;--line:#000;--band:#e6e6e6;--acc:#0032a0;--ok:#005a1f;--bad:#a30000;--okbg:#d3f2dc;--badbg:#ffd9d6;--inp:#fff}
+:root[data-theme="hc"] input,:root[data-theme="hc"] select,:root[data-theme="hc"] textarea{border:2px solid #000!important}
+@media screen{
+ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+ h1{letter-spacing:-.01em}
+ button{border-radius:10px;transition:transform .08s,box-shadow .15s,background .15s}
+ button:active{transform:scale(.97)}
+ button.p{box-shadow:0 2px 8px rgba(11,92,171,.35)}
+ input:focus,select:focus,textarea:focus{outline:2px solid var(--acc);outline-offset:1px;box-shadow:0 0 0 4px rgba(11,92,171,.15)}
+ .sec{border-radius:10px;border:0;border-left:6px solid var(--acc);background:var(--band);padding:10px 14px;letter-spacing:.01em}
+ .ck{border-radius:8px}
+ .bar{box-shadow:0 2px 10px rgba(0,0,0,.08);gap:8px}
+ .brand{display:flex;align-items:center;gap:9px;margin-right:auto}.bar .brand b{margin:0}
+ .logo{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;color:#fff;font-size:18px;background:linear-gradient(160deg,#2a86e8,#0b3f8f)}
+ .bdg{display:inline-block;font-size:11px;font-weight:600;background:var(--band);color:var(--ink);padding:1px 8px;border-radius:10px;margin-left:4px}.bdg.r{background:var(--bad);color:#fff}
+ #moreMenu{position:fixed;right:10px;z-index:40;background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 34px rgba(0,0,0,.3);padding:6px;min-width:220px;display:flex;flex-direction:column;gap:2px}
+ #moreMenu[hidden]{display:none}
+ #moreMenu button{border:0;text-align:left;background:transparent;padding:12px 14px;font-size:15px;border-radius:9px;width:100%}
+ #moreMenu button:hover,#moreMenu button:focus{background:var(--band)}
+ #prog{max-width:900px;margin:12px auto 0;padding:0 16px}
+ #prog .pl{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--mute)}
+ #prog .pbar{height:9px;background:var(--band);border-radius:6px;overflow:hidden;margin-top:6px}
+ #prog .pbar i{display:block;height:100%;width:0;background:var(--acc);transition:width .3s}#prog .pbar i.done{background:var(--ok)}
+ #saveSt b{color:var(--bad)}
+ #utoast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;z-index:45;background:#222;color:#fff;padding:10px 12px 10px 16px;border-radius:12px;display:flex;gap:14px;align-items:center;box-shadow:0 8px 26px rgba(0,0,0,.4);max-width:94vw}
+ #utoast[hidden]{display:none}#utoast button{background:transparent;color:#8ec5ff;border:0;font-weight:700;padding:6px 10px}
+ #bnav{display:none}
+ .toast{z-index:50}
+}
+@media screen and (min-width:701px){.page,#xtra{border-radius:14px;box-shadow:0 2px 16px rgba(0,0,0,.07)}}
+@media screen and (max-width:700px){
+ .brand b{display:none}.bar #prn{display:none}
+ body{padding-bottom:76px}
+ #bnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:24;background:var(--paper);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));gap:6px;box-shadow:0 -2px 12px rgba(0,0,0,.1)}
+ #bnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px;border:0;background:transparent;font-size:19px;line-height:1.1;border-radius:12px}
+ #bnav button span{font-size:11px;font-weight:600;color:var(--mute)}
+ #bnav button.on{background:var(--band)}#bnav button.on span{color:var(--acc)}
+ #bnav button.p{background:var(--acc)}#bnav button.p span{color:#fff}
+ #syncbar{bottom:68px!important}
+ #updbar{bottom:68px!important}
+ #utoast{bottom:84px}
+ .toast{bottom:150px!important}
+}
 </style>
 </head>
 <body>
 <div class="bar">
- <b>Electrical verification form</b>
- <button id="defs" class="s">Edit defaults</button>
- <button id="jobs">Saved jobs</button>
- <button id="xgo" class="s">Notes / photos</button>
- <button id="sendpc" class="s">Send to PC</button>
+ <div class="brand"><span class="logo">&#9889;</span><b>Elec Verify</b></div>
  <button id="failpill" class="s" hidden style="color:var(--bad);border-color:var(--bad);font-weight:700"></button>
- <button id="dup">Duplicate job</button>
+ <button id="jobs">Saved jobs</button>
+ <button id="barSync" title="Sync with Google Drive">&#8635; Sync</button>
  <button id="clr">New job</button>
- <button id="eml">Email</button>
  <button class="p" id="prn">Print / save PDF</button>
+ <button id="moreBtn" aria-haspopup="true">&#8943; More</button>
 </div>
+<div id="moreMenu" class="noprint" hidden>
+ <button id="xgo">Notes / photos</button><button id="sendpc">Send to PC</button><button id="dup">Duplicate job</button><button id="eml">Email</button><button id="defs">Edit defaults</button><button id="themeBtn">Theme: Auto</button>
+</div>
+<div id="prog" class="noprint"><div class="pl"><span id="progTxt"></span><span id="saveSt"></span></div><div class="pbar"><i id="progFill"></i></div></div>
 <div id="syncbar" class="noprint" hidden><span id="synctxt"></span><span class="sbtn"><button id="syncNow">Sync now</button><button class="s" id="syncLater">Later</button></span></div>
 <div id="bkbar" class="bkbar noprint" hidden><span id="bktxt">It has been over 30 days since your last backup. Jobs are stored only in this browser.</span><button class="s" id="bkNow">Back up now</button><button class="s" id="bkLater">Remind me in a week</button></div>
 
@@ -405,12 +452,17 @@ body:has(#syncbar:not([hidden])){padding-bottom:70px}
 <div id="mon" class="noprint" hidden><div class="wbox dbox"><b>Monthly summary</b><label>Month<input type="month" id="monM"></label><div id="monSum" class="note" style="font-weight:700;margin:6px 0"></div><div id="monList"></div><div class="wbtn"><button id="monAll">Download all jobs (CSV)</button><button class="p" id="monCsv">Download this month (CSV)</button><button id="monClose">Close</button></div></div></div>
 <div class="note noprint" style="text-align:center;margin:12px 0 24px">App version <span id="appver"></span> <button class="s" id="forceUpd" type="button">Check for update</button> | <span id="net"></span></div>
 <div id="updbar" class="bkbar noprint" hidden style="position:fixed;left:0;right:0;bottom:0;z-index:30"><span>A new version was installed.</span><button class="s" id="updGo">Reload now</button></div>
+<nav id="bnav" class="noprint"><button data-go="p1">&#9745;<span>Checklist</span></button><button data-go="p2">&#128202;<span>Results</span></button><button data-go="jobs">&#128193;<span>Jobs</span></button><button data-go="prn" class="p">&#128424;<span>Print</span></button></nav>
+<div id="utoast" class="noprint" hidden><span id="utxt"></span><button id="ubtn">Undo</button></div>
 <div class="toast" id="toast"></div>
 
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),Math.max(1800,m.length*60))};
+const THEMES=[['','Auto'],['light','Light'],['dark','Dark'],['hc','High contrast']];
+function applyTheme(){let t='';try{t=localStorage.getItem('ev_theme')||''}catch(e){}if(t)document.documentElement.dataset.theme=t;else document.documentElement.removeAttribute('data-theme');const b=document.getElementById('themeBtn');if(b)b.textContent='Theme: '+(THEMES.find(x=>x[0]===t)||THEMES[0])[1]}
+applyTheme();
 const NEW='__new__';
 let state=LS.get('ev_state',{}); let defs=LS.get('ev_defs',{kyo:'W8531880',met:'',elec:'',addrs:[],elecs:[],rcd:'A/30mA'});
 const pad=n=>String(n).padStart(2,'0');
@@ -455,10 +507,11 @@ function addRow(i){
  [$(`[data-k=c${i}n]`).closest('tr'),$(`[data-k=r${i}n]`).closest('tr')].forEach(r=>r.querySelectorAll('[data-u],input[type=number]').forEach(wrapU));
  $(`[data-k=r${i}t]`).value=defs.rcd||'';$(`[data-k=r${i}h]`).value=defs.nt!==undefined?defs.nt:'No trip';
 }
-function setN(n){n=(n|0)||1;n=Math.max(1,Math.min(30,n));while(N<n){N++;addRow(N)}while(N>n){$(`[data-k=c${N}n]`).closest('tr').remove();$(`[data-k=r${N}n]`).closest('tr').remove();N--}$('#nc').textContent=N}
+function setN(n){n=(n|0)||1;n=Math.max(1,Math.min(30,n));while(N<n){N++;addRow(N)}while(N>n){$(`[data-k=c${N}n]`).closest('tr').remove();$(`[data-k=r${N}n]`).closest('tr').remove();N--}$('#nc').textContent=N;if(typeof applyEnter==='function')applyEnter()}
 $$('.inline [data-u]').forEach(wrapU);
 $('#addC').onclick=()=>{if(N>=30)return toast('Maximum 30 circuits');setN(N+1);check();save();toast('Circuit '+N+' added')};
-$('#delC').onclick=()=>{if(N<=1)return;const i=N;const used=[`c${i}n`,`pe${i}`,`ir${i}`,`zs${i}`,`bk${i}`,`r${i}a`,`r${i}b`,`r${i}c`,`r${i}r`].some(k=>$(`[data-k=${k}]`).value.trim())||['fr','fz','fo'].some(k=>$(`[data-k=${k}${i}]`).checked);if(used&&!confirm('Circuit '+i+' has entries. Remove it anyway?'))return;setN(N-1);check();save()};
+$('#delC').onclick=()=>{if(N<=1)return;const i=N;const used=[`c${i}n`,`pe${i}`,`ir${i}`,`zs${i}`,`bk${i}`,`r${i}a`,`r${i}b`,`r${i}c`,`r${i}r`].some(k=>$(`[data-k=${k}]`).value.trim())||['fr','fz','fo'].some(k=>$(`[data-k=${k}${i}]`).checked);const snap={};$$('[data-k]').forEach(e=>{if(e.dataset.k.replace(/\D/g,'')===String(i))snap[e.dataset.k]=e.type==='checkbox'?e.checked:e.value});
+ setN(N-1);check();save();if(used)toastU('Circuit '+i+' removed',()=>{setN(N+1);$$('[data-k]').forEach(e=>{const v=snap[e.dataset.k];if(v!==undefined){if(e.type==='checkbox')e.checked=v;else e.value=v}});check();save()});else toast('Circuit removed')};
 // signature pad
 let inked=false,sigData='',drawing=false;
 const sp=$('#sigPad'),sx=sp.getContext('2d');sx.lineWidth=4;sx.lineCap='round';sx.lineJoin='round';sx.strokeStyle='#111';
@@ -494,7 +547,7 @@ function init(){
   if(el.type==='checkbox')el.checked=!!v; else if(v!==undefined)el.value=v;
   else if(/^r\d+t$/.test(el.dataset.k))el.value=defs.rcd; else if(/^r\d+h$/.test(el.dataset.k))el.value=defs.nt!==undefined?defs.nt:'No trip'; else el.value='';});
  ['pol','con','fun'].forEach(n=>$$(`input[name=${n}]`).forEach(r=>r.checked=(state[n]!==undefined?state[n]:(defs[n]||''))===r.value));
- loadSig(state.sigImg||''); sync(); check(); updBadge();
+ loadSig(state.sigImg||''); sync(); check(); updBadge(); applyEnter();
 }
 function sync(){updModels();$('#fname').textContent='PDF file name: '+fname()+'.pdf';$('#date2').value=$('#date').value;$('#addr2').value=$('#addr').value===NEW?'':$('#addr').value;$('#job2').value=$('#job').value}
 
@@ -524,7 +577,7 @@ function check(){
  {const [vmn,vmx]=vlim();$('#vhint').textContent='Expected '+vmn+' to '+vmx+' V (L-N, L-E)';[['ln','L-N'],['le','L-E']].forEach(([k,n])=>{const el=$('#'+k),w=el.closest('.cw'),v=el.value;let ok=null;if(v!==''){any=true;ok=parseFloat(v)>=vmn&&parseFloat(v)<=vmx}w.classList.toggle('vok',ok===true);w.classList.toggle('vbad',ok===false);if(ok===false)fails.push(n+' voltage')})}
  const m=parseFloat($('#main').value);$('#mainFlag').textContent=isNaN(m)?'':(m<=0.5?'OK (≤ 0.5 Ω)':'Above 0.5 Ω – assess');
  const ppOn=photos.length>0&&$('#phPrint').checked;document.documentElement.classList.toggle('pp',ppOn);document.documentElement.classList.toggle('multi',N>8||ppOn);{const two=N<=8&&!ppOn;$('#pg1').textContent=two?'1 / 2':'Page 1';$('#pg2').textContent=two?'2 / 2':'Page 2'}
- lastFails=fails;{const fp=$('#failpill');fp.hidden=!fails.length;fp.textContent='✗ '+fails.length+' out of limits'}const sm=$('#sum');if(!any){sm.textContent='';sm.className='sumbox'}else if(fails.length){sm.textContent='✗ OUT OF LIMITS: '+fails.join(', ');sm.className='sumbox bad'}else{sm.textContent='✓ All entered readings are within the limits shown on this form.';sm.className='sumbox ok'}
+ lastFails=fails;if(typeof progress==='function')progress();{const fp=$('#failpill');fp.hidden=!fails.length;fp.textContent='✗ '+fails.length+' out of limits'}const sm=$('#sum');if(!any){sm.textContent='';sm.className='sumbox'}else if(fails.length){sm.textContent='✗ OUT OF LIMITS: '+fails.join(', ');sm.className='sumbox bad'}else{sm.textContent='✓ All entered readings are within the limits shown on this form.';sm.className='sumbox ok'}
 }
 function save(){
  const s={date:$('#date').value,time:$('#time').value,addr:$('#addr').value===NEW?'':$('#addr').value,job:$('#job').value,work:$('#work').value,elec:$('#elec').value,sig:$('#sig').value,sigTime:$('#sigTime').value,kyo:$('#kyo').value,met:$('#met').value,dmod:$('#dmod').value,lmod:$('#lmod').value,notes:$('#notes').value,notes2:$('#notes2').value,main:$('#main').value,ln:$('#ln').value,le:$('#le').value,ne:$('#ne').value,calD:$('#calD').value,calL:$('#calL').value,pnotes:$('#pnotes').value,phPrint:$('#phPrint').checked,pdfAt:state.pdfAt||0};
@@ -561,7 +614,7 @@ $('#defs').onclick=()=>{
  const rm=prompt('Remove a saved address? Type it exactly, or leave blank:','');if(rm&&defs.addrs.includes(rm.trim()))defs.addrs=defs.addrs.filter(a=>a!==rm.trim());
  LS.set('ev_defs',defs);state.kyo=defs.kyo;state.met=defs.met;state.elec=defs.elec;fillElec();init();toast('Defaults saved');
 };
-$('#clr').onclick=()=>{if(!confirm('Start a new job? The current job stays in Saved jobs.'))return;state={};LS.set('ev_state',{});init();toast('New job ready')};
+$('#clr').onclick=()=>{save();const prev=Object.assign({},state);state={};LS.set('ev_state',{});init();toastU('New job started. The last one is in Saved jobs.',()=>{state=prev;LS.set('ev_state',prev);init()})};
 const slug=s=>(s||'').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 function fname(){const ad=$('#addr').value;const a=slug(ad&&ad!==NEW?ad.split(',')[0]:'');const j=slug($('#job').value);return [$('#date').value||today(),a,j?(/^coes/i.test(j)?j:'COES-'+j):''].filter(Boolean).join('_')}
 function warnings(){const w=[];
@@ -598,7 +651,7 @@ function updModels(){const d=$('#dmod').value.trim()||'dead tester',l=$('#lmod')
 const JK='ev_jobs',TK='ev_trash';let viewTrash=false;
 function hasData(s){return !!(s.addr||s.job||s.work||Object.keys(s).some(k=>/^(pe|zs|ir|r\d+[abcr]|c\d+n|r\d+n)/.test(k)&&String(s[k]).trim())||Object.keys(s).some(k=>/^([cd]\d|f[rzo]\d)$/.test(k)&&s[k]===true))}
 function upsertJob(s){if(!hasData(s)){updBadge();return}const j=LS.get(JK,{});if(!(j[s.jid]&&JSON.stringify(j[s.jid].state)===JSON.stringify(s)))j[s.jid]={updated:Date.now(),state:s};{const d=LS.get('ev_bkd',{});if(!d[s.jid]){d[s.jid]=1;LS.set('ev_bkd',d);setTimeout(bkN,0)}}const ids=Object.keys(j);if(ids.length>150)ids.sort((a,b)=>j[a].updated-j[b].updated).slice(0,ids.length-150).forEach(k=>delete j[k]);LS.set(JK,j);updBadge()}
-function updBadge(){const j=LS.get(JK,{});const n=Object.values(j).filter(v=>!(v.state.job||'').trim()).length;const u=unsynced();$('#jobs').textContent='Saved jobs'+(n?' ('+n+' need COES)':'')+(u?' · '+u+' unsynced':'')}
+function updBadge(){const j=LS.get(JK,{});const n=Object.values(j).filter(v=>!(v.state.job||'').trim()).length;const u=unsynced();const h='Saved jobs'+(n?' <span class="bdg">'+n+' need COES</span>':'')+(u?' <span class="bdg r">'+u+' unsynced</span>':'');if($('#jobs').dataset.h!==h){$('#jobs').dataset.h=h;$('#jobs').innerHTML=h}}
 function purgeTrash(){const t=LS.get(TK,{});let ch=false;Object.keys(t).forEach(k=>{if(Date.now()-t[k].deleted>30*864e5){delete t[k];ch=true}});if(ch)LS.set(TK,t);return t}
 function showTrash(t){const ids=Object.keys(t).sort((a,b)=>t[b].deleted-t[a].deleted);$('#jlist').innerHTML=ids.length?ids.map(id=>{const s=t[id].job.state;const left=Math.max(0,30-Math.floor((Date.now()-t[id].deleted)/864e5));return `<div class="jrow" data-id="${id}"><div><b>${esc(s.addr||'No address')}</b><br><span class="note">${esc(s.date||'')} | ${(s.job||'').trim()?'COES '+esc(s.job):'COES not entered'} | removed in ${left} day${left===1?'':'s'}</span></div><div class="jb2"><button class="s" data-a="restore">Restore</button><button class="s" data-a="purge">Delete forever</button></div></div>`}).join(''):'<div class="note">Nothing recently deleted. Deleted jobs stay here for 30 days.</div>';$('#jb').hidden=false}
 const hasRead=s=>Object.keys(s).some(k=>/^(pe\d+|zs\d+|ir\d+|r\d+[abcr])$/.test(k)&&String(s[k]).trim()!=='');
@@ -629,7 +682,7 @@ $('#jlist').onclick=e=>{const b=e.target.closest('button');if(!b)return;const id
  else if(a==='send'&&j[id]){$('#jb').hidden=true;openSend(j[id].state)}
  else if(a==='dup'&&j[id]){dupFrom(j[id].state);$('#jb').hidden=true}
  else if(a==='sent'&&j[id]){const v=j[id].state.sent?'':today();j[id].state.sent=v;LS.set(JK,j);if(id===state.jid){state.sent=v;LS.set('ev_state',state)}showJobs()}
- else if(a==='del'){if(b.dataset.sure){const t=LS.get(TK,{});if(j[id]){t[id]={deleted:Date.now(),job:j[id]};LS.set(TK,t)}delete j[id];LS.set(JK,j);{const tb=LS.get('ev_tomb',{});tb[id]=Date.now();LS.set('ev_tomb',tb)}toast('Moved to Recently deleted');if(state.jid===id){state={};LS.set('ev_state',{});init()}showJobs()}else{b.dataset.sure=1;b.textContent='Sure?'}}};
+ else if(a==='del'){if(true){const t=LS.get(TK,{});if(j[id]){t[id]={deleted:Date.now(),job:j[id]};LS.set(TK,t)}delete j[id];LS.set(JK,j);{const tb=LS.get('ev_tomb',{});tb[id]=Date.now();LS.set('ev_tomb',tb)}toastU('Job moved to Recently deleted',()=>{const t2=LS.get(TK,{}),j2=LS.get(JK,{});if(t2[id]){j2[id]=t2[id].job;j2[id].updated=Date.now();LS.set(JK,j2);delete t2[id];LS.set(TK,t2);const tb=LS.get('ev_tomb',{});delete tb[id];LS.set('ev_tomb',tb)}if(!$('#jb').hidden)showJobs();updBadge()});if(state.jid===id){state={};LS.set('ev_state',{});init()}showJobs()}else{b.dataset.sure=1;b.textContent='Sure?'}}};
 $('#jexp').onclick=async()=>{save();const data={app:'electrical-verification',v:2,exported:new Date().toISOString(),defs,jobs:LS.get(JK,{})};{const ph=await phAll();if(Object.keys(ph).length&&confirm('Include photos in the backup? (makes the file bigger)'))data.photos=ph}const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));a.download='electrical-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);LS.set('ev_bk',Date.now());LS.set('ev_bkd',{});$('#bkbar').hidden=true;toast('Backup downloaded')};
 $('#jimpb').onclick=()=>$('#jimp').click();
 try{if(navigator.canShare&&navigator.canShare({files:[new File(['x'],'a.json',{type:'application/json'})]}))$('#jshare').hidden=false}catch(e){}
@@ -734,7 +787,7 @@ $('#gsync').onclick=()=>gSync(true);
 let gTimer;document.addEventListener('input',()=>{if(!gtok)return;clearTimeout(gTimer);gTimer=setTimeout(()=>gSync(false),8000)});
 // reminder bar: shown when online, you have synced before, and some jobs changed since the last sync
 function unsynced(){const j=LS.get(JK,{}),t=LS.get('ev_gat',0);return Object.values(j).filter(v=>v.updated>t).length}
-function syncBar(){const n=unsynced(),valid=gtok&&Date.now()<gexp-60000,snz=Date.now()<LS.get('ev_syncsnz',0);const show=n>0&&!gbusy&&!valid&&!snz;const bar=$('#syncbar');bar.hidden=!show;if(!show)return;const on=navigator.onLine;bar.className='noprint'+(on?'':' off');$('#syncNow').hidden=!on;$('#syncLater').hidden=!on;
+function syncBar(){stat();const n=unsynced(),valid=gtok&&Date.now()<gexp-60000,snz=Date.now()<LS.get('ev_syncsnz',0);const show=n>0&&!gbusy&&!valid&&!snz;const bar=$('#syncbar');bar.hidden=!show;if(!show)return;const on=navigator.onLine;bar.className='noprint'+(on?'':' off');$('#syncNow').hidden=!on;$('#syncLater').hidden=!on;
  const nm=n+' job'+(n===1?'':'s');$('#synctxt').textContent=on?(LS.get('ev_gat',0)?'⚠ '+nm+' not synced to Google Drive. Sync now so nothing is lost.':'⚠ '+nm+' not backed up to Google Drive yet. Tap Sync now.'):'⚠ '+nm+' not backed up yet. You are offline; sync when you have signal.'}
 $('#syncNow').onclick=async()=>{await gSync(true);syncBar()};
 $('#syncLater').onclick=()=>{LS.set('ev_syncsnz',Date.now()+30*60000);syncBar()};
@@ -742,6 +795,22 @@ addEventListener('online',()=>{LS.set('ev_syncsnz',0);setTimeout(syncBar,800)});
 {let st;document.addEventListener('input',()=>{clearTimeout(st);st=setTimeout(syncBar,5000)})}
 setInterval(syncBar,60000);setTimeout(syncBar,1500);
 const _sj=showJobs;showJobs=function(){_sj.apply(this,arguments);setG()};
+// ---- polish: menu, nav, progress, status, undo, theme ----
+$('#moreBtn').onclick=e=>{e.stopPropagation();const m=$('#moreMenu');if(!m.hidden){m.hidden=true;return}const r=$('#moreBtn').getBoundingClientRect();m.style.top=(r.bottom+6)+'px';m.hidden=false};
+document.addEventListener('click',e=>{if(!e.target.closest('#moreMenu,#moreBtn'))$('#moreMenu').hidden=true;else if(e.target.closest('#moreMenu button:not(#themeBtn)'))$('#moreMenu').hidden=true});
+$('#themeBtn').onclick=()=>{let t='';try{t=localStorage.getItem('ev_theme')||''}catch(e){}const k=THEMES.findIndex(x=>x[0]===t),n=THEMES[(k+1)%THEMES.length][0];try{localStorage.setItem('ev_theme',n)}catch(e){}applyTheme()};
+$('#barSync').onclick=async()=>{await gSync(true);syncBar();stat()};
+$$('#bnav button').forEach(b=>b.onclick=()=>{const g=b.dataset.go;if(g==='jobs')$('#jobs').click();else if(g==='prn')$('#prn').click();else $('#'+g).scrollIntoView({behavior:'smooth',block:'start'})});
+try{const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting)$$('#bnav button[data-go^=p]').forEach(b=>b.classList.toggle('on',b.dataset.go===en.target.id))})},{threshold:.35});io.observe($('#p1'));io.observe($('#p2'))}catch(e){}
+function progress(){const ck=k=>{const e=$(`[data-k=${k}]`);return !!(e&&e.checked)};const steps=[];const ad=$('#addr').value;steps.push(!!ad&&ad!==NEW);for(let i=1;i<=8;i++)steps.push(ck('c'+i));steps.push(ck('d1'),ck('d3'));steps.push($$('[data-k^=pe],[data-k^=zs],[data-k^=ir]:not([data-k^=irv])').some(e=>e.value.trim()!==''));steps.push(!!$('input[name=pol]:checked'),!!$('input[name=con]:checked'));steps.push(!!$('#sig').value.trim()||inked);
+ const d=steps.filter(Boolean).length,t=steps.length;$('#progTxt').textContent=d+' of '+t+' steps done';const f=$('#progFill');f.style.width=(d/t*100)+'%';f.classList.toggle('done',d===t);stat()}
+function ago(t){const m=Math.round((Date.now()-t)/60000);return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' d ago'}
+function stat(){const n=typeof unsynced==='function'?unsynced():0,g=LS.get('ev_gat',0);$('#saveSt').innerHTML='&#10003; Saved on this device'+(g?' &middot; Synced '+ago(g):'')+(n?' &middot; <b>'+n+' not synced</b>':'')}
+setInterval(stat,30000);
+let uTimer,uFn=null;
+function toastU(msg,fn,ms){clearTimeout(uTimer);uFn=fn;$('#utxt').textContent=msg;$('#utoast').hidden=false;uTimer=setTimeout(()=>{$('#utoast').hidden=true;uFn=null},ms||8000)}
+$('#ubtn').onclick=()=>{clearTimeout(uTimer);$('#utoast').hidden=true;const f=uFn;uFn=null;if(f)f()};
+function applyEnter(){$$('input[type=text],input[type=number],input[type=time],input[type=date]').forEach(i=>{if(!i.enterKeyHint)i.enterKeyHint='next'})}
 // ---- remember the breaker used for each circuit name (not case sensitive) ----
 const cbKey=n=>String(n||'').trim().toLowerCase().replace(/\s+/g,' ');
 function cbLearn(i){const n=$(`[data-k=c${i}n]`).value.trim(),b=$(`[data-k=bk${i}]`).value.trim();if(!n||!b)return;const k=cbKey(n);defs.cbk=defs.cbk||{};if(defs.cbk[k]&&defs.cbk[k].b===b)return;defs.cbk[k]={n:(defs.cbk[k]&&defs.cbk[k].n)||n,b};const ks=Object.keys(defs.cbk);if(ks.length>300)delete defs.cbk[ks[0]];LS.set('ev_defs',defs);fillLists()}
@@ -774,7 +843,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v20'; // keep in step with VERSION in sw.js
+const APP_VERSION='v21'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();

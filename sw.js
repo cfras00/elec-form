@@ -1,6 +1,6 @@
 // Offline cache for the electrical verification form.
 // Change VERSION when you upload a new index.html so phones pick up the update.
-const VERSION='v20';
+const VERSION='v21';
 const CACHE='elec-form-'+VERSION;
 const FILES=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))});
