@@ -393,7 +393,7 @@ body.big #addrSug div{padding:14px 12px;font-size:17px}
 <label>Link<textarea id="sndLink" readonly rows="4"></textarea></label><div class="note" id="sndSize"></div>
 <div class="wbtn"><button id="sndClose">Close</button><button id="sndFile">Save job file</button><button id="sndMail">Email to me</button><button id="sndShare" hidden>Share…</button><button class="p" id="sndCopy">Copy link</button></div></div></div>
 <div id="eod" class="noprint" hidden><div class="wbox dbox"><b>End-of-day check</b><div class="note">What is still missing on each job for the chosen day, before you submit.</div><label>Day<input type="date" id="eodDate"></label><div id="eodSum" class="note" style="font-weight:700;margin:6px 0"></div><div id="eodList"></div><div class="wbtn"><button id="eodClose">Close</button></div></div></div>
-<div class="note noprint" style="text-align:center;margin:12px 0 24px">App version <span id="appver"></span> | <span id="net"></span></div>
+<div class="note noprint" style="text-align:center;margin:12px 0 24px">App version <span id="appver"></span> <button class="s" id="forceUpd" type="button">Check for update</button> | <span id="net"></span></div>
 <div id="updbar" class="bkbar noprint" hidden style="position:fixed;left:0;right:0;bottom:0;z-index:30"><span>A new version was installed.</span><button class="s" id="updGo">Reload now</button></div>
 <div class="toast" id="toast"></div>
 
@@ -736,7 +736,8 @@ $('#eodGo').onclick=()=>{$('#eodDate').value=$('#eodDate').value||today();$('#jb
 $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
-const APP_VERSION='v16'; // keep in step with VERSION in sw.js
+$('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
+const APP_VERSION='v17'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
