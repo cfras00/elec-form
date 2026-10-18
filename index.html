@@ -236,7 +236,7 @@ body.big #addrSug div{padding:14px 12px;font-size:17px}
  .wbtn{display:grid;grid-template-columns:1fr 1fr;gap:8px}.wbtn button{width:100%}.wbtn .p{grid-column:1/-1;order:-1}
  #sigPad{width:100%;height:auto;touch-action:none}
 }
-#snd,#eod,#mon{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;display:flex;align-items:center;justify-content:center}#snd[hidden],#eod[hidden],#mon[hidden]{display:none}
+#snd,#eod,#mon,#wn{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;display:flex;align-items:center;justify-content:center}#snd[hidden],#eod[hidden],#mon[hidden],#wn[hidden]{display:none}
 #snd textarea{font-size:12px;word-break:break-all}
 
 .cw.vok input{color:var(--ok);font-weight:600}.cw.vbad input{color:var(--bad);font-weight:700}
@@ -321,13 +321,13 @@ body.locked #p1,body.locked #p2{opacity:.82}
  #syncbar:not([hidden]),#updbar:not([hidden]){animation:evBar .25s ease-out}
  .toast{transform:translate(-50%,10px);transition:opacity .25s,transform .25s}.toast.on{transform:translateX(-50%)}
  .wbox{border-radius:16px;animation:evUp .22s ease-out}
- #warn,#em,#jb,#snd,#eod,#mon,#dp{animation:evFadeBg .2s ease-out}
+ #warn,#em,#jb,#snd,#eod,#mon,#dp,#wn{animation:evFadeBg .2s ease-out}
  @keyframes evFadeBg{from{opacity:0}to{opacity:1}}
  .jrow button,.wbtn button{min-height:42px}
  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 }
 @media screen and (max-width:700px){
- #warn,#em,#jb,#snd,#eod,#mon,#dp{align-items:flex-end;z-index:30}
+ #warn,#em,#jb,#snd,#eod,#mon,#dp,#wn{align-items:flex-end;z-index:30}
  .wbox{width:100%!important;margin:0!important;max-width:none!important;border-radius:20px 20px 0 0;max-height:92vh;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));animation-name:evSheet}
  @keyframes evSheet{from{transform:translateY(100%)}to{transform:none}}
  .jrow button,.wbtn button,.mhead button{min-height:46px;font-size:15px}
@@ -361,6 +361,14 @@ td.mg:not(.fail){background:rgba(224,168,0,.18)}
  .cpg .dots button.on{transform:scale(1.35);box-shadow:0 0 0 2px var(--acc)}
  body.swp #t1 tr.soff,body.swp #t2 tr.soff{display:none!important}
 }
+#tour{position:fixed;inset:0;z-index:60}#tour[hidden]{display:none}
+#tspot{position:fixed;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,.62);border:2px solid #fff;pointer-events:none;transition:all .25s ease;display:none}
+#tcard{position:fixed;left:50%;transform:translateX(-50%);width:min(92vw,400px);background:var(--paper);color:var(--ink);border-radius:16px;padding:16px 18px;box-shadow:0 14px 40px rgba(0,0,0,.45);animation:evUp .22s ease-out}
+#tcard .tstep{font-size:12px;color:var(--mute);font-weight:600}#tcard .tt{display:block;font-size:18px;margin:4px 0}#tcard .tb{margin:0 0 12px;line-height:1.45;font-size:15px}
+#tcard .tbtn{display:flex;align-items:center;gap:8px}#tcard .tbtn button{min-height:44px;padding:8px 16px}#tcard .tdots{flex:1;display:flex;gap:5px;justify-content:center;flex-wrap:wrap}
+#tcard .tdots i{width:7px;height:7px;border-radius:50%;background:var(--line)}#tcard .tdots i.on{background:var(--acc);transform:scale(1.3)}
+#netSt .offp{background:#fff3cd;color:#7a5b00;border:1px solid #e0c15a;border-radius:10px;padding:0 8px;font-weight:700}
+body.offline #barSync{opacity:.5}
 #jb .wbox{overscroll-behavior:contain}#ptr{height:0;overflow:hidden;text-align:center;color:var(--mute);font-size:13px;transition:height .15s}
 </style>
 </head>
@@ -376,10 +384,10 @@ td.mg:not(.fail){background:rgba(224,168,0,.18)}
  <button id="moreBtn" aria-haspopup="true">&#8943; More</button>
 </div>
 <div id="moreMenu" class="noprint" hidden>
- <button id="undoBtn">Undo last change</button><button id="rvBtn">Review job</button><button id="instBtn" hidden>Install app</button><button id="doneBtn">Mark job completed</button><button id="xgo">Notes / photos</button><button id="sendpc">Send to PC</button><button id="dup">Duplicate job</button><button id="eml">Email</button><button id="defs">Edit defaults</button><button id="themeBtn">Theme: Auto</button>
+ <button id="undoBtn">Undo last change</button><button id="rvBtn">Review job</button><button id="tourBtn">What's new &amp; tour</button><button id="instBtn" hidden>Install app</button><button id="doneBtn">Mark job completed</button><button id="xgo">Notes / photos</button><button id="sendpc">Send to PC</button><button id="dup">Duplicate job</button><button id="eml">Email</button><button id="defs">Edit defaults</button><button id="themeBtn">Theme: Auto</button>
 </div>
 <div id="lockbar" class="noprint" hidden><span id="locktxt"></span><button id="unlockBtn">Unlock to edit</button></div>
-<div id="prog" class="noprint"><div class="pl"><span id="progTxt"></span><span id="saveSt"></span></div><div class="pbar"><i id="progFill"></i></div></div>
+<div id="prog" class="noprint"><div class="pl"><span id="progTxt"></span><span id="netSt" hidden></span><span id="saveSt"></span></div><div class="pbar"><i id="progFill"></i></div></div>
 </div>
 <div id="syncbar" class="noprint" hidden><span id="synctxt"></span><span class="sbtn"><button id="syncNow">Sync now</button><button class="s" id="syncLater">Later</button></span></div>
 <div id="instbar" class="bkbar inst noprint" hidden><span id="insttxt"></span><button class="s" id="instGo">Install</button><button class="s" id="instLater">Not now</button><button class="s" id="instNever">Don't ask again</button></div>
@@ -514,6 +522,8 @@ td.mg:not(.fail){background:rgba(224,168,0,.18)}
  <div><button class="s" id="phAdd">Add photo</button> <input type="file" id="phIn" accept="image/*" multiple hidden> <label style="margin-left:8px"><input type="checkbox" id="phPrint"> Include photos as an extra page when printing</label></div>
  <div id="thumbs"></div>
  <div style="margin-top:12px"><b>PDF copy</b> <span class="note">After printing and saving the PDF on this device, upload it to your Drive folder "Elec Verify PDFs" (named by date, address and COES number).</span><br><button class="s" id="pdfUp">Upload saved PDF to Google Drive</button> <input type="file" id="pdfIn" accept="application/pdf" hidden> <span class="note" id="pdfStat"></span></div></div>
+<div id="wn" class="noprint" hidden><div class="wbox"><b>What's new</b><div id="wnl"></div><div class="wbtn"><button id="wntour">Take the tour</button><button class="p" id="wnok">Got it</button></div></div></div>
+<div id="tour" class="noprint" hidden><div id="tspot"></div><div id="tcard"><div class="tstep"></div><b class="tt"></b><p class="tb"></p><div class="tbtn"><button class="s" id="tskip">Skip</button><span class="tdots"></span><button class="s" id="tback">Back</button><button class="p" id="tnext">Next</button></div></div></div>
 <div id="warn" class="noprint" hidden><div class="wbox"><b id="wtitle">Check before printing</b><ul id="wl"></ul><div id="wtab" style="overflow-x:auto"></div><div class="wbtn"><button id="wback">Go back</button><button class="p" id="wgo">Print anyway</button></div></div></div>
 <div id="dp" class="noprint" hidden><div class="wbox dbox"><b>Defaults</b><div class="note">Prefilled on every new job. Readings already entered are not changed.</div><div id="dform"></div><div class="wbtn"><button id="dcan">Cancel</button><button class="p" id="dsave">Save defaults</button></div></div></div>
 <div id="em" class="noprint" hidden><div class="wbox dbox"><b>Email details</b><div class="note">Tap Open email app, or Copy all and paste into a new email. Attach the saved PDF before sending.</div><label>To<input type="text" id="emTo"></label><label>Subject<input type="text" id="emSub"></label><label>Message<textarea id="emBody"></textarea></label><div class="wbtn"><button id="emClose">Close</button><button id="emShare" hidden>Share…</button><button id="emCopy">Copy all</button><button id="emOpen">Open email app</button><button class="p" id="emGmail">Open Gmail</button></div></div></div>
@@ -873,7 +883,7 @@ addEventListener('online',()=>{LS.set('ev_syncsnz',0);setTimeout(syncBar,800)});
 setInterval(syncBar,60000);setTimeout(syncBar,1500);
 const _sj=showJobs;showJobs=function(){_sj.apply(this,arguments);setG()};
 // ---- every popup gets a clear Close button at the top, backdrop-tap and Esc to close ----
-const MODALS={jb:'#jclose',eod:'#eodClose',mon:'#monClose',snd:'#sndClose',em:'#emClose',dp:'#dcan',warn:'#wback'};
+const MODALS={jb:'#jclose',eod:'#eodClose',mon:'#monClose',snd:'#sndClose',em:'#emClose',dp:'#dcan',warn:'#wback',wn:'#wnok'};
 Object.entries(MODALS).forEach(([id,btn])=>{const m=document.getElementById(id),box=m&&m.firstElementChild;if(!box)return;const h=document.createElement('div');h.className='mhead';const tt=box.querySelector('b');h.innerHTML='<span class="mt">'+(tt?tt.textContent:'')+'</span><button type="button">&#10005; Close</button>';if(tt)tt.style.display='none';h.lastChild.onclick=()=>$(btn).click();box.insertBefore(h,box.firstChild);m.addEventListener('click',e=>{if(e.target===m)$(btn).click()})});
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;for(const [id,btn] of Object.entries(MODALS)){const m=document.getElementById(id);if(m&&!m.hidden){$(btn).click();return}}$('#moreMenu').hidden=true});
 // ---- lock a completed job so a finished record is not changed by accident ----
@@ -977,6 +987,55 @@ function swShowFor(el){const tr=el&&el.closest&&el.closest('tr');if(!tr||!tr.clo
   let sx=0,sy=0;[w,pg].forEach(el=>{el.style.touchAction='pan-y';el.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
    el.addEventListener('touchend',e=>{if(!document.body.classList.contains('swp')||!matchMedia('(max-width:700px)').matches)return;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;if(Math.abs(dx)>70&&Math.abs(dx)>1.6*Math.abs(dy))swGo(swCur+(dx<0?1:-1),pg)})})});
  $('#addC').addEventListener('click',()=>{swCur=N;swRefresh()});swRefresh()})();
+
+// ---- v30: tour, what's new, offline ----
+const CHANGES=[
+ {v:24,t:['Saved jobs have a colour edge (grey Draft, amber Tested, blue COES entered, green Completed)','Sections fold away; circuit cards show a pass or fail tick','Popups slide up on the phone']},
+ {v:26,t:['Reading bars under PE and Zs, plus a results summary card','"Tick all" on checklist sections','Pull down in Saved jobs to sync','More menu: Undo last change']},
+ {v:27,t:['Checklist sections start folded. Change it in Edit defaults']},
+ {v:28,t:['More menu: Review job, with Fix buttons for anything missing','Close-to-limit and likely-typo warnings (tap Keep to confirm a value)','Search jobs by circuit or work, filter by date, weekly summary and Share CSV','Install prompt']},
+ {v:29,t:['On the phone, swipe between circuits one at a time. Switch off in Edit defaults']},
+ {v:30,t:['Welcome tour and these what\'s new notes (More > What\'s new & tour)','Offline badge in the progress bar']}];
+const wnCur=()=>parseInt(String(APP_VERSION).replace(/\D/g,''),10)||0;
+function wnHtml(list){return list.slice().reverse().map(c=>`<div style="margin:8px 0"><b>Update ${c.v}</b><ul style="margin:4px 0 0">${c.t.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul></div>`).join('')}
+function showWN(all){const last=all?0:LS.get('ev_wn',23);const list=CHANGES.filter(c=>c.v>last);if(!list.length&&!all)return;$('#wnl').innerHTML=wnHtml(list.length?list:CHANGES);const mt=document.querySelector('#wn .mt');if(mt)mt.textContent=all?'What\'s new & tour':'What\'s new';$('#wn').hidden=false}
+$('#wnok').onclick=()=>{$('#wn').hidden=true;LS.set('ev_wn',wnCur())};
+$('#wntour').onclick=()=>{$('#wn').hidden=true;LS.set('ev_wn',wnCur());startTour()};
+$('#tourBtn').onclick=()=>showWN(true);
+const TSTEPS=[
+ {t:'Welcome to Elec Verify',b:'This fills in your Residential Electrical Verification and test results form, saves everything on this device as you type, and prints the same PDF. This takes about 30 seconds.'},
+ {s:['#prog'],t:'Progress and saving',b:'See how much of the job is done. "Saved on this device" means nothing is lost, even if you close the app. An Offline badge appears here when there is no signal.'},
+ {s:['#p1 .sec'],t:'Checklist sections',b:'Tap a heading to open or fold a section. Open one and use "Tick all" to tick the whole section in one tap.',sec:1},
+ {s:['.cpg','#t1'],t:'Enter your readings',b:'On a phone, swipe left or right (or tap Next) for the next circuit. Green means pass, red means out of limits, and amber means close to the limit.'},
+ {s:['#moreBtn'],t:'More menu',b:'Review job checks for anything missing before you print. Also here: Undo last change, Mark job completed, Notes and photos, and Edit defaults.'},
+ {s:['#jobs'],t:'Saved jobs',b:'Every job saves automatically. Search, filter by date, open an old job, see weekly or monthly summaries, and make backups. The colour edge shows each job\'s status.'},
+ {s:['#barSync'],t:'Sync with Google Drive',b:'Backs up jobs and photos so you can open them on your PC. Sign in once. It needs a tap about once an hour.'},
+ {s:['#prn','#bnav .p'],t:'Print or save PDF',b:'Runs a quick check first, then makes the PDF in the original form layout.'},
+ {t:'You are set',b:'To see this again or read about updates, open More and choose What\'s new & tour.'}];
+var tI=0;
+const tVis=sel=>{for(const q of sel){const e=document.querySelector(q);if(e){const r=e.getBoundingClientRect();if(r.width>0&&r.height>0&&getComputedStyle(e).visibility!=='hidden')return e}}return null};
+function tShow(){const st=TSTEPS[tI];$('#tcard .tstep').textContent='Step '+(tI+1)+' of '+TSTEPS.length;$('#tcard .tt').textContent=st.t;$('#tcard .tb').textContent=st.b;
+ $('#tback').style.visibility=tI?'visible':'hidden';$('#tnext').textContent=tI===TSTEPS.length-1?'Finish':'Next';$('#tskip').style.visibility=tI===TSTEPS.length-1?'hidden':'visible';
+ $('#tcard .tdots').innerHTML=TSTEPS.map((x,i)=>'<i'+(i===tI?' class="on"':'')+'></i>').join('');
+ let el=st.s?tVis(st.s):null;if(el&&!el.closest('#hdr'))el.scrollIntoView({block:'center'});
+ setTimeout(()=>{el=st.s?tVis(st.s):null;const sp=$('#tspot'),cd=$('#tcard');
+  if(el){const r=el.getBoundingClientRect(),pd=6;Object.assign(sp.style,{display:'block',left:(r.left-pd)+'px',top:(r.top-pd)+'px',width:(r.width+2*pd)+'px',height:Math.min(r.height+2*pd,innerHeight*0.6)+'px'});
+   const mid=r.top+Math.min(r.height,innerHeight*0.6)/2;if(mid>innerHeight/2){cd.style.top='12px';cd.style.bottom='auto'}else{cd.style.bottom='12px';cd.style.top='auto'}}
+  else{sp.style.display='none';cd.style.top='50%';cd.style.bottom='auto';cd.style.transform='translate(-50%,-50%)';return}cd.style.transform='translateX(-50%)'},st.s?80:0)}
+function startTour(){if($('#moreMenu'))$('#moreMenu').hidden=true;tI=0;$('#tour').hidden=false;tShow()}
+function endTour(){$('#tour').hidden=true;LS.set('ev_tour',1);LS.set('ev_wn',wnCur());window.scrollTo({top:0,behavior:'smooth'})}
+$('#tnext').onclick=()=>{if(tI>=TSTEPS.length-1)return endTour();tI++;tShow()};
+$('#tback').onclick=()=>{if(tI>0){tI--;tShow()}};
+$('#tskip').onclick=endTour;
+window.addEventListener('resize',()=>{if(!$('#tour').hidden)tShow()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#tour').hidden){e.stopPropagation();endTour()}},true);
+function netUpd(n){const el=$('#netSt');if(!el)return;const off=navigator.onLine===false;document.body.classList.toggle('offline',off);el.hidden=!off;if(off){if(n===undefined)n=typeof unsynced==='function'?unsynced():0;el.innerHTML='<span class="offp">● Offline'+(n?' · '+n+' waiting to sync':'')+'</span>'}}
+window.addEventListener('offline',()=>{netUpd();toast('You are offline. Jobs keep saving on this device and will sync later.')});
+window.addEventListener('online',()=>{netUpd();toast('Back online.');if(typeof syncBar==='function')syncBar()});
+setTimeout(netUpd,0);
+setTimeout(()=>{if(!$('#tour').hidden||document.querySelector('#jb:not([hidden]),#dp:not([hidden]),#warn:not([hidden]),#em:not([hidden]),#snd:not([hidden])'))return;
+ const fresh=!LS.get('ev_tour',0)&&!Object.keys(LS.get(JK,{})).length&&!(state&&(state.addr||state.job||state.c1n));
+ if(fresh)startTour();else showWN(false)},1800);
 // ---- polish: menu, nav, progress, status, undo, theme ----
 $('#moreBtn').onclick=e=>{e.stopPropagation();const m=$('#moreMenu');if(!m.hidden){m.hidden=true;return}const r=$('#moreBtn').getBoundingClientRect();m.style.top=(r.bottom+6)+'px';m.hidden=false};
 document.addEventListener('click',e=>{if(!e.target.closest('#moreMenu,#moreBtn'))$('#moreMenu').hidden=true;else if(e.target.closest('#moreMenu button:not(#themeBtn)'))$('#moreMenu').hidden=true});
@@ -987,7 +1046,7 @@ try{const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting)
 function progress(){const ck=k=>{const e=$(`[data-k=${k}]`);return !!(e&&e.checked)};const steps=[];const ad=$('#addr').value;steps.push(!!ad&&ad!==NEW);for(let i=1;i<=8;i++)steps.push(ck('c'+i));steps.push(ck('d1'),ck('d3'));steps.push($$('[data-k^=pe],[data-k^=zs],[data-k^=ir]:not([data-k^=irv])').some(e=>e.value.trim()!==''));steps.push(!!$('input[name=pol]:checked'),!!$('input[name=con]:checked'));steps.push(!!$('#sig').value.trim()||inked);
  const d=steps.filter(Boolean).length,t=steps.length;$('#progTxt').textContent=d+' of '+t+' steps done';const f=$('#progFill');f.style.width=(d/t*100)+'%';f.classList.toggle('done',d===t);stat()}
 function ago(t){const m=Math.round((Date.now()-t)/60000);return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' d ago'}
-function stat(){const n=typeof unsynced==='function'?unsynced():0,g=LS.get('ev_gat',0);$('#saveSt').innerHTML='&#10003; Saved on this device'+(g?' &middot; Synced '+ago(g):'')+(n?' &middot; <b>'+n+' not synced</b>':'')}
+function stat(){const n=typeof unsynced==='function'?unsynced():0,g=LS.get('ev_gat',0);if(window.netUpd)netUpd(n);$('#saveSt').innerHTML='&#10003; Saved on this device'+(g?' &middot; Synced '+ago(g):'')+(n?' &middot; <b>'+n+' not synced</b>':'')}
 setInterval(stat,30000);
 let uTimer,uFn=null;
 function toastU(msg,fn,ms){clearTimeout(uTimer);uFn=fn;$('#utxt').textContent=msg;$('#utoast').hidden=false;uTimer=setTimeout(()=>{$('#utoast').hidden=true;uFn=null},ms||8000)}
@@ -1027,7 +1086,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v29'; // keep in step with VERSION in sw.js
+const APP_VERSION='v30'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
