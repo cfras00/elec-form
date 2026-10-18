@@ -248,6 +248,9 @@ body.big #addrSug div{padding:14px 12px;font-size:17px}
 body:has(#syncbar:not([hidden])){padding-bottom:70px}
 
 /* ===== polish (screen only) ===== */
+#lockbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#1f6f3a;color:#fff;padding:8px 16px;font-size:14px;font-weight:600}
+#lockbar[hidden]{display:none}#lockbar button{background:#fff;color:#1f6f3a;border:0;font-weight:700;padding:7px 14px;border-radius:8px}
+body.locked #p1,body.locked #p2{opacity:.82}
 .mhead .mt{font-weight:700;font-size:17px;align-self:center;margin-right:auto}
 .mhead{position:sticky;top:-16px;z-index:3;display:flex;justify-content:flex-end;background:var(--paper);margin:-16px -18px 8px;padding:10px 12px 8px;border-bottom:1px solid var(--line)}
 .mhead button{background:var(--acc);color:#fff;border:0;font-weight:700;padding:10px 18px;border-radius:10px;font-size:15px}
@@ -299,6 +302,44 @@ body:has(#syncbar:not([hidden])){padding-bottom:70px}
  #utoast{bottom:84px}
  .toast{bottom:150px!important}
 }
+
+/* ===== v24 visual polish (screen only) ===== */
+@media screen{
+ .jrow{border-left:6px solid var(--line);padding-left:10px;border-radius:6px}
+ .jrow.st0{border-left-color:#9aa3ad}.jrow.st1{border-left-color:#e0a800;background:rgba(224,168,0,.07)}.jrow.st2{border-left-color:#2a7de1;background:rgba(42,125,225,.07)}.jrow.st3{border-left-color:var(--ok);background:rgba(31,111,58,.07)}
+ .sec.fold{cursor:pointer;display:flex;align-items:center;gap:6px;user-select:none}
+ .sec.fold::after{content:"\25BE";margin-left:auto;font-size:16px;transition:transform .2s;color:var(--mute)}
+ .sec.fold.shut::after{transform:rotate(90deg)}
+ .sec.fold.shut{opacity:.8}
+ .sfold{display:none!important}
+ @keyframes evFade{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:none}}
+ @keyframes evUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+ @keyframes evUpC{from{opacity:0;transform:translate(-50%,16px)}to{opacity:1;transform:translateX(-50%)}}
+ @keyframes evBar{from{transform:translateY(100%)}to{transform:none}}
+ #moreMenu:not([hidden]){animation:evFade .16s ease-out}
+ #utoast:not([hidden]){animation:evUpC .22s ease-out}
+ #syncbar:not([hidden]),#updbar:not([hidden]){animation:evBar .25s ease-out}
+ .toast{transform:translate(-50%,10px);transition:opacity .25s,transform .25s}.toast.on{transform:translateX(-50%)}
+ .wbox{border-radius:16px;animation:evUp .22s ease-out}
+ #warn,#em,#jb,#snd,#eod,#mon,#dp{animation:evFadeBg .2s ease-out}
+ @keyframes evFadeBg{from{opacity:0}to{opacity:1}}
+ .jrow button,.wbtn button{min-height:42px}
+ @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+}
+@media screen and (max-width:700px){
+ #warn,#em,#jb,#snd,#eod,#mon,#dp{align-items:flex-end;z-index:30}
+ .wbox{width:100%!important;margin:0!important;max-width:none!important;border-radius:20px 20px 0 0;max-height:92vh;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));animation-name:evSheet}
+ @keyframes evSheet{from{transform:translateY(100%)}to{transform:none}}
+ .jrow button,.wbtn button,.mhead button{min-height:46px;font-size:15px}
+ #t1 tr,#t2 tr{transition:border-color .2s,box-shadow .2s}
+ #t1 tr[data-cs=ok],#t2 tr[data-cs=ok]{border-color:var(--ok)}
+ #t1 tr[data-cs=bad],#t2 tr[data-cs=bad]{border-color:var(--bad);box-shadow:0 0 0 1px var(--bad)}
+ #t1 td:first-child,#t2 td:first-child{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+ #t1 td:first-child::before,#t2 td:first-child::before{margin:0!important;flex:1 1 auto;order:0}
+ #t1 td:first-child>*,#t2 td:first-child>*{order:2;flex:1 1 45%;min-width:0}
+ #t1 tr[data-cs=ok] td:first-child::after,#t2 tr[data-cs=ok] td:first-child::after{order:1;content:"\2713 Pass";color:var(--ok);font-weight:800;font-size:13px}
+ #t1 tr[data-cs=bad] td:first-child::after,#t2 tr[data-cs=bad] td:first-child::after{order:1;content:"\2717 Fail";color:var(--bad);font-weight:800;font-size:13px}
+}
 </style>
 </head>
 <body>
@@ -313,8 +354,9 @@ body:has(#syncbar:not([hidden])){padding-bottom:70px}
  <button id="moreBtn" aria-haspopup="true">&#8943; More</button>
 </div>
 <div id="moreMenu" class="noprint" hidden>
- <button id="xgo">Notes / photos</button><button id="sendpc">Send to PC</button><button id="dup">Duplicate job</button><button id="eml">Email</button><button id="defs">Edit defaults</button><button id="themeBtn">Theme: Auto</button>
+ <button id="doneBtn">Mark job completed</button><button id="xgo">Notes / photos</button><button id="sendpc">Send to PC</button><button id="dup">Duplicate job</button><button id="eml">Email</button><button id="defs">Edit defaults</button><button id="themeBtn">Theme: Auto</button>
 </div>
+<div id="lockbar" class="noprint" hidden><span id="locktxt"></span><button id="unlockBtn">Unlock to edit</button></div>
 <div id="prog" class="noprint"><div class="pl"><span id="progTxt"></span><span id="saveSt"></span></div><div class="pbar"><i id="progFill"></i></div></div>
 </div>
 <div id="syncbar" class="noprint" hidden><span id="synctxt"></span><span class="sbtn"><button id="syncNow">Sync now</button><button class="s" id="syncLater">Later</button></span></div>
@@ -451,7 +493,7 @@ body:has(#syncbar:not([hidden])){padding-bottom:70px}
 <div id="warn" class="noprint" hidden><div class="wbox"><b>Check before printing</b><ul id="wl"></ul><div class="wbtn"><button id="wback">Go back</button><button class="p" id="wgo">Print anyway</button></div></div></div>
 <div id="dp" class="noprint" hidden><div class="wbox dbox"><b>Defaults</b><div class="note">Prefilled on every new job. Readings already entered are not changed.</div><div id="dform"></div><div class="wbtn"><button id="dcan">Cancel</button><button class="p" id="dsave">Save defaults</button></div></div></div>
 <div id="em" class="noprint" hidden><div class="wbox dbox"><b>Email details</b><div class="note">Tap Open email app, or Copy all and paste into a new email. Attach the saved PDF before sending.</div><label>To<input type="text" id="emTo"></label><label>Subject<input type="text" id="emSub"></label><label>Message<textarea id="emBody"></textarea></label><div class="wbtn"><button id="emClose">Close</button><button id="emShare" hidden>Share…</button><button id="emCopy">Copy all</button><button id="emOpen">Open email app</button><button class="p" id="emGmail">Open Gmail</button></div></div></div>
-<div id="jb" class="noprint" hidden><div class="wbox dbox"><b>Saved jobs</b><div class="note">Jobs save automatically as you type. Open one later to add the COES number, then print it. Backups include your jobs and defaults. To move jobs to another device, share or export a backup there and import it here; newer copies of a job win.</div><div class="row"><input type="text" id="jq" placeholder="Search address or COES" style="flex:2"><select id="jf" style="flex:1"><option value="">All</option><option value="Draft">Status: Draft</option><option value="Tested">Status: Tested (no COES)</option><option value="COES entered">Status: COES entered (not sent)</option><option value="Sent">Status: Sent</option><option value="coes">COES missing</option><option value="unsent">Not sent</option></select></div><div class="note" id="gstat"></div><div class="wbtn" style="justify-content:flex-start;margin:0 0 8px"><button id="eodGo">End-of-day check</button> <button id="monGo">Monthly summary</button></div><div id="jlist"></div><div class="wbtn"><button id="jtrash">Recently deleted</button><button id="jshare" hidden>Share backup</button><button id="jexp">Export backup</button><button id="jimpb">Import backup</button><button id="gsync" class="p">Sync with Google Drive</button><input type="file" id="jimp" accept=".json,.txt,application/json,text/plain" hidden><button id="jclose">Close</button></div></div></div>
+<div id="jb" class="noprint" hidden><div class="wbox dbox"><b>Saved jobs</b><div class="note">Jobs save automatically as you type. Open one later to add the COES number, then print it. Backups include your jobs and defaults. To move jobs to another device, share or export a backup there and import it here; newer copies of a job win.</div><div class="row"><input type="text" id="jq" placeholder="Search address or COES" style="flex:2"><select id="jf" style="flex:1"><option value="">All</option><option value="Draft">Status: Draft</option><option value="Tested">Status: Tested (no COES)</option><option value="COES entered">Status: COES entered (not completed)</option><option value="Completed">Status: Completed</option><option value="coes">COES missing</option><option value="unsent">Not completed</option></select></div><div class="note" id="gstat"></div><div class="wbtn" style="justify-content:flex-start;margin:0 0 8px"><button id="eodGo">End-of-day check</button> <button id="monGo">Monthly summary</button></div><div id="jlist"></div><div class="wbtn"><button id="jtrash">Recently deleted</button><button id="jshare" hidden>Share backup</button><button id="jexp">Export backup</button><button id="jimpb">Import backup</button><button id="gsync" class="p">Sync with Google Drive</button><input type="file" id="jimp" accept=".json,.txt,application/json,text/plain" hidden><button id="jclose">Close</button></div></div></div>
 <div id="snd" class="noprint" hidden><div class="wbox dbox"><b>Send this job to another device</b><div class="note" id="sndAddr"></div>
 <div class="note">Copy the link, then send it to yourself (WhatsApp, Messages, Gmail, Google Keep…). Open the link on your PC and the job loads into the form, ready to add the COES number and print. Photos are not included; use Export backup for those.</div>
 <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="sndSig" checked> Include signature</label>
@@ -556,7 +598,7 @@ function init(){
   if(el.type==='checkbox')el.checked=!!v; else if(v!==undefined)el.value=v;
   else if(/^r\d+t$/.test(el.dataset.k))el.value=defs.rcd; else if(/^r\d+h$/.test(el.dataset.k))el.value=defs.nt!==undefined?defs.nt:'No trip'; else el.value='';});
  ['pol','con','fun'].forEach(n=>$$(`input[name=${n}]`).forEach(r=>r.checked=(state[n]!==undefined?state[n]:(defs[n]||''))===r.value));
- loadSig(state.sigImg||''); sync(); check(); updBadge(); applyEnter();
+ loadSig(state.sigImg||''); sync(); check(); updBadge(); applyEnter(); applyLock();
 }
 function sync(){updModels();$('#fname').textContent='PDF file name: '+fname()+'.pdf';$('#date2').value=$('#date').value;$('#addr2').value=$('#addr').value===NEW?'':$('#addr').value;$('#job2').value=$('#job').value}
 
@@ -570,7 +612,7 @@ function check(){
  for(let i=1;i<=N;i++){const n=$(`[data-k=r${i}n]`);n.closest('tr').classList.toggle('blank',['n','a','b','c','r'].every(s=>$(`[data-k=r${i}${s}]`).value.trim()===''))}
  $$('.unit').forEach(s=>{s.textContent=s.previousElementSibling.value!==''?s.dataset.u:''});
  for(let i=1;i<=N;i++){
-  const nm=$(`[data-k=c${i}n]`).value.trim()||$(`[data-k=r${i}n]`).value.trim()||('Circuit '+i);
+  const f0=fails.length;const nm=$(`[data-k=c${i}n]`).value.trim()||$(`[data-k=r${i}n]`).value.trim()||('Circuit '+i);
   const ir=$(`[data-k=ir${i}]`).value.trim(); let ok=null;
   if(ir){any=true;const n=parseFloat(ir.replace(/[^0-9.]/g,'').split(/[\/]/)[0]);if(!isNaN(n))ok=n>=1}
   mark($(`[data-k=ir${i}]`).parentElement,ok);if(ok===false)fails.push(nm+' IR');
@@ -582,6 +624,7 @@ function check(){
   [['a',300,'1x'],['b',150,'2x'],['c',40,'5x']].forEach(([s,l,t])=>{const e=$(`[data-k=r${i}${s}]`);let k=null;if(e.value!==''){any=true;k=parseFloat(e.value)<=l}mark(e.parentElement,k);if(k===false)fails.push(nm+' RCD '+t)});
   if(+$(`[data-k=pe${i}]`).value||$(`[data-k=pe${i}]`).value!=='')any=true;
   const h=$(`[data-k=r${i}h]`);const hk=$(`[data-k=r${i}a]`).value===''&&h.value==='No trip'?null:h.value===''?null:h.value==='No trip';mark(h.parentElement,hk);if(hk===false)fails.push(nm+' RCD 0.5x tripped');
+  {const has=['ir','pe','zs'].some(k=>$(`[data-k=${k}${i}]`).value.trim()!=='')||['a','b','c','h'].some(k=>$(`[data-k=r${i}${k}]`).value!=='');const cs=fails.length>f0?'bad':has?'ok':'';[$(`[data-k=c${i}n]`),$(`[data-k=r${i}n]`)].forEach(e=>{const tr=e&&e.closest('tr');if(tr)tr.dataset.cs=cs})}
  }
  {const [vmn,vmx]=vlim();$('#vhint').textContent='Expected '+vmn+' to '+vmx+' V (L-N, L-E)';[['ln','L-N'],['le','L-E']].forEach(([k,n])=>{const el=$('#'+k),w=el.closest('.cw'),v=el.value;let ok=null;if(v!==''){any=true;ok=parseFloat(v)>=vmn&&parseFloat(v)<=vmx}w.classList.toggle('vok',ok===true);w.classList.toggle('vbad',ok===false);if(ok===false)fails.push(n+' voltage')})}
  const m=parseFloat($('#main').value);$('#mainFlag').textContent=isNaN(m)?'':(m<=0.5?'OK (≤ 0.5 Ω)':'Above 0.5 Ω – assess');
@@ -664,7 +707,7 @@ function updBadge(){const j=LS.get(JK,{});const n=Object.values(j).filter(v=>!(v
 function purgeTrash(){const t=LS.get(TK,{});let ch=false;Object.keys(t).forEach(k=>{if(Date.now()-t[k].deleted>30*864e5){delete t[k];ch=true}});if(ch)LS.set(TK,t);return t}
 function showTrash(t){const ids=Object.keys(t).sort((a,b)=>t[b].deleted-t[a].deleted);$('#jlist').innerHTML=ids.length?ids.map(id=>{const s=t[id].job.state;const left=Math.max(0,30-Math.floor((Date.now()-t[id].deleted)/864e5));return `<div class="jrow" data-id="${id}"><div><b>${esc(s.addr||'No address')}</b><br><span class="note">${esc(s.date||'')} | ${(s.job||'').trim()?'COES '+esc(s.job):'COES not entered'} | removed in ${left} day${left===1?'':'s'}</span></div><div class="jb2"><button class="s" data-a="restore">Restore</button><button class="s" data-a="purge">Delete forever</button></div></div>`}).join(''):'<div class="note">Nothing recently deleted. Deleted jobs stay here for 30 days.</div>';$('#jb').hidden=false}
 const hasRead=s=>Object.keys(s).some(k=>/^(pe\d+|zs\d+|ir\d+|r\d+[abcr])$/.test(k)&&String(s[k]).trim()!=='');
-const jstat=s=>s.sent?['Sent',3]:(s.job||'').trim()?['COES entered',2]:hasRead(s)?['Tested',1]:['Draft',0];
+const jstat=s=>s.sent?['Completed',3]:(s.job||'').trim()?['COES entered',2]:hasRead(s)?['Tested',1]:['Draft',0];
 function failsOf(s){const f=[],g=k=>String(s[k]===undefined?'':s[k]).trim();for(let i=1;i<=(s.n||8);i++){const nm=g('c'+i+'n')||g('r'+i+'n')||('Circuit '+i);
  const ir=g('ir'+i);if(ir){const v=parseFloat(ir.replace(/[^0-9.]/g,'').split('/')[0]);if(!isNaN(v)&&v<1)f.push(nm+' IR')}
  const pl=peMax(g('bk'+i));if(g('pe'+i)!==''&&pl!=null&&parseFloat(g('pe'+i))>pl)f.push(nm+' PE');
@@ -673,10 +716,10 @@ function failsOf(s){const f=[],g=k=>String(s[k]===undefined?'':s[k]).trim();for(
  const h=g('r'+i+'h');if(g('r'+i+'a')===''&&h==='No trip'){}else if(h==='Tripped')f.push(nm+' RCD 0.5x tripped')}{const [a,b]=vlim();[['ln','L-N'],['le','L-E']].forEach(([k,n])=>{const v=g(k);if(v!==''&&(parseFloat(v)<a||parseFloat(v)>b))f.push(n+' voltage')})}return f}
 function issuesOf(s,hasPh){const o=[],f=failsOf(s);if(f.length)o.push(['bad','Out of limits: '+f.join(', ')]);if(!(s.job||'').trim())o.push(['warn','COES number missing']);if(!(s.sig||'').trim()&&!s.sigImg)o.push(['warn','Not signed']);if(!s.pol)o.push(['warn','Polarity not selected']);if(!s.con)o.push(['warn','Connections not selected']);
  const un=['c1','c2','c3','c4','c5','c6','c7','c8','d1','d3','d4'].filter(k=>s[k]!==true).length;if(un)o.push(['warn',un+' checklist item(s) not ticked']);if(!hasRead(s))o.push(['warn','No test readings entered']);
- if(!s.sent)o.push(['info','Not sent yet']);if(!s.pdfAt)o.push(['info','PDF not uploaded to Drive']);if(hasPh===false)o.push(['info','No photos saved']);return o}
+ if(!s.sent)o.push(['info','Not marked completed']);if(!s.pdfAt)o.push(['info','PDF not uploaded to Drive']);if(hasPh===false)o.push(['info','No photos saved']);return o}
 var showJobs=function showJobs0(){const t0=purgeTrash(),tn=Object.keys(t0).length;$('#jtrash').textContent=viewTrash?'Back to jobs':'Recently deleted'+(tn?' ('+tn+')':'');if(viewTrash)return showTrash(t0);const j=LS.get(JK,{});const q=($('#jq').value||'').toLowerCase(),f=$('#jf').value;
- const ids=Object.keys(j).sort((a,b)=>j[b].updated-j[a].updated).filter(id=>{const s=j[id].state;if(f==='coes'&&(s.job||'').trim())return false;if(f==='unsent'&&s.sent)return false;if(/^(Draft|Tested|COES entered|Sent)$/.test(f)&&jstat(s)[0]!==f)return false;return !q||[s.addr,s.job,s.work,s.pnotes].join(' ').toLowerCase().includes(q)});
- $('#jlist').innerHTML=ids.length?ids.map(id=>{const s=j[id].state;const pend=!(s.job||'').trim();const st=jstat(s),nf=failsOf(s).length;return `<div class="jrow" data-id="${id}"><div><b>${esc(s.addr||'No address')}</b> <span class="stt s${st[1]}">${st[0]}</span>${nf?'<span class="stf">✗ '+nf+' out of limits</span>':''}<br><span class="note">${esc(s.date||'')} | ${pend?'<span style="color:var(--bad)">COES not entered</span>':'COES '+esc(s.job)} | ${s.sent?'Sent '+esc(s.sent):'Not sent'}${id===state.jid?' | open now':''}</span></div><div class="jb2"><button class="s" data-a="open">Open</button><button class="s" data-a="send">Send</button><button class="s" data-a="dup">Duplicate</button><button class="s" data-a="sent">${s.sent?'Unmark sent':'Mark sent'}</button><button class="s" data-a="del">Delete</button></div></div>`}).join(''):'<div class="note">'+(Object.keys(j).length?'No matching jobs.':'No saved jobs yet. Fill in a form and it will appear here.')+'</div>';
+ const ids=Object.keys(j).sort((a,b)=>j[b].updated-j[a].updated).filter(id=>{const s=j[id].state;if(f==='coes'&&(s.job||'').trim())return false;if(f==='unsent'&&s.sent)return false;if(/^(Draft|Tested|COES entered|Completed)$/.test(f)&&jstat(s)[0]!==f)return false;return !q||[s.addr,s.job,s.work,s.pnotes].join(' ').toLowerCase().includes(q)});
+ $('#jlist').innerHTML=ids.length?ids.map(id=>{const s=j[id].state;const pend=!(s.job||'').trim();const st=jstat(s),nf=failsOf(s).length;return `<div class="jrow st${st[1]}" data-id="${id}"><div><b>${esc(s.addr||'No address')}</b> <span class="stt s${st[1]}">${st[0]}</span>${nf?'<span class="stf">✗ '+nf+' out of limits</span>':''}<br><span class="note">${esc(s.date||'')} | ${pend?'<span style="color:var(--bad)">COES not entered</span>':'COES '+esc(s.job)} | ${s.sent?'Completed '+esc(s.sent)+' 🔒':'Not completed'}${id===state.jid?' | open now':''}</span></div><div class="jb2"><button class="s" data-a="open">Open</button><button class="s" data-a="send">Send</button><button class="s" data-a="dup">Duplicate</button><button class="s" data-a="sent">${s.sent?'Reopen':'Mark completed'}</button><button class="s" data-a="del">Delete</button></div></div>`}).join(''):'<div class="note">'+(Object.keys(j).length?'No matching jobs.':'No saved jobs yet. Fill in a form and it will appear here.')+'</div>';
  $('#jb').hidden=false;updBadge()}
 function dupFrom(src){const keep=/^(c\d+n|r\d+n|bk\d+|r\d+t)$/,fixed=['addr','work','dmod','kyo','lmod','met','elec','n','calD','calL'];const o={};Object.keys(src).forEach(k=>{if(keep.test(k)||fixed.includes(k))o[k]=src[k]});state=o;LS.set('ev_state',o);init();save();toast('Duplicated. Readings, ticks, COES and signature are cleared.')}
 $('#dup').onclick=()=>{save();if(confirm('Duplicate this job? Circuit names, breakers, address and testers are kept. Readings, ticks, COES number and signature are cleared.'))dupFrom(state)};
@@ -690,7 +733,7 @@ $('#jlist').onclick=e=>{const b=e.target.closest('button');if(!b)return;const id
  else if(a==='open'&&j[id]){state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#jb').hidden=true;toast('Job opened')}
  else if(a==='send'&&j[id]){$('#jb').hidden=true;openSend(j[id].state)}
  else if(a==='dup'&&j[id]){dupFrom(j[id].state);$('#jb').hidden=true}
- else if(a==='sent'&&j[id]){const v=j[id].state.sent?'':today();j[id].state.sent=v;LS.set(JK,j);if(id===state.jid){state.sent=v;LS.set('ev_state',state)}showJobs()}
+ else if(a==='sent'&&j[id]){const v=j[id].state.sent?'':today();j[id].state.sent=v;LS.set(JK,j);if(id===state.jid){state.sent=v;LS.set('ev_state',state);applyLock()}showJobs()}
  else if(a==='del'){if(true){const t=LS.get(TK,{});if(j[id]){t[id]={deleted:Date.now(),job:j[id]};LS.set(TK,t)}delete j[id];LS.set(JK,j);{const tb=LS.get('ev_tomb',{});tb[id]=Date.now();LS.set('ev_tomb',tb)}toastU('Job moved to Recently deleted',()=>{const t2=LS.get(TK,{}),j2=LS.get(JK,{});if(t2[id]){j2[id]=t2[id].job;j2[id].updated=Date.now();LS.set(JK,j2);delete t2[id];LS.set(TK,t2);const tb=LS.get('ev_tomb',{});delete tb[id];LS.set('ev_tomb',tb)}if(!$('#jb').hidden)showJobs();updBadge()});if(state.jid===id){state={};LS.set('ev_state',{});init()}showJobs()}else{b.dataset.sure=1;b.textContent='Sure?'}}};
 $('#jexp').onclick=async()=>{save();const data={app:'electrical-verification',v:2,exported:new Date().toISOString(),defs,jobs:LS.get(JK,{})};{const ph=await phAll();if(Object.keys(ph).length&&confirm('Include photos in the backup? (makes the file bigger)'))data.photos=ph}const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));a.download='electrical-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);LS.set('ev_bk',Date.now());LS.set('ev_bkd',{});$('#bkbar').hidden=true;toast('Backup downloaded')};
 $('#jimpb').onclick=()=>$('#jimp').click();
@@ -727,7 +770,7 @@ $('#phAdd').onclick=()=>$('#phIn').click();
 $('#phIn').onchange=async e=>{save();const id=state.jid;for(const f of e.target.files){try{photos.push({d:await shrink(f),c:''})}catch(x){toast('Could not read that photo')}}e.target.value='';await phSet(id,photos);drawPhotos();bump(id);toast('Photo(s) added')};
 $('#thumbs').addEventListener('input',e=>{const i=e.target.dataset.pc;if(i===undefined)return;photos[+i].c=e.target.value;$('#ppgrid').querySelectorAll('figcaption')[+i].textContent=e.target.value;clearTimeout(window._pt);window._pt=setTimeout(()=>phSet(state.jid,photos),400)});
 $('#thumbs').onclick=async e=>{const b=e.target.closest('[data-ph]');if(!b)return;photos.splice(+b.dataset.ph,1);await phSet(state.jid,photos);drawPhotos()};
-$('#failpill').onclick=()=>{toast('Out of limits: '+lastFails.join(', '));const t=document.querySelector('td.fail');if(t)t.scrollIntoView({block:'center',behavior:'smooth'})};
+$('#failpill').onclick=()=>{toast('Out of limits: '+lastFails.join(', '));const t=document.querySelector('td.fail');if(t&&window.unfoldFor)unfoldFor(t);if(t)t.scrollIntoView({block:'center',behavior:'smooth'})};
 $('#xgo').onclick=()=>{$('#xtra').scrollIntoView({behavior:'smooth'})};
 // ---- copy from above ----
 $('#t1').addEventListener('click',e=>{const b=e.target.closest('[data-cp]');if(!b)return;const i=+b.dataset.cp,p=i-1;const cp=(k,pk)=>{const d=$(`[data-k=${k}${i}]`),s=$(`[data-k=${pk||k}${p}]`);if(!d||!s)return;if(d.type==='checkbox'){d.checked=s.checked;d.dataset.touched=1}else d.value=s.value};['bk','irv'].forEach(k=>cp(k));['fr','fz','fo'].forEach(k=>cp(k));$(`[data-k=irv${i}]`).dataset.touched=1;check();save();toast('Copied from circuit '+p)});
@@ -808,6 +851,23 @@ const _sj=showJobs;showJobs=function(){_sj.apply(this,arguments);setG()};
 const MODALS={jb:'#jclose',eod:'#eodClose',mon:'#monClose',snd:'#sndClose',em:'#emClose',dp:'#dcan',warn:'#wback'};
 Object.entries(MODALS).forEach(([id,btn])=>{const m=document.getElementById(id),box=m&&m.firstElementChild;if(!box)return;const h=document.createElement('div');h.className='mhead';const tt=box.querySelector('b');h.innerHTML='<span class="mt">'+(tt?tt.textContent:'')+'</span><button type="button">&#10005; Close</button>';if(tt)tt.style.display='none';h.lastChild.onclick=()=>$(btn).click();box.insertBefore(h,box.firstChild);m.addEventListener('click',e=>{if(e.target===m)$(btn).click()})});
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;for(const [id,btn] of Object.entries(MODALS)){const m=document.getElementById(id);if(m&&!m.hidden){$(btn).click();return}}$('#moreMenu').hidden=true});
+// ---- lock a completed job so a finished record is not changed by accident ----
+function applyLock(){const on=!!state.sent;document.body.classList.toggle('locked',on);try{$('#p1').inert=on;$('#p2').inert=on}catch(e){}$('#lockbar').hidden=!on;if(on)$('#locktxt').textContent='🔒 Completed '+state.sent+'. Locked so the record is not changed by accident.';$('#doneBtn').textContent=on?'Unlock job (reopen)':'Mark job completed'}
+function setDone(on){if(on){sync();save();state.sent=today();save()}else{state.sent='';save()}applyLock();updBadge();toast(on?'Job marked completed and locked':'Job unlocked')}
+$('#doneBtn').onclick=()=>setDone(!state.sent);
+$('#unlockBtn').onclick=()=>{if(confirm('Unlock this job for editing? It will no longer be marked completed.'))setDone(false)};
+
+// ---- collapsible sections (screen only) ----
+(function(){
+ const secs=[...document.querySelectorAll('.sec')];let fold=LS.get('ev_fold',[]);
+ function members(h){const a=[];let n=h.nextElementSibling;while(n&&!n.classList.contains('sec')){a.push(n);n=n.nextElementSibling}return a}
+ function apply(i,closed){const h=secs[i];h.classList.toggle('shut',closed);h.setAttribute('aria-expanded',!closed);members(h).forEach(m=>m.classList.toggle('sfold',closed))}
+ secs.forEach((h,i)=>{h.setAttribute('role','button');h.tabIndex=0;h.classList.add('fold');apply(i,fold.includes(i));
+  const t=()=>{const c=!h.classList.contains('shut');apply(i,c);fold=fold.filter(x=>x!==i);if(c)fold.push(i);LS.set('ev_fold',fold)};
+  h.addEventListener('click',e=>{if(e.target.closest('input,select,button,label'))return;t()});
+  h.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();t()}})});
+ window.unfoldFor=function(el){const sec=secs.find((h,i)=>h.classList.contains('shut')&&members(h).some(m=>m.contains(el)));if(sec){const i=secs.indexOf(sec);apply(i,false);fold=fold.filter(x=>x!==i);LS.set('ev_fold',fold)}};
+})();
 // ---- polish: menu, nav, progress, status, undo, theme ----
 $('#moreBtn').onclick=e=>{e.stopPropagation();const m=$('#moreMenu');if(!m.hidden){m.hidden=true;return}const r=$('#moreBtn').getBoundingClientRect();m.style.top=(r.bottom+6)+'px';m.hidden=false};
 document.addEventListener('click',e=>{if(!e.target.closest('#moreMenu,#moreBtn'))$('#moreMenu').hidden=true;else if(e.target.closest('#moreMenu button:not(#themeBtn)'))$('#moreMenu').hidden=true});
@@ -839,11 +899,11 @@ $('#pdfIn').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f
 // ---- monthly summary + CSV ----
 function monJobs(m){const j=LS.get(JK,{});return Object.keys(j).map(id=>j[id].state).filter(s=>!m||(s.date||'').slice(0,7)===m).sort((a,b)=>((a.date||'')+(a.time||'')).localeCompare((b.date||'')+(b.time||'')))}
 function monShow(){const m=$('#monM').value,L=monJobs(m);const t=L.filter(hasRead).length,c=L.filter(s=>(s.job||'').trim()).length,sn=L.filter(s=>s.sent).length,fl=L.filter(s=>failsOf(s).length).length;
- $('#monSum').textContent=L.length?L.length+' job(s): '+t+' tested, '+c+' with COES, '+sn+' sent, '+fl+' with out-of-limit readings':'No jobs saved in this month.';
+ $('#monSum').textContent=L.length?L.length+' job(s): '+t+' tested, '+c+' with COES, '+sn+' completed, '+fl+' with out-of-limit readings':'No jobs saved in this month.';
  const all=monJobs('');const by={};all.forEach(s=>{const k=(s.date||'').slice(0,7);if(k)by[k]=(by[k]||0)+1});
  $('#monList').innerHTML=(L.length?'<table class="mtab"><tr><th>Date</th><th>Address</th><th>COES</th><th>Status</th></tr>'+L.map(s=>`<tr><td>${esc(s.date||'')}</td><td>${esc(s.addr||'')}</td><td>${esc(s.job||'')}</td><td>${jstat(s)[0]}</td></tr>`).join('')+'</table>':'')+'<div class="note">Jobs per month: '+Object.keys(by).sort().reverse().slice(0,12).map(k=>k+' ('+by[k]+')').join(' | ')+'</div>'}
 const csvq=v=>'"'+String(v===undefined||v===null?'':v).replace(/"/g,'""')+'"';
-function monCsv(m){const L=monJobs(m);const rows=[['Date','Time','Address','COES','Status','Sent date','Circuits','Out of limits','Work completed','Electrician / licence']];L.forEach(s=>rows.push([s.date,s.time,s.addr,s.job,jstat(s)[0],s.sent||'',s.n||'',failsOf(s).join('; '),s.work,s.elec]));
+function monCsv(m){const L=monJobs(m);const rows=[['Date','Time','Address','COES','Status','Completed date','Circuits','Out of limits','Work completed','Electrician / licence']];L.forEach(s=>rows.push([s.date,s.time,s.addr,s.job,jstat(s)[0],s.sent||'',s.n||'',failsOf(s).join('; '),s.work,s.elec]));
  const txt='\ufeff'+rows.map(r=>r.map(csvq).join(',')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/csv'}));a.download='electrical-jobs-'+(m||'all')+'.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);toast('CSV downloaded ('+L.length+' jobs)')}
 $('#monGo').onclick=()=>{$('#monM').value=$('#monM').value||today().slice(0,7);$('#jb').hidden=true;$('#mon').hidden=false;monShow()};
 $('#monM').onchange=monShow;$('#monCsv').onclick=()=>monCsv($('#monM').value);$('#monAll').onclick=()=>monCsv('');$('#monClose').onclick=()=>{$('#mon').hidden=true};
@@ -856,7 +916,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v22'; // keep in step with VERSION in sw.js
+const APP_VERSION='v24'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
