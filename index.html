@@ -248,6 +248,10 @@ body.big #addrSug div{padding:14px 12px;font-size:17px}
 body:has(#syncbar:not([hidden])){padding-bottom:70px}
 
 /* ===== polish (screen only) ===== */
+.mhead .mt{font-weight:700;font-size:17px;align-self:center;margin-right:auto}
+.mhead{position:sticky;top:-16px;z-index:3;display:flex;justify-content:flex-end;background:var(--paper);margin:-16px -18px 8px;padding:10px 12px 8px;border-bottom:1px solid var(--line)}
+.mhead button{background:var(--acc);color:#fff;border:0;font-weight:700;padding:10px 18px;border-radius:10px;font-size:15px}
+.wbox{max-height:88vh}
 #newAddrRow[hidden]{display:none}
 :root[data-theme="hc"]{--bg:#fff;--paper:#fff;--ink:#000;--mute:#222;--line:#000;--band:#e6e6e6;--acc:#0032a0;--ok:#005a1f;--bad:#a30000;--okbg:#d3f2dc;--badbg:#ffd9d6;--inp:#fff}
 :root[data-theme="hc"] input,:root[data-theme="hc"] select,:root[data-theme="hc"] textarea{border:2px solid #000!important}
@@ -268,9 +272,12 @@ body:has(#syncbar:not([hidden])){padding-bottom:70px}
  #moreMenu[hidden]{display:none}
  #moreMenu button{border:0;text-align:left;background:transparent;padding:12px 14px;font-size:15px;border-radius:9px;width:100%}
  #moreMenu button:hover,#moreMenu button:focus{background:var(--band)}
- #prog{max-width:900px;margin:12px auto 0;padding:0 16px}
- #prog .pl{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--mute)}
- #prog .pbar{height:9px;background:var(--band);border-radius:6px;overflow:hidden;margin-top:6px}
+ #hdr{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;background:var(--paper);box-shadow:0 2px 10px rgba(0,0,0,.1)}
+ #hdr .bar{position:static;box-shadow:none}
+ html{scroll-padding-top:104px}
+ #prog{max-width:none;margin:0;padding:6px 16px 9px;border-top:1px solid var(--line)}
+ #prog .pl{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--mute)}
+ #prog .pbar{height:7px;background:var(--band);border-radius:6px;overflow:hidden;margin-top:6px}
  #prog .pbar i{display:block;height:100%;width:0;background:var(--acc);transition:width .3s}#prog .pbar i.done{background:var(--ok)}
  #saveSt b{color:var(--bad)}
  #utoast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;z-index:45;background:#222;color:#fff;padding:10px 12px 10px 16px;border-radius:12px;display:flex;gap:14px;align-items:center;box-shadow:0 8px 26px rgba(0,0,0,.4);max-width:94vw}
@@ -295,6 +302,7 @@ body:has(#syncbar:not([hidden])){padding-bottom:70px}
 </style>
 </head>
 <body>
+<div id="hdr" class="noprint">
 <div class="bar">
  <div class="brand"><span class="logo">&#9889;</span><b>Elec Verify</b></div>
  <button id="failpill" class="s" hidden style="color:var(--bad);border-color:var(--bad);font-weight:700"></button>
@@ -308,6 +316,7 @@ body:has(#syncbar:not([hidden])){padding-bottom:70px}
  <button id="xgo">Notes / photos</button><button id="sendpc">Send to PC</button><button id="dup">Duplicate job</button><button id="eml">Email</button><button id="defs">Edit defaults</button><button id="themeBtn">Theme: Auto</button>
 </div>
 <div id="prog" class="noprint"><div class="pl"><span id="progTxt"></span><span id="saveSt"></span></div><div class="pbar"><i id="progFill"></i></div></div>
+</div>
 <div id="syncbar" class="noprint" hidden><span id="synctxt"></span><span class="sbtn"><button id="syncNow">Sync now</button><button class="s" id="syncLater">Later</button></span></div>
 <div id="bkbar" class="bkbar noprint" hidden><span id="bktxt">It has been over 30 days since your last backup. Jobs are stored only in this browser.</span><button class="s" id="bkNow">Back up now</button><button class="s" id="bkLater">Remind me in a week</button></div>
 
@@ -795,6 +804,10 @@ addEventListener('online',()=>{LS.set('ev_syncsnz',0);setTimeout(syncBar,800)});
 {let st;document.addEventListener('input',()=>{clearTimeout(st);st=setTimeout(syncBar,5000)})}
 setInterval(syncBar,60000);setTimeout(syncBar,1500);
 const _sj=showJobs;showJobs=function(){_sj.apply(this,arguments);setG()};
+// ---- every popup gets a clear Close button at the top, backdrop-tap and Esc to close ----
+const MODALS={jb:'#jclose',eod:'#eodClose',mon:'#monClose',snd:'#sndClose',em:'#emClose',dp:'#dcan',warn:'#wback'};
+Object.entries(MODALS).forEach(([id,btn])=>{const m=document.getElementById(id),box=m&&m.firstElementChild;if(!box)return;const h=document.createElement('div');h.className='mhead';const tt=box.querySelector('b');h.innerHTML='<span class="mt">'+(tt?tt.textContent:'')+'</span><button type="button">&#10005; Close</button>';if(tt)tt.style.display='none';h.lastChild.onclick=()=>$(btn).click();box.insertBefore(h,box.firstChild);m.addEventListener('click',e=>{if(e.target===m)$(btn).click()})});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;for(const [id,btn] of Object.entries(MODALS)){const m=document.getElementById(id);if(m&&!m.hidden){$(btn).click();return}}$('#moreMenu').hidden=true});
 // ---- polish: menu, nav, progress, status, undo, theme ----
 $('#moreBtn').onclick=e=>{e.stopPropagation();const m=$('#moreMenu');if(!m.hidden){m.hidden=true;return}const r=$('#moreBtn').getBoundingClientRect();m.style.top=(r.bottom+6)+'px';m.hidden=false};
 document.addEventListener('click',e=>{if(!e.target.closest('#moreMenu,#moreBtn'))$('#moreMenu').hidden=true;else if(e.target.closest('#moreMenu button:not(#themeBtn)'))$('#moreMenu').hidden=true});
@@ -843,7 +856,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v21'; // keep in step with VERSION in sw.js
+const APP_VERSION='v22'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
