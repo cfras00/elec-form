@@ -84,7 +84,7 @@ body.big td input[type=text],body.big td input[type=number]{padding:10px 6px}
  .page:last-of-type{page-break-after:auto}
  .pb{display:none}
  input,select,textarea{border:0!important;border-bottom:1px solid #888!important;background:#fff!important;padding:2px!important;-webkit-appearance:none;appearance:none}
- td.pass,td.fail{background:#fff}
+ td.pass,td.fail,td.mg{background:#fff!important}
  .scroll{overflow:visible} table{min-width:0}
  @page{size:A4;margin:9mm}
  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -206,8 +206,8 @@ body.big #addrSug div{padding:14px 12px;font-size:17px}
  #t1 td,#t2 td{display:block;border:0;border-top:1px solid var(--line);padding:6px 10px 8px;min-width:0}
  #t1 td::before,#t2 td::before{content:attr(data-l);display:block;font-size:12px;color:var(--mute);margin-bottom:3px}
  #t1 td:first-child,#t2 td:first-child{grid-column:1/-1;border-top:0;background:var(--band)}
- #t1 td:first-child::before{content:"Circuit " counter(cc);font-weight:700;color:var(--ink);font-size:13px}
- #t2 td:first-child::before{content:"Circuit " counter(rc);font-weight:700;color:var(--ink);font-size:13px}
+ #t1 td:first-child::before{content:"Circuit " attr(data-n);font-weight:700;color:var(--ink);font-size:13px}
+ #t2 td:first-child::before{content:"Circuit " attr(data-n);font-weight:700;color:var(--ink);font-size:13px}
  #t1 td:nth-child(3){grid-column:1/-1;order:4}
  #t1 td:nth-child(4){order:3}
  #t1 td:nth-child(2){order:2}
@@ -340,6 +340,28 @@ body.locked #p1,body.locked #p2{opacity:.82}
  #t1 tr[data-cs=ok] td:first-child::after,#t2 tr[data-cs=ok] td:first-child::after{order:1;content:"\2713 Pass";color:var(--ok);font-weight:800;font-size:13px}
  #t1 tr[data-cs=bad] td:first-child::after,#t2 tr[data-cs=bad] td:first-child::after{order:1;content:"\2717 Fail";color:var(--bad);font-weight:800;font-size:13px}
 }
+
+/* ===== v26 ===== */
+.rbar{height:4px;background:var(--band);border-radius:3px;margin-top:3px;overflow:hidden}.rbar i{display:block;height:100%;width:0;transition:width .25s,background .25s}.rbar i.g{background:var(--ok)}.rbar i.a{background:#e0a800}.rbar i.r{background:var(--bad)}
+.rsum{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}.rsum[hidden]{display:none}.rsum span{background:var(--band);border-radius:10px;padding:6px 12px;font-size:13px;font-weight:600}.rsum .g{color:var(--ok)}.rsum .r{color:var(--bad)}
+.sec .tickall{margin-left:auto;padding:4px 12px;font-size:13px;font-weight:600;min-height:0}.sec.has-t::after{margin-left:8px!important}
+.sec.fold{flex-wrap:wrap}.sec .fh{display:none;font-size:12px;font-weight:500;color:var(--mute);margin-left:4px}.sec.shut .fh{display:inline}.sec.fold .fh{order:5;margin-left:auto;margin-right:2px}.sec.fold .tickall{order:4;margin-left:0}.sec.fold::after{order:6;margin-left:6px!important}.sec.fold:not(.shut) .tickall{margin-left:auto}
+.bkbar.inst{background:var(--band);color:var(--ink);border-left:6px solid var(--acc)}
+.mgn{font-size:12px;font-weight:600;margin-top:3px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;color:var(--ink)}.mgn:empty{display:none}.mgn button{padding:2px 10px;font-size:12px;min-height:0}
+td.mg:not(.fail){background:rgba(224,168,0,.18)}
+.rvt{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}.rvt th,.rvt td{border:1px solid var(--line);padding:4px 6px;text-align:left}.fixb{padding:2px 12px;margin-left:6px;font-size:13px;min-height:0}
+.cpg{display:none}
+@media screen and (max-width:700px){
+ body.swp .cpg{display:flex;align-items:center;gap:8px;margin:8px 0;padding:6px 0;border-bottom:1px solid var(--line)}
+ body.swp .cpg .cmid{flex:1;text-align:center;min-width:0}.cpg .cl{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .cpg button.s{min-height:44px;padding:8px 14px}.cpg button:disabled{opacity:.35}
+ .cpg .dots{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+ .cpg .dots button{width:12px;height:12px;min-height:0;padding:0;border-radius:50%;border:2px solid var(--mute);background:var(--paper)}
+ .cpg .dots button.ok{background:var(--ok);border-color:var(--ok)}.cpg .dots button.bad{background:var(--bad);border-color:var(--bad)}
+ .cpg .dots button.on{transform:scale(1.35);box-shadow:0 0 0 2px var(--acc)}
+ body.swp #t1 tr.soff,body.swp #t2 tr.soff{display:none!important}
+}
+#jb .wbox{overscroll-behavior:contain}#ptr{height:0;overflow:hidden;text-align:center;color:var(--mute);font-size:13px;transition:height .15s}
 </style>
 </head>
 <body>
@@ -354,12 +376,13 @@ body.locked #p1,body.locked #p2{opacity:.82}
  <button id="moreBtn" aria-haspopup="true">&#8943; More</button>
 </div>
 <div id="moreMenu" class="noprint" hidden>
- <button id="doneBtn">Mark job completed</button><button id="xgo">Notes / photos</button><button id="sendpc">Send to PC</button><button id="dup">Duplicate job</button><button id="eml">Email</button><button id="defs">Edit defaults</button><button id="themeBtn">Theme: Auto</button>
+ <button id="undoBtn">Undo last change</button><button id="rvBtn">Review job</button><button id="instBtn" hidden>Install app</button><button id="doneBtn">Mark job completed</button><button id="xgo">Notes / photos</button><button id="sendpc">Send to PC</button><button id="dup">Duplicate job</button><button id="eml">Email</button><button id="defs">Edit defaults</button><button id="themeBtn">Theme: Auto</button>
 </div>
 <div id="lockbar" class="noprint" hidden><span id="locktxt"></span><button id="unlockBtn">Unlock to edit</button></div>
 <div id="prog" class="noprint"><div class="pl"><span id="progTxt"></span><span id="saveSt"></span></div><div class="pbar"><i id="progFill"></i></div></div>
 </div>
 <div id="syncbar" class="noprint" hidden><span id="synctxt"></span><span class="sbtn"><button id="syncNow">Sync now</button><button class="s" id="syncLater">Later</button></span></div>
+<div id="instbar" class="bkbar inst noprint" hidden><span id="insttxt"></span><button class="s" id="instGo">Install</button><button class="s" id="instLater">Not now</button><button class="s" id="instNever">Don't ask again</button></div>
 <div id="bkbar" class="bkbar noprint" hidden><span id="bktxt">It has been over 30 days since your last backup. Jobs are stored only in this browser.</span><button class="s" id="bkNow">Back up now</button><button class="s" id="bkLater">Remind me in a week</button></div>
 
 <!-- PAGE 1 -->
@@ -455,6 +478,7 @@ body.locked #p1,body.locked #p2{opacity:.82}
   <label class="f calf">Calibration due<input type="date" id="calL"></label>
  </div>
 
+ <div id="rsum" class="rsum noprint" hidden></div>
  <div class="sec">1 CIRCUIT MEASUREMENTS | enter actual readings</div>
  <div class="scroll"><table id="t1">
   <tr><th>Circuit / test point</th><th>PE &Omega;</th><th>IR M&Omega; / V</th><th>Zs &Omega;</th><th>Fault protection verified</th></tr>
@@ -490,17 +514,17 @@ body.locked #p1,body.locked #p2{opacity:.82}
  <div><button class="s" id="phAdd">Add photo</button> <input type="file" id="phIn" accept="image/*" multiple hidden> <label style="margin-left:8px"><input type="checkbox" id="phPrint"> Include photos as an extra page when printing</label></div>
  <div id="thumbs"></div>
  <div style="margin-top:12px"><b>PDF copy</b> <span class="note">After printing and saving the PDF on this device, upload it to your Drive folder "Elec Verify PDFs" (named by date, address and COES number).</span><br><button class="s" id="pdfUp">Upload saved PDF to Google Drive</button> <input type="file" id="pdfIn" accept="application/pdf" hidden> <span class="note" id="pdfStat"></span></div></div>
-<div id="warn" class="noprint" hidden><div class="wbox"><b>Check before printing</b><ul id="wl"></ul><div class="wbtn"><button id="wback">Go back</button><button class="p" id="wgo">Print anyway</button></div></div></div>
+<div id="warn" class="noprint" hidden><div class="wbox"><b id="wtitle">Check before printing</b><ul id="wl"></ul><div id="wtab" style="overflow-x:auto"></div><div class="wbtn"><button id="wback">Go back</button><button class="p" id="wgo">Print anyway</button></div></div></div>
 <div id="dp" class="noprint" hidden><div class="wbox dbox"><b>Defaults</b><div class="note">Prefilled on every new job. Readings already entered are not changed.</div><div id="dform"></div><div class="wbtn"><button id="dcan">Cancel</button><button class="p" id="dsave">Save defaults</button></div></div></div>
 <div id="em" class="noprint" hidden><div class="wbox dbox"><b>Email details</b><div class="note">Tap Open email app, or Copy all and paste into a new email. Attach the saved PDF before sending.</div><label>To<input type="text" id="emTo"></label><label>Subject<input type="text" id="emSub"></label><label>Message<textarea id="emBody"></textarea></label><div class="wbtn"><button id="emClose">Close</button><button id="emShare" hidden>Share…</button><button id="emCopy">Copy all</button><button id="emOpen">Open email app</button><button class="p" id="emGmail">Open Gmail</button></div></div></div>
-<div id="jb" class="noprint" hidden><div class="wbox dbox"><b>Saved jobs</b><div class="note">Jobs save automatically as you type. Open one later to add the COES number, then print it. Backups include your jobs and defaults. To move jobs to another device, share or export a backup there and import it here; newer copies of a job win.</div><div class="row"><input type="text" id="jq" placeholder="Search address or COES" style="flex:2"><select id="jf" style="flex:1"><option value="">All</option><option value="Draft">Status: Draft</option><option value="Tested">Status: Tested (no COES)</option><option value="COES entered">Status: COES entered (not completed)</option><option value="Completed">Status: Completed</option><option value="coes">COES missing</option><option value="unsent">Not completed</option></select></div><div class="note" id="gstat"></div><div class="wbtn" style="justify-content:flex-start;margin:0 0 8px"><button id="eodGo">End-of-day check</button> <button id="monGo">Monthly summary</button></div><div id="jlist"></div><div class="wbtn"><button id="jtrash">Recently deleted</button><button id="jshare" hidden>Share backup</button><button id="jexp">Export backup</button><button id="jimpb">Import backup</button><button id="gsync" class="p">Sync with Google Drive</button><input type="file" id="jimp" accept=".json,.txt,application/json,text/plain" hidden><button id="jclose">Close</button></div></div></div>
+<div id="jb" class="noprint" hidden><div class="wbox dbox"><b>Saved jobs</b><div class="note">Jobs save automatically as you type. Open one later to add the COES number, then print it. Backups include your jobs and defaults. To move jobs to another device, share or export a backup there and import it here; newer copies of a job win.</div><div class="row"><input type="text" id="jq" placeholder="Search address, COES, circuit or work" style="flex:2"><select id="jf" style="flex:1"><option value="">All</option><option value="Draft">Status: Draft</option><option value="Tested">Status: Tested (no COES)</option><option value="COES entered">Status: COES entered (not completed)</option><option value="Completed">Status: Completed</option><option value="coes">COES missing</option><option value="unsent">Not completed</option></select></div><div class="row"><label class="f">From<input type="date" id="jd1"></label><label class="f">To<input type="date" id="jd2"></label><button class="s" id="jdx" style="align-self:flex-end">Clear dates</button></div><div class="note" id="gstat"></div><div class="wbtn" style="justify-content:flex-start;margin:0 0 8px"><button id="eodGo">End-of-day check</button> <button id="monGo">Weekly / monthly summary</button></div><div id="jlist"></div><div class="wbtn"><button id="jtrash">Recently deleted</button><button id="jshare" hidden>Share backup</button><button id="jexp">Export backup</button><button id="jimpb">Import backup</button><button id="gsync" class="p">Sync with Google Drive</button><input type="file" id="jimp" accept=".json,.txt,application/json,text/plain" hidden><button id="jclose">Close</button></div></div></div>
 <div id="snd" class="noprint" hidden><div class="wbox dbox"><b>Send this job to another device</b><div class="note" id="sndAddr"></div>
 <div class="note">Copy the link, then send it to yourself (WhatsApp, Messages, Gmail, Google Keep…). Open the link on your PC and the job loads into the form, ready to add the COES number and print. Photos are not included; use Export backup for those.</div>
 <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="sndSig" checked> Include signature</label>
 <label>Link<textarea id="sndLink" readonly rows="4"></textarea></label><div class="note" id="sndSize"></div>
 <div class="wbtn"><button id="sndClose">Close</button><button id="sndFile">Save job file</button><button id="sndMail">Email to me</button><button id="sndShare" hidden>Share…</button><button class="p" id="sndCopy">Copy link</button></div></div></div>
 <div id="eod" class="noprint" hidden><div class="wbox dbox"><b>End-of-day check</b><div class="note">What is still missing on each job for the chosen day, before you submit.</div><label>Day<input type="date" id="eodDate"></label><div id="eodSum" class="note" style="font-weight:700;margin:6px 0"></div><div id="eodList"></div><div class="wbtn"><button id="eodClose">Close</button></div></div></div>
-<div id="mon" class="noprint" hidden><div class="wbox dbox"><b>Monthly summary</b><label>Month<input type="month" id="monM"></label><div id="monSum" class="note" style="font-weight:700;margin:6px 0"></div><div id="monList"></div><div class="wbtn"><button id="monAll">Download all jobs (CSV)</button><button class="p" id="monCsv">Download this month (CSV)</button><button id="monClose">Close</button></div></div></div>
+<div id="mon" class="noprint" hidden><div class="wbox dbox"><b>Summary</b><div class="row"><label class="f">View<select id="monMode"><option value="m">Month</option><option value="w">Week</option></select></label><label class="f" id="monMl">Month<input type="month" id="monM"></label><label class="f" id="monWl" hidden>Week containing<input type="date" id="monD"></label></div><div id="monSum" class="note" style="font-weight:700;margin:6px 0"></div><div id="monList"></div><div class="wbtn"><button id="monAll">Download all jobs (CSV)</button><button id="monShare">Share CSV</button><button class="p" id="monCsv">Download this period (CSV)</button><button id="monClose">Close</button></div></div></div>
 <div class="note noprint" style="text-align:center;margin:12px 0 24px">App version <span id="appver"></span> <button class="s" id="forceUpd" type="button">Check for update</button> | <span id="net"></span></div>
 <div id="updbar" class="bkbar noprint" hidden style="position:fixed;left:0;right:0;bottom:0;z-index:30"><span>A new version was installed.</span><button class="s" id="updGo">Reload now</button></div>
 <nav id="bnav" class="noprint"><button data-go="p1">&#9745;<span>Checklist</span></button><button data-go="p2">&#128202;<span>Results</span></button><button data-go="jobs">&#128193;<span>Jobs</span></button><button data-go="prn" class="p">&#128424;<span>Print</span></button></nav>
@@ -543,12 +567,12 @@ function zsMax(v){const k=devKey(v);if(!k)return null;const x=zsMap()[k];return 
 function peMax(v){const k=devKey(v);if(!k)return null;const t=tbl(rzText())[k];if(!t)return null;const x=defs.pemode==='R1R2'?t[0]:t[1];return x==null?null:x}
 function wrapU(i){const u=i.dataset.u||(/r$/.test(i.dataset.k||'')?'mA':'ms');const w=document.createElement('div');w.className='cw';i.parentNode.insertBefore(w,i);w.appendChild(i);const s=document.createElement('span');s.className='unit';s.dataset.u=u;w.appendChild(s)}
 function addRow(i){
- $('#t1').insertAdjacentHTML('beforeend',`<tr><td><input type="text" data-k="c${i}n" list="cnames" placeholder="Circuit ${i}"><input type="text" class="bk" data-k="bk${i}" list="brk" placeholder="Breaker e.g. C20">${i>1?'<button type="button" class="cp noprint" data-cp="'+i+'">Copy breaker/ticks from above</button>':''}</td>
- <td data-chk="pe" data-l="PE continuity (Ω)"><input type="number" step="0.01" data-k="pe${i}" data-u="Ω"><div class="mx"></div></td>
- <td data-chk="ir" data-l="Insulation resistance (MΩ / V)"><div class="irw"><input type="text" inputmode="decimal" data-k="ir${i}" data-u="MΩ"><span>/</span><input type="number" data-k="irv${i}" data-u="V"></div></td>
- <td data-l="Zs loop impedance (Ω)"><input type="number" step="0.01" data-k="zs${i}" data-u="Ω"><div class="mx"></div></td>
+ $('#t1').insertAdjacentHTML('beforeend',`<tr><td data-n="${i}"><input type="text" data-k="c${i}n" list="cnames" placeholder="Circuit ${i}"><input type="text" class="bk" data-k="bk${i}" list="brk" placeholder="Breaker e.g. C20">${i>1?'<button type="button" class="cp noprint" data-cp="'+i+'">Copy breaker/ticks from above</button>':''}</td>
+ <td data-chk="pe" data-l="PE continuity (Ω)"><input type="number" step="0.01" data-k="pe${i}" data-u="Ω"><div class="mx"></div><div class="rbar noprint"><i></i></div><div class="mgn noprint"></div></td>
+ <td data-chk="ir" data-l="Insulation resistance (MΩ / V)"><div class="irw"><input type="text" inputmode="decimal" data-k="ir${i}" data-u="MΩ"><span>/</span><input type="number" data-k="irv${i}" data-u="V"></div><div class="mgn noprint"></div></td>
+ <td data-l="Zs loop impedance (Ω)"><input type="number" step="0.01" data-k="zs${i}" data-u="Ω"><div class="mx"></div><div class="rbar noprint"><i></i></div><div class="mgn noprint"></div></td>
  <td class="mt" data-l="Fault protection verified"><label><input type="checkbox" data-k="fr${i}"> RCD</label><label><input type="checkbox" data-k="fz${i}"> Zs</label><label><input type="checkbox" data-k="fo${i}"> Other</label></td></tr>`);
- $('#t2').insertAdjacentHTML('beforeend',`<tr><td><input type="text" data-k="r${i}n" list="cnames" placeholder="Circuit ${i}"></td>
+ $('#t2').insertAdjacentHTML('beforeend',`<tr><td data-n="${i}"><input type="text" data-k="r${i}n" list="cnames" placeholder="Circuit ${i}"></td>
  <td data-l="RCD / RCBO type"><input type="text" data-k="r${i}t"></td>
  <td data-chk="nt" data-l="0.5x (no trip)"><select data-k="r${i}h"><option value=""></option><option>No trip</option><option>Tripped</option></select></td>
  <td data-chk="1x" data-l="1x ms (max 300)"><input type="number" data-k="r${i}a"></td>
@@ -583,7 +607,7 @@ function roundTime(t){const [h,m]=t.split(':').map(Number);return pad(h)+':'+pad
 
 // init values
 function init(){
- setN(state.n||parseInt(defs.nc,10)||1); document.body.classList.toggle('showcal',defs.cal==='show'); applyBig();
+ document.body.classList.toggle('swp',defs.swipe!=='list');swCur=1;setN(state.n||parseInt(defs.nc,10)||1); document.body.classList.toggle('showcal',defs.cal==='show'); applyBig();
  fillAddr(); fillElec(); fillLists(); $('#newAddrRow').hidden=true; $('#newAddr').value='';$$('[data-k^=irv],[data-k^=fr],[data-k^=fz],[data-k^=fo]').forEach(e=>delete e.dataset.touched); $('#date').value=state.date||today();
  $('#time').value=state.time||roundTime(nowT()).replace(/^(\d\d):60/,'$1:00');
  if(!$('#time').value)$('#time').value=ts.options[0].value;
@@ -607,7 +631,7 @@ function mark(td,ok){td=td.closest('td');td.classList.remove('pass','fail');if(o
 const vlim=()=>[parseFloat(defs.vmin)||216,parseFloat(defs.vmax)||253];
 let lastFails=[];
 function check(){
- const fails=[];let any=false;
+ const fails=[];let any=false;lastOdd=[];lastMarg=[];
  for(let i=1;i<=N;i++){const a=$(`[data-k=ir${i}]`),v=$(`[data-k=irv${i}]`);if(a.value.trim()&&v.value===''&&!v.dataset.touched)v.value=defs.irv||'500';fpAuto(i);a.closest('.irw').querySelector('span:not(.unit)').style.visibility=(a.value.trim()||v.value)?'visible':'hidden'}
  for(let i=1;i<=N;i++){const n=$(`[data-k=r${i}n]`);n.closest('tr').classList.toggle('blank',['n','a','b','c','r'].every(s=>$(`[data-k=r${i}${s}]`).value.trim()===''))}
  $$('.unit').forEach(s=>{s.textContent=s.previousElementSibling.value!==''?s.dataset.u:''});
@@ -615,12 +639,12 @@ function check(){
   const f0=fails.length;const nm=$(`[data-k=c${i}n]`).value.trim()||$(`[data-k=r${i}n]`).value.trim()||('Circuit '+i);
   const ir=$(`[data-k=ir${i}]`).value.trim(); let ok=null;
   if(ir){any=true;const n=parseFloat(ir.replace(/[^0-9.]/g,'').split(/[\/]/)[0]);if(!isNaN(n))ok=n>=1}
-  mark($(`[data-k=ir${i}]`).parentElement,ok);if(ok===false)fails.push(nm+' IR');
+  mark($(`[data-k=ir${i}]`).parentElement,ok);if(ok===false)fails.push(nm+' IR');fieldNote($(`[data-k=ir${i}]`),'ir',null,nm,'IR');
   const pe=$(`[data-k=pe${i}]`),pl=peMax($(`[data-k=bk${i}]`).value);pe.closest('td').querySelector('.mx').textContent=pl!=null?'max '+pl+' Ω':'';
-  let pk=null;if(pe.value!==''){any=true;if(pl!=null)pk=parseFloat(pe.value)<=pl}mark(pe,pk);if(pk===false)fails.push(nm+' PE');
+  let pk=null;if(pe.value!==''){any=true;if(pl!=null)pk=parseFloat(pe.value)<=pl}mark(pe,pk);if(pk===false)fails.push(nm+' PE');bar(pe,pe.value,pl);fieldNote(pe,'pe',pl,nm,'PE');
   const z=$(`[data-k=zs${i}]`),mx=zsMax($(`[data-k=bk${i}]`).value);z.closest('td').querySelector('.mx').textContent=mx!=null?'max '+mx+' Ω':'';
   let zok=null;if(z.value!==''){any=true;if(mx!=null)zok=parseFloat(z.value)<=mx}
-  mark(z,zok);if(zok===false)fails.push(nm+' Zs');
+  mark(z,zok);if(zok===false)fails.push(nm+' Zs');bar(z,z.value,mx);fieldNote(z,'zs',mx,nm,'Zs');
   [['a',300,'1x'],['b',150,'2x'],['c',40,'5x']].forEach(([s,l,t])=>{const e=$(`[data-k=r${i}${s}]`);let k=null;if(e.value!==''){any=true;k=parseFloat(e.value)<=l}mark(e.parentElement,k);if(k===false)fails.push(nm+' RCD '+t)});
   if(+$(`[data-k=pe${i}]`).value||$(`[data-k=pe${i}]`).value!=='')any=true;
   const h=$(`[data-k=r${i}h]`);const hk=$(`[data-k=r${i}a]`).value===''&&h.value==='No trip'?null:h.value===''?null:h.value==='No trip';mark(h.parentElement,hk);if(hk===false)fails.push(nm+' RCD 0.5x tripped');
@@ -629,13 +653,13 @@ function check(){
  {const [vmn,vmx]=vlim();$('#vhint').textContent='Expected '+vmn+' to '+vmx+' V (L-N, L-E)';[['ln','L-N'],['le','L-E']].forEach(([k,n])=>{const el=$('#'+k),w=el.closest('.cw'),v=el.value;let ok=null;if(v!==''){any=true;ok=parseFloat(v)>=vmn&&parseFloat(v)<=vmx}w.classList.toggle('vok',ok===true);w.classList.toggle('vbad',ok===false);if(ok===false)fails.push(n+' voltage')})}
  const m=parseFloat($('#main').value);$('#mainFlag').textContent=isNaN(m)?'':(m<=0.5?'OK (≤ 0.5 Ω)':'Above 0.5 Ω – assess');
  const ppOn=photos.length>0&&$('#phPrint').checked;document.documentElement.classList.toggle('pp',ppOn);document.documentElement.classList.toggle('multi',N>8||ppOn);{const two=N<=8&&!ppOn;$('#pg1').textContent=two?'1 / 2':'Page 1';$('#pg2').textContent=two?'2 / 2':'Page 2'}
- lastFails=fails;if(typeof progress==='function')progress();{const fp=$('#failpill');fp.hidden=!fails.length;fp.textContent='✗ '+fails.length+' out of limits'}const sm=$('#sum');if(!any){sm.textContent='';sm.className='sumbox'}else if(fails.length){sm.textContent='✗ OUT OF LIMITS: '+fails.join(', ');sm.className='sumbox bad'}else{sm.textContent='✓ All entered readings are within the limits shown on this form.';sm.className='sumbox ok'}
+ lastFails=fails;rsum();swRefresh();if(window.updTick)updTick();if(typeof progress==='function')progress();{const fp=$('#failpill');fp.hidden=!fails.length;fp.textContent='✗ '+fails.length+' out of limits'}const sm=$('#sum');if(!any){sm.textContent='';sm.className='sumbox'}else if(fails.length){sm.textContent='✗ OUT OF LIMITS: '+fails.join(', ');sm.className='sumbox bad'}else{sm.textContent='✓ All entered readings are within the limits shown on this form.';sm.className='sumbox ok'}
 }
 function save(){
  const s={date:$('#date').value,time:$('#time').value,addr:$('#addr').value===NEW?'':$('#addr').value,job:$('#job').value,work:$('#work').value,elec:$('#elec').value,sig:$('#sig').value,sigTime:$('#sigTime').value,kyo:$('#kyo').value,met:$('#met').value,dmod:$('#dmod').value,lmod:$('#lmod').value,notes:$('#notes').value,notes2:$('#notes2').value,main:$('#main').value,ln:$('#ln').value,le:$('#le').value,ne:$('#ne').value,calD:$('#calD').value,calL:$('#calL').value,pnotes:$('#pnotes').value,phPrint:$('#phPrint').checked,pdfAt:state.pdfAt||0};
  $$('[data-k]').forEach(el=>s[el.dataset.k]=el.type==='checkbox'?el.checked:el.value);
  ['pol','con','fun'].forEach(n=>{const c=$(`input[name=${n}]:checked`);s[n]=c?c.value:''});
- s.n=N;s.sent=state.sent||'';s.sigImg=sigData;s.jid=state.jid||('j'+Date.now().toString(36));state=s;LS.set('ev_state',s);upsertJob(s);
+ s.n=N;s.sent=state.sent||'';s.sigImg=sigData;s.jid=state.jid||('j'+Date.now().toString(36));pushHist(state,s);state=s;LS.set('ev_state',s);upsertJob(s);
 }
 document.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.k;if(k&&k.startsWith('irv'))e.target.dataset.touched=1;sync();check();save()});
 document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.k;if(k&&/^f[rzo]\d/.test(k))e.target.dataset.touched=1;sync();check();save()});
@@ -678,13 +702,14 @@ function warnings(){const w=[];
  const un=$$('input[type=checkbox][data-k]').filter(e=>/^[cd]\d$/.test(e.dataset.k)&&e.dataset.k!=='d2'&&!e.checked).length;if(un)w.push(un+' checklist item(s) on page 1 not ticked.');
  for(let i=1;i<=N;i++){const has=['pe','ir','zs'].some(k=>$(`[data-k=${k}${i}]`).value.trim());if(has&&!['fr','fz','fo'].some(k=>$(`[data-k=${k}${i}]`).checked))w.push('Circuit '+i+': no fault protection method ticked.')}
  for(let i=1;i<=N;i++){if($(`[data-k=fo${i}]`).checked&&!$('#notes2').value.trim()){w.push('"Other" ticked on circuit '+i+' but no explanation in the notes.');break}}
+ if(lastOdd.length)w.push('Unusual value(s), check for typos: '+lastOdd.map(x=>x.t).join(', ')+'.');
  if(lastFails.length)w.unshift('OUT OF LIMITS ('+lastFails.length+'): '+lastFails.join(', '));
  const m=parseFloat($('#main').value);if(!isNaN(m)&&m>0.5)w.push('Main earth is above 0.5 Ω – assess.');
  if(!$('input[name=pol]:checked'))w.push('Polarity not selected.');
  if(!$('input[name=con]:checked'))w.push('Connections not selected.');
  return w}
 function doPrint(){sync();save();const old=document.title;document.title=fname();const back=()=>{document.title=old;window.removeEventListener('afterprint',back)};window.addEventListener('afterprint',back);setTimeout(back,60000);try{window.print();setTimeout(()=>toast('If no print dialog opened, open this form as a file in Chrome (see chat)'),600)}catch(e){back();toast('Printing is blocked here. Open the form as a file in Chrome.')}}
-$('#prn').onclick=()=>{sync();save();const w=warnings();if(!w.length)return doPrint();$('#wl').innerHTML=w.map(x=>'<li>'+x+'</li>').join('');$('#warn').hidden=false};
+$('#prn').onclick=()=>{sync();save();showReview(true)};
 $('#wback').onclick=()=>{$('#warn').hidden=true};
 $('#wgo').onclick=()=>{$('#warn').hidden=true;doPrint()};
 $('#eml').onclick=()=>{sync();save();const ad=$('#addr').value;const s='Electrical verification – '+(ad&&ad!==NEW?ad:'no address')+' – '+($('#date').value||today());const b='Job: '+($('#job').value||'(COES not entered yet)')+'\nWork: '+$('#work').value+'\n\nAttach the saved PDF ('+fname()+'.pdf) before sending.';location.href='mailto:'+(defs.email||'')+'?subject='+encodeURIComponent(s)+'&body='+encodeURIComponent(b)};
@@ -693,7 +718,7 @@ const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g
 function fillLists(){$('#workList').innerHTML=(defs.works||WORKS0).map(x=>`<option value="${esc(x)}">`).join('');$('#cnames').innerHTML=[...new Set((defs.cn||[]).concat(Object.values(defs.cbk||{}).map(o=>o.n)))].map(x=>`<option value="${esc(x)}">`).join('');$('#brk').innerHTML=Object.keys(zsMap()).map(x=>`<option value="${devLab(x)}">`).join('')}
 function fpAuto(i){const f=defs.fp;if(!f)return;const bx=['fr','fz','fo'].map(k=>$(`[data-k=${k}${i}]`));const has=['pe','ir','zs'].some(k=>$(`[data-k=${k}${i}]`).value.trim());if(has&&!bx.some(x=>x.checked||x.dataset.touched)){if(f.includes('RCD'))bx[0].checked=true;if(f.includes('Zs'))bx[1].checked=true}}
 const NONE=[['','Not selected']];
-const DF=[['dmod','Continuity / IR tester (type)','t'],['kyo','Continuity / IR tester serial number','t'],['lmod','Live / RCD tester (type)','t'],['met','Live / RCD tester serial number','t'],['elec','Electrician / licence','t'],['email','Your email (for the Email button)','t'],['work','Work completed (prefill)','t'],['rcd','RCD / RCBO type (e.g. A/30mA)','t'],['nt','0.5x result','s',[['No trip','No trip'],['','Blank']]],['irv','IR test voltage (V)','t'],['ln','L-N voltage (V)','t'],['le','L-E voltage (V)','t'],['ne','N-E voltage (V)','t'],['fp','Auto-tick fault protection when a circuit is used','s',[['','Off'],['RCD','RCD'],['Zs','Zs'],['RCD + Zs','RCD + Zs']]],['pol','Polarity','s',NONE.concat([['Correct','Correct'],['Fail','Fail'],['N/A','N/A']])],['con','Connections','s',NONE.concat([['Correct','Correct'],['Fail','Fail'],['N/A','N/A']])],['fun','Functional','s',NONE.concat([['OK','OK'],['N/A','N/A']])],['zst','Max Zs table (AS/NZS 3000 Table 8.1). One per line like C20=1.5 or F32/5s=2.2','a'],['rzt','Max PE resistance table (AS/NZS 3000 Table 8.2). One per line like C20=1.0/0.5 meaning R1+R2 / R2. Table 8.2 assumes its own cable sizes','a'],['pemode','The PE reading on page 2 is','s',[['R2','Earth conductor only (R2), compared with Re'],['R1R2','Active + earth (R1+R2), compared with Rphe']]],['big','Large buttons and fields','s',[['','Automatic (on for phones)'],['1','Always on'],['0','Off']]],['nc','Circuits on a new job (1 to 30; you can always add more)','t'],['vmin','Minimum expected supply voltage (V, default 216 = 230 V minus 6%)','t'],['vmax','Maximum expected supply voltage (V, default 253 = 230 V plus 10%)','t'],['abk','Remind me to back up after this many changed jobs (0 = off)','t'],['gcid','Google Drive client ID (already built in; leave blank)','t'],['cal','Calibration due dates','s',[['','Hidden'],['show','Show on the form']]],['calD','Continuity / IR tester calibration due (YYYY-MM-DD)','t'],['calL','Live / RCD tester calibration due (YYYY-MM-DD)','t'],['cn','Circuit name suggestions (one per line)','a'],['works','Work completed suggestions (one per line)','a'],['addrs','Saved addresses (one per line)','a'],['elecs','Saved names / licences (one per line)','a']];
+const DF=[['dmod','Continuity / IR tester (type)','t'],['kyo','Continuity / IR tester serial number','t'],['lmod','Live / RCD tester (type)','t'],['met','Live / RCD tester serial number','t'],['elec','Electrician / licence','t'],['email','Your email (for the Email button)','t'],['work','Work completed (prefill)','t'],['rcd','RCD / RCBO type (e.g. A/30mA)','t'],['nt','0.5x result','s',[['No trip','No trip'],['','Blank']]],['irv','IR test voltage (V)','t'],['ln','L-N voltage (V)','t'],['le','L-E voltage (V)','t'],['ne','N-E voltage (V)','t'],['fp','Auto-tick fault protection when a circuit is used','s',[['','Off'],['RCD','RCD'],['Zs','Zs'],['RCD + Zs','RCD + Zs']]],['pol','Polarity','s',NONE.concat([['Correct','Correct'],['Fail','Fail'],['N/A','N/A']])],['con','Connections','s',NONE.concat([['Correct','Correct'],['Fail','Fail'],['N/A','N/A']])],['fun','Functional','s',NONE.concat([['OK','OK'],['N/A','N/A']])],['zst','Max Zs table (AS/NZS 3000 Table 8.1). One per line like C20=1.5 or F32/5s=2.2','a'],['rzt','Max PE resistance table (AS/NZS 3000 Table 8.2). One per line like C20=1.0/0.5 meaning R1+R2 / R2. Table 8.2 assumes its own cable sizes','a'],['pemode','The PE reading on page 2 is','s',[['R2','Earth conductor only (R2), compared with Re'],['R1R2','Active + earth (R1+R2), compared with Rphe']]],['fold','Checklist sections on page 1','s',[['','Collapsed (tap a heading to expand)'],['open','Expanded']]],['swipe','Circuits on the phone','s',[['','Swipe one circuit at a time'],['list','Show all circuits in a list']]],['big','Large buttons and fields','s',[['','Automatic (on for phones)'],['1','Always on'],['0','Off']]],['nc','Circuits on a new job (1 to 30; you can always add more)','t'],['vmin','Minimum expected supply voltage (V, default 216 = 230 V minus 6%)','t'],['vmax','Maximum expected supply voltage (V, default 253 = 230 V plus 10%)','t'],['abk','Remind me to back up after this many changed jobs (0 = off)','t'],['gcid','Google Drive client ID (already built in; leave blank)','t'],['cal','Calibration due dates','s',[['','Hidden'],['show','Show on the form']]],['calD','Continuity / IR tester calibration due (YYYY-MM-DD)','t'],['calL','Live / RCD tester calibration due (YYYY-MM-DD)','t'],['cn','Circuit name suggestions (one per line)','a'],['works','Work completed suggestions (one per line)','a'],['addrs','Saved addresses (one per line)','a'],['elecs','Saved names / licences (one per line)','a']];
 function openDefs(){$('#dform').innerHTML=DF.map(([k,l,t,o])=>{let v=defs[k];if(Array.isArray(v))v=v.join('\n');if(v===undefined)v=k==='irv'?'500':k==='dmod'?'Kyoritsu 3132A':k==='lmod'?'Metrel MI 3122':k==='nt'?'No trip':k==='works'?WORKS0.join('\n'):k==='zst'?zsText():k==='rzt'?R82_0:k==='pemode'?'R2':'';
  if(t==='s')return `<label>${l}<select data-d="${k}">${o.map(([a,b])=>`<option value="${esc(a)}"${a===v?' selected':''}>${b}</option>`).join('')}</select></label>`;
  if(t==='a')return `<label>${l}<textarea data-d="${k}">${esc(v)}</textarea></label>`;
@@ -718,7 +743,7 @@ function issuesOf(s,hasPh){const o=[],f=failsOf(s);if(f.length)o.push(['bad','Ou
  const un=['c1','c2','c3','c4','c5','c6','c7','c8','d1','d3','d4'].filter(k=>s[k]!==true).length;if(un)o.push(['warn',un+' checklist item(s) not ticked']);if(!hasRead(s))o.push(['warn','No test readings entered']);
  if(!s.sent)o.push(['info','Not marked completed']);if(!s.pdfAt)o.push(['info','PDF not uploaded to Drive']);if(hasPh===false)o.push(['info','No photos saved']);return o}
 var showJobs=function showJobs0(){const t0=purgeTrash(),tn=Object.keys(t0).length;$('#jtrash').textContent=viewTrash?'Back to jobs':'Recently deleted'+(tn?' ('+tn+')':'');if(viewTrash)return showTrash(t0);const j=LS.get(JK,{});const q=($('#jq').value||'').toLowerCase(),f=$('#jf').value;
- const ids=Object.keys(j).sort((a,b)=>j[b].updated-j[a].updated).filter(id=>{const s=j[id].state;if(f==='coes'&&(s.job||'').trim())return false;if(f==='unsent'&&s.sent)return false;if(/^(Draft|Tested|COES entered|Completed)$/.test(f)&&jstat(s)[0]!==f)return false;return !q||[s.addr,s.job,s.work,s.pnotes].join(' ').toLowerCase().includes(q)});
+ const ids=Object.keys(j).sort((a,b)=>j[b].updated-j[a].updated).filter(id=>{const s=j[id].state;if(f==='coes'&&(s.job||'').trim())return false;if(f==='unsent'&&s.sent)return false;if(/^(Draft|Tested|COES entered|Completed)$/.test(f)&&jstat(s)[0]!==f)return false;const d1=$('#jd1').value,d2=$('#jd2').value;if(d1&&(s.date||'')<d1)return false;if(d2&&(s.date||'')>d2)return false;const cn=[];for(let i=1;i<=(s.n||8);i++){cn.push(s['c'+i+'n'],s['r'+i+'n'])}return !q||[s.addr,s.job,s.work,s.pnotes,s.elec].concat(cn).join(' ').toLowerCase().includes(q)});
  $('#jlist').innerHTML=ids.length?ids.map(id=>{const s=j[id].state;const pend=!(s.job||'').trim();const st=jstat(s),nf=failsOf(s).length;return `<div class="jrow st${st[1]}" data-id="${id}"><div><b>${esc(s.addr||'No address')}</b> <span class="stt s${st[1]}">${st[0]}</span>${nf?'<span class="stf">✗ '+nf+' out of limits</span>':''}<br><span class="note">${esc(s.date||'')} | ${pend?'<span style="color:var(--bad)">COES not entered</span>':'COES '+esc(s.job)} | ${s.sent?'Completed '+esc(s.sent)+' 🔒':'Not completed'}${id===state.jid?' | open now':''}</span></div><div class="jb2"><button class="s" data-a="open">Open</button><button class="s" data-a="send">Send</button><button class="s" data-a="dup">Duplicate</button><button class="s" data-a="sent">${s.sent?'Reopen':'Mark completed'}</button><button class="s" data-a="del">Delete</button></div></div>`}).join(''):'<div class="note">'+(Object.keys(j).length?'No matching jobs.':'No saved jobs yet. Fill in a form and it will appear here.')+'</div>';
  $('#jb').hidden=false;updBadge()}
 function dupFrom(src){const keep=/^(c\d+n|r\d+n|bk\d+|r\d+t)$/,fixed=['addr','work','dmod','kyo','lmod','met','elec','n','calD','calL'];const o={};Object.keys(src).forEach(k=>{if(keep.test(k)||fixed.includes(k))o[k]=src[k]});state=o;LS.set('ev_state',o);init();save();toast('Duplicated. Readings, ticks, COES and signature are cleared.')}
@@ -726,7 +751,7 @@ $('#dup').onclick=()=>{save();if(confirm('Duplicate this job? Circuit names, bre
 $('#jobs').onclick=()=>{save();viewTrash=false;showJobs()};
 $('#jtrash').onclick=()=>{viewTrash=!viewTrash;showJobs()};
 $('#jclose').onclick=()=>{$('#jb').hidden=true;viewTrash=false};
-$('#jq').oninput=showJobs;$('#jf').onchange=showJobs;
+$('#jq').oninput=showJobs;$('#jd1').onchange=$('#jd2').onchange=()=>showJobs();$('#jdx').onclick=()=>{$('#jd1').value='';$('#jd2').value='';showJobs()};$('#jf').onchange=showJobs;
 $('#jlist').onclick=e=>{const b=e.target.closest('button');if(!b)return;const id=b.closest('.jrow').dataset.id;const j=LS.get(JK,{});const a=b.dataset.a;
  if(a==='restore'){const t=LS.get(TK,{});if(t[id]){j[id]=t[id].job;j[id].updated=Date.now();LS.set(JK,j);delete t[id];LS.set(TK,t)}showJobs();toast('Job restored')}
  else if(a==='purge'){if(b.dataset.sure){const t=LS.get(TK,{});delete t[id];LS.set(TK,t);phSet(id,[]);showJobs()}else{b.dataset.sure=1;b.textContent='Sure?'}}
@@ -751,7 +776,7 @@ $('#emShare').onclick=()=>{try{navigator.share({title:$('#emSub').value,text:$('
 $('#emCopy').onclick=async()=>{const t='To: '+$('#emTo').value+'\nSubject: '+$('#emSub').value+'\n\n'+$('#emBody').value;try{await navigator.clipboard.writeText(t)}catch(e){const ta=$('#emBody');ta.select();document.execCommand('copy')}toast('Copied')};
 $('#defs').onclick=openDefs;
 $('#dcan').onclick=()=>{$('#dp').hidden=true};
-$('#dsave').onclick=()=>{$$('#dform [data-d]').forEach(e=>{const k=e.dataset.d;let v=e.value;if(['addrs','elecs','cn','works'].includes(k))v=v.split('\n').map(s=>s.trim()).filter(Boolean);else if(e.tagName!=='SELECT')v=v.trim();defs[k]=v});defs.elecs=defs.elecs||[];if(defs.elec&&!defs.elecs.includes(defs.elec))defs.elecs.unshift(defs.elec);LS.set('ev_defs',defs);save();state.kyo=defs.kyo;state.met=defs.met;state.dmod=defs.dmod;state.lmod=defs.lmod;state.calD=defs.calD;state.calL=defs.calL;state.elec=defs.elec;$('#dp').hidden=true;init();toast('Defaults saved')};
+$('#dsave').onclick=()=>{$$('#dform [data-d]').forEach(e=>{const k=e.dataset.d;let v=e.value;if(['addrs','elecs','cn','works'].includes(k))v=v.split('\n').map(s=>s.trim()).filter(Boolean);else if(e.tagName!=='SELECT')v=v.trim();defs[k]=v});defs.elecs=defs.elecs||[];if(defs.elec&&!defs.elecs.includes(defs.elec))defs.elecs.unshift(defs.elec);LS.set('ev_defs',defs);if(window.foldRefresh)foldRefresh(true);save();state.kyo=defs.kyo;state.met=defs.met;state.dmod=defs.dmod;state.lmod=defs.lmod;state.calD=defs.calD;state.calL=defs.calL;state.elec=defs.elec;$('#dp').hidden=true;init();toast('Defaults saved')};
 function applyBig(){const b=defs.big;const on=b==='1'||((b===undefined||b==='')&&matchMedia('(pointer:coarse)').matches);document.body.classList.toggle('big',!!on)}
 function bkCheck(){const j=LS.get(JK,{}),ids=Object.keys(j);if(!ids.length)return;const last=LS.get('ev_bk',0),first=Math.min(...ids.map(id=>j[id].updated)),ref=last||first;if(Date.now()-ref>30*864e5&&Date.now()>LS.get('ev_bksnooze',0))$('#bkbar').hidden=false}
 $('#bkNow').onclick=()=>$('#jexp').click();
@@ -815,7 +840,7 @@ function mergeSync(remote){const j=LS.get(JK,{}),tb=LS.get('ev_tomb',{});const r
  Object.entries(rj).forEach(([id,v])=>{if(tb[id]&&tb[id]>=v.updated)return;if(!j[id]||j[id].updated<v.updated){j[id]=v;got++}});
  Object.keys(tb).forEach(id=>{if(j[id]&&tb[id]>=j[id].updated)delete j[id];if(Date.now()-tb[id]>90*864e5)delete tb[id]});
  LS.set(JK,j);LS.set('ev_tomb',tb);return {jobs:j,tomb:tb,got}}
-const DEFX=['big','gcid'];
+const DEFX=['big','gcid','swipe','fold'];
 function defHash(){const o={};Object.keys(defs).sort().forEach(k=>{if(!DEFX.includes(k))o[k]=defs[k]});return JSON.stringify(o)}
 async function gSync(interactive){if(gbusy)return;gbusy=true;let rel=false;try{const tok=await gToken(interactive);if(!tok)return;setG('Syncing…');
  const fid=await gFolder(tok);let files=await gList(tok,fid);
@@ -859,15 +884,99 @@ $('#unlockBtn').onclick=()=>{if(confirm('Unlock this job for editing? It will no
 
 // ---- collapsible sections (screen only) ----
 (function(){
- const secs=[...document.querySelectorAll('.sec')];let fold=LS.get('ev_fold',[]);
+ const secs=[...document.querySelectorAll('.sec')];let ov=LS.get('ev_fold2',{});
+ const dflt=i=>i<3&&defs.fold!=='open';const want=i=>ov[i]!==undefined?!!ov[i]:dflt(i);
  function members(h){const a=[];let n=h.nextElementSibling;while(n&&!n.classList.contains('sec')){a.push(n);n=n.nextElementSibling}return a}
  function apply(i,closed){const h=secs[i];h.classList.toggle('shut',closed);h.setAttribute('aria-expanded',!closed);members(h).forEach(m=>m.classList.toggle('sfold',closed))}
- secs.forEach((h,i)=>{h.setAttribute('role','button');h.tabIndex=0;h.classList.add('fold');apply(i,fold.includes(i));
-  const t=()=>{const c=!h.classList.contains('shut');apply(i,c);fold=fold.filter(x=>x!==i);if(c)fold.push(i);LS.set('ev_fold',fold)};
+ secs.forEach((h,i)=>{h.setAttribute('role','button');h.tabIndex=0;h.classList.add('fold');
+  const hint=document.createElement('span');hint.className='fh noprint';hint.textContent='(tap to expand)';h.insertBefore(hint,null);
+  const t=()=>{const c=!h.classList.contains('shut');apply(i,c);ov[i]=c?1:0;LS.set('ev_fold2',ov)};
   h.addEventListener('click',e=>{if(e.target.closest('input,select,button,label'))return;t()});
   h.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();t()}})});
- window.unfoldFor=function(el){const sec=secs.find((h,i)=>h.classList.contains('shut')&&members(h).some(m=>m.contains(el)));if(sec){const i=secs.indexOf(sec);apply(i,false);fold=fold.filter(x=>x!==i);LS.set('ev_fold',fold)}};
+ window.foldRefresh=function(reset){if(reset){[0,1,2].forEach(i=>delete ov[i]);LS.set('ev_fold2',ov)}secs.forEach((h,i)=>apply(i,want(i)))};
+ window.unfoldFor=function(el){if(window.swShowFor)swShowFor(el);const sec=secs.find(h=>h.classList.contains('shut')&&members(h).some(m=>m.contains(el)));if(sec){const i=secs.indexOf(sec);apply(i,false);ov[i]=0;LS.set('ev_fold2',ov)}};
+ foldRefresh();
 })();
+// ---- v26: bars, summary, undo, tick-all, pull to sync ----
+function bar(el,v,l){const b=el.closest('td').querySelector('.rbar i');if(!b)return;const n=parseFloat(v);if(v===''||l==null||isNaN(n)||!l){b.style.width='0';b.className='';return}const r=n/l;b.style.width=Math.max(4,Math.min(100,r*100))+'%';b.className=r>1?'r':r>0.8?'a':'g'}
+function rsum(){const el=$('#rsum');if(!el)return;let t=0,ok=0,bad=0,minIR=null,maxZ=null;
+ for(let i=1;i<=N;i++){const e=$(`[data-k=c${i}n]`);const cs=e&&e.closest('tr').dataset.cs;if(cs==='ok')ok++;else if(cs==='bad')bad++;if(cs)t++;
+  const ir=parseFloat(($(`[data-k=ir${i}]`).value||'').replace(/[^0-9.]/g,'').split('/')[0]);if(!isNaN(ir)&&(minIR===null||ir<minIR))minIR=ir;
+  const z=parseFloat($(`[data-k=zs${i}]`).value);if(!isNaN(z)&&(maxZ===null||z>maxZ))maxZ=z}
+ if(!t){el.hidden=true;return}el.hidden=false;
+ el.innerHTML=`<span>${t} of ${N} circuit${N>1?'s':''} tested</span><span class="g">\u2713 ${ok} pass</span>${bad?`<span class="r">\u2717 ${bad} fail</span>`:''}${minIR!==null?`<span>Lowest IR ${minIR} M\u03A9</span>`:''}${maxZ!==null?`<span>Highest Zs ${maxZ} \u03A9</span>`:''}`}
+let HIST=[],histT=0,undoing=false;
+function pushHist(o,n){if(undoing||!o||!o.jid||Date.now()-histT<1500)return;const a=JSON.stringify(o);if(a===JSON.stringify(n))return;histT=Date.now();HIST.push(a);if(HIST.length>25)HIST.shift()}
+function undoLast(){if(state.sent){toast('This job is completed. Unlock it to edit.');return}let k=-1;for(let i=HIST.length-1;i>=0;i--){if(JSON.parse(HIST[i]).jid===state.jid){k=i;break}}
+ if(k<0){toast('Nothing to undo');return}const o=JSON.parse(HIST.splice(k,1)[0]);undoing=true;try{state=o;LS.set('ev_state',o);init();check();save()}finally{undoing=false}histT=Date.now();toast('Undid last change')}
+$('#undoBtn').onclick=undoLast;
+(function(){const bs=[];
+ [...document.querySelectorAll('#p1 .sec')].slice(0,3).forEach(h=>{const boxes=[];let n=h.nextElementSibling;while(n&&!n.classList.contains('sec')){if(n.matches('input[type=checkbox][data-k]'))boxes.push(n);else boxes.push(...n.querySelectorAll('input[type=checkbox][data-k]'));n=n.nextElementSibling}
+  if(!boxes.length)return;const b=document.createElement('button');b.type='button';b.className='s tickall noprint';h.classList.add('has-t');h.insertBefore(b,null);
+  const upd=()=>{b.textContent=boxes.every(c=>c.checked)?'Untick all':'\u2713 Tick all'};
+  const fire=()=>boxes[boxes.length-1].dispatchEvent(new Event('change',{bubbles:true}));
+  b.onclick=e=>{e.stopPropagation();const v=!boxes.every(c=>c.checked),snap=boxes.map(c=>c.checked);boxes.forEach(c=>c.checked=v);fire();toastU(v?'Ticked all in this section':'Unticked this section',()=>{boxes.forEach((c,i)=>c.checked=snap[i]);fire()})};
+  bs.push(upd);upd()});
+ window.updTick=()=>bs.forEach(f=>f())})();
+(function(){const box=document.querySelector('#jb .wbox');if(!box)return;let y0=null,dy=0,ptr=null;
+ const mk=()=>{if(!ptr){ptr=document.createElement('div');ptr.id='ptr';const h=box.querySelector('.mhead');box.insertBefore(ptr,h?h.nextSibling:box.firstChild)}return ptr};
+ box.addEventListener('touchstart',e=>{y0=box.scrollTop<=0?e.touches[0].clientY:null;dy=0},{passive:true});
+ box.addEventListener('touchmove',e=>{if(y0===null)return;dy=e.touches[0].clientY-y0;if(dy>0){const p=mk();p.style.height=Math.min(dy/2,56)+'px';p.textContent=dy>110?'Release to sync':'\u2193 Pull to sync'}},{passive:true});
+ box.addEventListener('touchend',()=>{if(y0===null)return;const go=dy>110;y0=null;if(!ptr)return;if(go){ptr.textContent='Syncing\u2026';const g=document.getElementById('gsync');if(g)g.click();setTimeout(()=>{ptr.style.height='0';ptr.textContent=''},1200)}else{ptr.style.height='0';ptr.textContent=''}dy=0});
+ box.addEventListener('touchcancel',()=>{y0=null;if(ptr){ptr.style.height='0';ptr.textContent=''}})})();
+
+// ---- v28: field notes, review, install ----
+var lastOdd=[],lastMarg=[];
+function fieldNote(el,kind,limit,nm,lab){const td=el.closest('td'),g=td&&td.querySelector('.mgn');if(!g)return;g._el=el;const v=el.value,n=kind==='ir'?parseFloat(v.replace(/[^0-9.]/g,'').split('/')[0]):parseFloat(v);let t='',m='';
+ if(v!==''&&!isNaN(n)){if((kind==='zs'&&n>=10)||(kind==='pe'&&n>=5)||(kind==='ir'&&n>0&&n<1)){if(el.dataset.keep!==v){t='odd';m=kind==='ir'?'Under 1 M\u03A9. Typo? (e.g. 500)':'Unusual value. Typo?'}}
+  if(!t&&limit&&n<=limit&&n>limit*0.9){t='marg';m='Close to the limit. Retest?'}}
+ td.classList.toggle('mg',!!t);td.classList.toggle('odd',t==='odd');
+ const k=t+m;if(g.dataset.k!==k){g.dataset.k=k;g.innerHTML=t?`<span>${t==='odd'?'\u26A0':'\u2139'} ${m}</span>${t==='odd'?'<button type="button" class="s" data-keep>Keep</button>':''}`:''}
+ if(t==='odd')lastOdd.push({t:nm+' '+lab,el});else if(t==='marg')lastMarg.push({t:nm+' '+lab,el})}
+document.addEventListener('click',e=>{const b=e.target.closest('.mgn [data-keep]');if(!b)return;const el=b.closest('.mgn')._el;if(el){el.dataset.keep=el.value;check()}});
+function fixTarget(t){const q=x=>document.querySelector(x);if(/^Date is empty/.test(t))return q('#date');if(/^Site/.test(t))return q('#addr');if(/^Electrician/.test(t))return q('#elec');if(/^Not signed/.test(t))return q('#sig');if(/calibration/.test(t))return q('#calD');
+ if(/^OUT OF LIMITS/.test(t))return q('td.fail input,td.fail select');if(/^Unusual/.test(t))return q('td.odd input');if(/checklist item/.test(t))return $$('input[type=checkbox][data-k]').find(e=>/^[cd]\d$/.test(e.dataset.k)&&e.dataset.k!=='d2'&&!e.checked);
+ let m=t.match(/^Circuit (\d+): no fault/);if(m)return q(`[data-k=fr${m[1]}]`);if(/Other/.test(t))return q('#notes2');if(/^Main earth/.test(t))return q('#main');if(/^Polarity/.test(t))return q('input[name=pol]');if(/^Connections/.test(t))return q('input[name=con]');return null}
+var rvT=[];
+function showReview(print){const w=warnings();if(print&&!w.length)return doPrint();
+ const it=w.map(t=>({t,el:fixTarget(t)}));lastMarg.forEach(x=>it.push({t:'Close to limit: '+x.t+' (consider a retest)',el:x.el,note:1}));rvT=it.map(x=>x.el);
+ $('#wtitle').textContent=print?'Check before printing':'Review job';{const mt=document.querySelector('#warn .mt');if(mt)mt.textContent=$('#wtitle').textContent}
+ $('#wl').innerHTML=it.length?it.map((x,i)=>`<li${x.note?' style="color:var(--mute)"':''}>${esc(x.t)} ${x.el?`<button class="s fixb" data-i="${i}">Fix</button>`:''}</li>`).join(''):'<li>\u2713 No issues found.</li>';
+ let h='';const rows=[];for(let i=1;i<=N;i++){const g=k=>$(`[data-k=${k}]`),nm=g('c'+i+'n').value.trim()||g('r'+i+'n').value.trim()||('Circuit '+i);const c=(k,u)=>{const e=g(k),v=e.value.trim();return `<td class="${e.closest('td').classList.contains('fail')?'fail':v&&e.closest('td').classList.contains('pass')?'pass':''}">${v?esc(v):'\u2013'}</td>`};
+  rows.push(`<tr><td><b>${esc(nm)}</b> ${esc(g('bk'+i).value)}</td>${c('pe'+i)}${c('ir'+i)}${c('zs'+i)}${c('r'+i+'a')}${c('r'+i+'c')}</tr>`)}
+ $('#wtab').innerHTML=`<table class="rvt" style="min-width:0"><tr><th>Circuit</th><th>PE \u03A9</th><th>IR M\u03A9</th><th>Zs \u03A9</th><th>RCD 1x</th><th>RCD 5x</th></tr>${rows.join('')}</table>`;
+ $('#wgo').textContent=print?'Print anyway':'Print';$('#warn').hidden=false}
+$('#wl').onclick=e=>{const b=e.target.closest('.fixb');if(!b)return;const el=rvT[+b.dataset.i];if(!el)return;$('#warn').hidden=true;if(window.unfoldFor)unfoldFor(el);el.scrollIntoView({block:'center',behavior:'smooth'});setTimeout(()=>{try{el.focus({preventScroll:true})}catch(x){}},350)};
+$('#rvBtn').onclick=()=>{sync();save();showReview(false)};
+var dip=null;const instOK=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+function instShow(force){if(instOK()||!/^https?:$/.test(location.protocol))return;if(!force&&(LS.get('ev_inst',0)||Date.now()<LS.get('ev_instsnz',0)))return;
+ const ios=/iPhone|iPad|iPod/.test(navigator.userAgent);$('#insttxt').textContent=dip?'Install Elec Verify on this device so it opens like an app and works offline.':(ios?'To install: tap the Share button, then Add to Home Screen.':'To install: open the browser menu (\u22EE) and choose Install app or Add to home screen.');$('#instGo').hidden=!dip;$('#instbar').hidden=false}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e;$('#instBtn').hidden=false;instShow()});
+window.addEventListener('appinstalled',()=>{LS.set('ev_inst',1);$('#instbar').hidden=true;$('#instBtn').hidden=true;dip=null;toast('Installed')});
+$('#instGo').onclick=async()=>{if(!dip)return;dip.prompt();try{await dip.userChoice}catch(e){}dip=null;$('#instbar').hidden=true;$('#instBtn').hidden=true};
+$('#instLater').onclick=()=>{LS.set('ev_instsnz',Date.now()+14*864e5);$('#instbar').hidden=true};
+$('#instNever').onclick=()=>{LS.set('ev_inst',1);$('#instbar').hidden=true};
+$('#instBtn').onclick=()=>instShow(true);
+if(!instOK()&&/^https?:$/.test(location.protocol))$('#instBtn').hidden=false;
+setTimeout(()=>instShow(),8000);
+
+// ---- v29: one circuit at a time on the phone ----
+var swCur=1;
+function swRows(id){return [...document.querySelectorAll('#'+id+' tr')].filter(r=>!r.querySelector('th'))}
+function swRefresh(){if(swCur>N)swCur=N;if(swCur<1)swCur=1;
+ ['t1','t2'].forEach(id=>swRows(id).forEach((r,k)=>r.classList.toggle('soff',k+1!==swCur)));
+ const r1=swRows('t1');const nm=(($(`[data-k=c${swCur}n]`)||{}).value||'').trim();
+ document.querySelectorAll('.cpg').forEach(pg=>{pg.querySelector('.cl').textContent='Circuit '+swCur+' of '+N+(nm?' \u00B7 '+nm:'');
+  pg.querySelector('.pv').disabled=swCur<=1;const nx=pg.querySelector('.nx');nx.textContent=swCur>=N?'+ Add':'Next \u203A';
+  const d=pg.querySelector('.dots');d.innerHTML=N<=12?r1.map((r,k)=>`<button type="button" data-i="${k+1}" aria-label="Circuit ${k+1}" class="${k+1===swCur?'on ':''}${r.dataset.cs||''}"></button>`).join(''):''})}
+function swGo(i,pg){if(i<1||i>N)return;swCur=i;swRefresh();if(pg){const r=pg.getBoundingClientRect();if(r.top<110||r.top>innerHeight-220)pg.scrollIntoView({block:'start',behavior:'smooth'})}}
+function swShowFor(el){const tr=el&&el.closest&&el.closest('tr');if(!tr||!tr.closest('#t1,#t2'))return;const k=swRows(tr.closest('table').id).indexOf(tr)+1;if(k>0&&k!==swCur){swCur=k;swRefresh()}}
+(function(){['t1','t2'].forEach(id=>{const w=document.getElementById(id).closest('.scroll');const pg=document.createElement('div');pg.className='cpg noprint';
+  pg.innerHTML='<button type="button" class="s pv">\u2039 Prev</button><div class="cmid"><b class="cl"></b><div class="dots"></div></div><button type="button" class="s nx">Next \u203A</button>';w.parentNode.insertBefore(pg,w);
+  pg.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.classList.contains('pv'))swGo(swCur-1,pg);else if(b.classList.contains('nx')){if(swCur>=N)$('#addC').click();else swGo(swCur+1,pg)}else if(b.dataset.i)swGo(+b.dataset.i,pg)};
+  let sx=0,sy=0;[w,pg].forEach(el=>{el.style.touchAction='pan-y';el.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+   el.addEventListener('touchend',e=>{if(!document.body.classList.contains('swp')||!matchMedia('(max-width:700px)').matches)return;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;if(Math.abs(dx)>70&&Math.abs(dx)>1.6*Math.abs(dy))swGo(swCur+(dx<0?1:-1),pg)})})});
+ $('#addC').addEventListener('click',()=>{swCur=N;swRefresh()});swRefresh()})();
 // ---- polish: menu, nav, progress, status, undo, theme ----
 $('#moreBtn').onclick=e=>{e.stopPropagation();const m=$('#moreMenu');if(!m.hidden){m.hidden=true;return}const r=$('#moreBtn').getBoundingClientRect();m.style.top=(r.bottom+6)+'px';m.hidden=false};
 document.addEventListener('click',e=>{if(!e.target.closest('#moreMenu,#moreBtn'))$('#moreMenu').hidden=true;else if(e.target.closest('#moreMenu button:not(#themeBtn)'))$('#moreMenu').hidden=true});
@@ -897,16 +1006,18 @@ $('#pdfIn').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f
  else{const bd='evp'+Date.now();const body=new Blob(['--'+bd+'\r\nContent-Type: application/json\r\n\r\n'+JSON.stringify({name,parents:[fid]})+'\r\n--'+bd+'\r\nContent-Type: application/pdf\r\n\r\n',f,'\r\n--'+bd+'--']);await gApi(tok,'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'multipart/related; boundary='+bd},body})}
  state.pdfAt=Date.now();save();pdfShow();toast('PDF saved to Drive: '+GPDF+' / '+name)}catch(err){toast(err.message||'Upload failed')}};
 // ---- monthly summary + CSV ----
-function monJobs(m){const j=LS.get(JK,{});return Object.keys(j).map(id=>j[id].state).filter(s=>!m||(s.date||'').slice(0,7)===m).sort((a,b)=>((a.date||'')+(a.time||'')).localeCompare((b.date||'')+(b.time||'')))}
-function monShow(){const m=$('#monM').value,L=monJobs(m);const t=L.filter(hasRead).length,c=L.filter(s=>(s.job||'').trim()).length,sn=L.filter(s=>s.sent).length,fl=L.filter(s=>failsOf(s).length).length;
- $('#monSum').textContent=L.length?L.length+' job(s): '+t+' tested, '+c+' with COES, '+sn+' completed, '+fl+' with out-of-limit readings':'No jobs saved in this month.';
+function monRange(){if($('#monMode').value==='w'){const d=new Date(($('#monD').value||today())+'T00:00:00'),dow=(d.getDay()+6)%7,a=new Date(d);a.setDate(d.getDate()-dow);const b=new Date(a);b.setDate(a.getDate()+6);const f=x=>x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');return{a:f(a),b:f(b),label:'week-'+f(a)+'-to-'+f(b)}}const m=$('#monM').value;return{m,label:m}}
+function monEnt(r){const j=LS.get(JK,{});if(typeof r!=='object')r={m:r};return Object.keys(j).map(id=>({s:j[id].state,u:j[id].updated})).filter(x=>{const d=x.s.date||'';return r.a?(d>=r.a&&d<=r.b):(!r.m||d.slice(0,7)===r.m)}).sort((p,q)=>((p.s.date||'')+(p.s.time||'')).localeCompare((q.s.date||'')+(q.s.time||'')))}
+function monJobs(m){return monEnt(m).map(x=>x.s)}
+function monShow(){const w=$('#monMode').value==='w';$('#monMl').hidden=w;$('#monWl').hidden=!w;if(w&&!$('#monD').value)$('#monD').value=today();const R=monRange(),E=monEnt(R),L=E.map(x=>x.s),gat=LS.get('ev_gat',0),pend=E.filter(x=>x.u>gat).length,m=R.m;const t=L.filter(hasRead).length,c=L.filter(s=>(s.job||'').trim()).length,sn=L.filter(s=>s.sent).length,fl=L.filter(s=>failsOf(s).length).length;
+ $('#monSum').textContent=L.length?L.length+' job(s): '+t+' tested, '+c+' with COES, '+sn+' completed, '+fl+' with out-of-limit readings. Drive: '+(L.length-pend)+' synced, '+pend+' waiting':'No jobs saved in this '+(w?'week':'month')+'.';
  const all=monJobs('');const by={};all.forEach(s=>{const k=(s.date||'').slice(0,7);if(k)by[k]=(by[k]||0)+1});
  $('#monList').innerHTML=(L.length?'<table class="mtab"><tr><th>Date</th><th>Address</th><th>COES</th><th>Status</th></tr>'+L.map(s=>`<tr><td>${esc(s.date||'')}</td><td>${esc(s.addr||'')}</td><td>${esc(s.job||'')}</td><td>${jstat(s)[0]}</td></tr>`).join('')+'</table>':'')+'<div class="note">Jobs per month: '+Object.keys(by).sort().reverse().slice(0,12).map(k=>k+' ('+by[k]+')').join(' | ')+'</div>'}
 const csvq=v=>'"'+String(v===undefined||v===null?'':v).replace(/"/g,'""')+'"';
-function monCsv(m){const L=monJobs(m);const rows=[['Date','Time','Address','COES','Status','Completed date','Circuits','Out of limits','Work completed','Electrician / licence']];L.forEach(s=>rows.push([s.date,s.time,s.addr,s.job,jstat(s)[0],s.sent||'',s.n||'',failsOf(s).join('; '),s.work,s.elec]));
- const txt='\ufeff'+rows.map(r=>r.map(csvq).join(',')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/csv'}));a.download='electrical-jobs-'+(m||'all')+'.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);toast('CSV downloaded ('+L.length+' jobs)')}
+function monCsv(m,share){const L=monJobs(m);const rows=[['Date','Time','Address','COES','Status','Completed date','Circuits','Out of limits','Work completed','Electrician / licence']];L.forEach(s=>rows.push([s.date,s.time,s.addr,s.job,jstat(s)[0],s.sent||'',s.n||'',failsOf(s).join('; '),s.work,s.elec]));
+ const txt='\ufeff'+rows.map(r=>r.map(csvq).join(',')).join('\r\n');const nmx='electrical-jobs-'+(m&&m.label?m.label:m||'all')+'.csv';if(share){try{const f=new File([txt],nmx,{type:'text/csv'});if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:nmx}).catch(e=>{if(e&&e.name!=='AbortError')toast('Sharing blocked. Use Download.')});return}}catch(e){}toast('Sharing not available here. Downloading instead.')}const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/csv'}));a.download=nmx;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);toast('CSV downloaded ('+L.length+' jobs)')}
 $('#monGo').onclick=()=>{$('#monM').value=$('#monM').value||today().slice(0,7);$('#jb').hidden=true;$('#mon').hidden=false;monShow()};
-$('#monM').onchange=monShow;$('#monCsv').onclick=()=>monCsv($('#monM').value);$('#monAll').onclick=()=>monCsv('');$('#monClose').onclick=()=>{$('#mon').hidden=true};
+$('#monM').onchange=monShow;$('#monD').onchange=monShow;$('#monMode').onchange=monShow;$('#monShare').onclick=()=>monCsv(monRange(),true);$('#monCsv').onclick=()=>monCsv(monRange());$('#monAll').onclick=()=>monCsv('');$('#monClose').onclick=()=>{$('#mon').hidden=true};
 // ---- end-of-day check ----
 async function eodShow(){const d=$('#eodDate').value||today(),j=LS.get(JK,{});const ph=await phAll();const ids=Object.keys(j).filter(id=>(j[id].state.date||'')===d).sort((a,b)=>(j[a].state.time||'').localeCompare(j[b].state.time||''));let need=0;
  const html=ids.map(id=>{const s=j[id].state,st=jstat(s),is=issuesOf(s,!!(ph[id]&&ph[id].length)),bad=is.filter(x=>x[0]!=='info');if(bad.length)need++;return `<div class="jrow" data-id="${id}"><div><b>${esc(s.addr||'No address')}</b> <span class="stt s${st[1]}">${st[0]}</span>${(s.job||'').trim()?' <span class="note">COES '+esc(s.job)+'</span>':''}<ul class="eodi">${bad.length?'':'<li class="ok">✓ Nothing missing</li>'}${is.map(([c,m])=>`<li class="${c}">${c==='bad'?'✗':c==='warn'?'•':'–'} ${esc(m)}</li>`).join('')}</ul></div><div class="jb2"><button class="s" data-a="eopen">Open</button></div></div>`}).join('');
@@ -916,7 +1027,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v25'; // keep in step with VERSION in sw.js
+const APP_VERSION='v29'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
