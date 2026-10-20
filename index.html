@@ -149,6 +149,7 @@ body.big td input[type=text],body.big td input[type=number]{padding:10px 6px}
  input:focus,select:focus,textarea:focus{outline:none!important;box-shadow:none!important}
  #t1 td,#t2 td{height:19px!important;padding:2px 3px!important}
  #t2 td input,#t2 td select,#t1 td input{padding:1px 2px!important}
+ #t2 th:nth-child(3),#t2 td:nth-child(3){min-width:52px}#t2 td select{min-width:46px;font-size:9px}
  #p2 .sec{margin:7px 0 4px}
  #p2 .row{margin:2px 0}
  #p2 .inline{margin:3px 0}
@@ -500,7 +501,7 @@ body.offline #barSync{opacity:.5}
 
  <div class="sec">2 <span class="lm"></span> | RCD / RCBO RESULTS</div>
  <div class="scroll"><table id="t2">
-  <tr><th>Circuit / RCD ID</th><th>RCD / RCBO<br><small>e.g. A/C40/30mA</small></th><th>0.5x<br>No trip</th><th>1x ms<br><small>&le;300</small></th><th>2x ms<br><small>&le;150</small></th><th>5x ms<br><small>&le;40</small></th><th>Ramp mA</th></tr>
+  <tr><th>Circuit / RCD ID</th><th>RCD / RCBO<br><small>e.g. A/C40/30mA</small></th><th>0.5x<br>No trip</th><th>1x ms<br><small>&le;300</small></th><th>1x<br>0&deg;</th><th>1x<br>180&deg;</th><th>2x ms<br><small>&le;150</small></th><th>2x<br>0&deg;</th><th>2x<br>180&deg;</th><th>5x ms<br><small>&le;40</small></th><th>5x<br>0&deg;</th><th>5x<br>180&deg;</th><th>Ramp mA</th></tr>
  </table></div>
  <p class="note">Typical non-delayed 30 mA RCD: 0.5x = NO TRIP | 1x &le; 300 ms | 2x &le; 150 ms | 5x &le; 40 ms. Use applicable device/test-waveform requirements. Example: A/C40/30mA = Type A RCD, C-curve 40 A breaker, 30 mA trip sensitivity. Cells turn green/red against these limits.</p>
  <div id="sum" class="sumbox"></div>
@@ -586,8 +587,14 @@ function addRow(i){
  <td data-l="RCD / RCBO type"><input type="text" data-k="r${i}t"></td>
  <td data-chk="nt" data-l="0.5x (no trip)"><select data-k="r${i}h"><option value=""></option><option>No trip</option><option>Tripped</option></select></td>
  <td data-chk="1x" data-l="1x ms (max 300)"><input type="number" data-k="r${i}a"></td>
+ <td data-l="1x 0° ms"><input type="number" data-k="r${i}d"></td>
+ <td data-l="1x 180° ms"><input type="number" data-k="r${i}e"></td>
  <td data-chk="2x" data-l="2x ms (max 150)"><input type="number" data-k="r${i}b"></td>
+ <td data-l="2x 0° ms"><input type="number" data-k="r${i}f"></td>
+ <td data-l="2x 180° ms"><input type="number" data-k="r${i}g"></td>
  <td data-chk="5x" data-l="5x ms (max 40)"><input type="number" data-k="r${i}c"></td>
+ <td data-l="5x 0° ms"><input type="number" data-k="r${i}j"></td>
+ <td data-l="5x 180° ms"><input type="number" data-k="r${i}k"></td>
  <td data-l="Ramp (mA)"><input type="number" step="0.1" data-k="r${i}r"></td></tr>`);
  [$(`[data-k=c${i}n]`).closest('tr'),$(`[data-k=r${i}n]`).closest('tr')].forEach(r=>r.querySelectorAll('[data-u],input[type=number]').forEach(wrapU));
  $(`[data-k=r${i}t]`).value=defs.rcd||'';$(`[data-k=r${i}h]`).value=defs.nt!==undefined?defs.nt:'No trip';
@@ -595,7 +602,7 @@ function addRow(i){
 function setN(n){n=(n|0)||1;n=Math.max(1,Math.min(30,n));while(N<n){N++;addRow(N)}while(N>n){$(`[data-k=c${N}n]`).closest('tr').remove();$(`[data-k=r${N}n]`).closest('tr').remove();N--}$('#nc').textContent=N;if(typeof applyEnter==='function')applyEnter()}
 $$('.inline [data-u]').forEach(wrapU);
 $('#addC').onclick=()=>{if(N>=30)return toast('Maximum 30 circuits');setN(N+1);check();save();toast('Circuit '+N+' added')};
-$('#delC').onclick=()=>{if(N<=1)return;const i=N;const used=[`c${i}n`,`pe${i}`,`ir${i}`,`zs${i}`,`bk${i}`,`r${i}a`,`r${i}b`,`r${i}c`,`r${i}r`].some(k=>$(`[data-k=${k}]`).value.trim())||['fr','fz','fo'].some(k=>$(`[data-k=${k}${i}]`).checked);const snap={};$$('[data-k]').forEach(e=>{if(e.dataset.k.replace(/\D/g,'')===String(i))snap[e.dataset.k]=e.type==='checkbox'?e.checked:e.value});
+$('#delC').onclick=()=>{if(N<=1)return;const i=N;const used=[`c${i}n`,`pe${i}`,`ir${i}`,`zs${i}`,`bk${i}`,`r${i}a`,`r${i}b`,`r${i}c`,`r${i}r`,`r${i}d`,`r${i}e`,`r${i}f`,`r${i}g`,`r${i}j`,`r${i}k`].some(k=>$(`[data-k=${k}]`).value.trim())||['fr','fz','fo'].some(k=>$(`[data-k=${k}${i}]`).checked);const snap={};$$('[data-k]').forEach(e=>{if(e.dataset.k.replace(/\D/g,'')===String(i))snap[e.dataset.k]=e.type==='checkbox'?e.checked:e.value});
  setN(N-1);check();save();if(used)toastU('Circuit '+i+' removed',()=>{setN(N+1);$$('[data-k]').forEach(e=>{const v=snap[e.dataset.k];if(v!==undefined){if(e.type==='checkbox')e.checked=v;else e.value=v}});check();save()});else toast('Circuit removed')};
 // signature pad
 let inked=false,sigData='',drawing=false;
@@ -643,7 +650,7 @@ let lastFails=[];
 function check(){
  const fails=[];let any=false;lastOdd=[];lastMarg=[];
  for(let i=1;i<=N;i++){const a=$(`[data-k=ir${i}]`),v=$(`[data-k=irv${i}]`);if(a.value.trim()&&v.value===''&&!v.dataset.touched)v.value=defs.irv||'500';fpAuto(i);a.closest('.irw').querySelector('span:not(.unit)').style.visibility=(a.value.trim()||v.value)?'visible':'hidden'}
- for(let i=1;i<=N;i++){const n=$(`[data-k=r${i}n]`);n.closest('tr').classList.toggle('blank',['n','a','b','c','r'].every(s=>$(`[data-k=r${i}${s}]`).value.trim()===''))}
+ for(let i=1;i<=N;i++){const n=$(`[data-k=r${i}n]`);n.closest('tr').classList.toggle('blank',['n','a','b','c','r','d','e','f','g','j','k'].every(s=>$(`[data-k=r${i}${s}]`).value.trim()===''))}
  $$('.unit').forEach(s=>{s.textContent=s.previousElementSibling.value!==''?s.dataset.u:''});
  for(let i=1;i<=N;i++){
   const f0=fails.length;const nm=$(`[data-k=c${i}n]`).value.trim()||$(`[data-k=r${i}n]`).value.trim()||('Circuit '+i);
@@ -655,10 +662,10 @@ function check(){
   const z=$(`[data-k=zs${i}]`),mx=zsMax($(`[data-k=bk${i}]`).value);z.closest('td').querySelector('.mx').textContent=mx!=null?'max '+mx+' Ω':'';
   let zok=null;if(z.value!==''){any=true;if(mx!=null)zok=parseFloat(z.value)<=mx}
   mark(z,zok);if(zok===false)fails.push(nm+' Zs');bar(z,z.value,mx);fieldNote(z,'zs',mx,nm,'Zs');
-  [['a',300,'1x'],['b',150,'2x'],['c',40,'5x']].forEach(([s,l,t])=>{const e=$(`[data-k=r${i}${s}]`);let k=null;if(e.value!==''){any=true;k=parseFloat(e.value)<=l}mark(e.parentElement,k);if(k===false)fails.push(nm+' RCD '+t)});
+  [['a',300,'1x'],['d',300,'1x 0\u00B0'],['e',300,'1x 180\u00B0'],['b',150,'2x'],['f',150,'2x 0\u00B0'],['g',150,'2x 180\u00B0'],['c',40,'5x'],['j',40,'5x 0\u00B0'],['k',40,'5x 180\u00B0']].forEach(([s,l,t])=>{const e=$(`[data-k=r${i}${s}]`);let k=null;if(e.value!==''){any=true;k=parseFloat(e.value)<=l}mark(e.parentElement,k);if(k===false)fails.push(nm+' RCD '+t)});
   if(+$(`[data-k=pe${i}]`).value||$(`[data-k=pe${i}]`).value!=='')any=true;
-  const h=$(`[data-k=r${i}h]`);const hk=$(`[data-k=r${i}a]`).value===''&&h.value==='No trip'?null:h.value===''?null:h.value==='No trip';mark(h.parentElement,hk);if(hk===false)fails.push(nm+' RCD 0.5x tripped');
-  {const has=['ir','pe','zs'].some(k=>$(`[data-k=${k}${i}]`).value.trim()!=='')||['a','b','c'].some(k=>$(`[data-k=r${i}${k}]`).value!=='');const cs=fails.length>f0?'bad':has?'ok':'';[$(`[data-k=c${i}n]`),$(`[data-k=r${i}n]`)].forEach(e=>{const tr=e&&e.closest('tr');if(tr)tr.dataset.cs=cs})}
+  const h=$(`[data-k=r${i}h]`);const hk=['a','d','e'].every(k=>$(`[data-k=r${i}${k}]`).value==='')&&h.value==='No trip'?null:h.value===''?null:h.value==='No trip';mark(h.parentElement,hk);if(hk===false)fails.push(nm+' RCD 0.5x tripped');
+  {const has=['ir','pe','zs'].some(k=>$(`[data-k=${k}${i}]`).value.trim()!=='')||['a','b','c','d','e','f','g','j','k'].some(k=>$(`[data-k=r${i}${k}]`).value!=='');const cs=fails.length>f0?'bad':has?'ok':'';[$(`[data-k=c${i}n]`),$(`[data-k=r${i}n]`)].forEach(e=>{const tr=e&&e.closest('tr');if(tr)tr.dataset.cs=cs})}
  }
  {const [vmn,vmx]=vlim();$('#vhint').textContent='Expected '+vmn+' to '+vmx+' V (L-N, L-E)';[['ln','L-N'],['le','L-E']].forEach(([k,n])=>{const el=$('#'+k),w=el.closest('.cw'),v=el.value;let ok=null;if(v!==''){any=true;ok=parseFloat(v)>=vmn&&parseFloat(v)<=vmx}w.classList.toggle('vok',ok===true);w.classList.toggle('vbad',ok===false);if(ok===false)fails.push(n+' voltage')})}
  const m=parseFloat($('#main').value);$('#mainFlag').textContent=isNaN(m)?'':(m<=0.5?'OK (≤ 0.5 Ω)':'Above 0.5 Ω – assess');
@@ -736,19 +743,19 @@ function openDefs(){$('#dform').innerHTML=DF.map(([k,l,t,o])=>{let v=defs[k];if(
 function emailJob(){sync();save();const ad=$('#addr').value;const s='Electrical verification - '+(ad&&ad!==NEW?ad:'no address')+' - '+($('#date').value||today());const b='Job: '+($('#job').value||'(COES not entered yet)')+'\nWork: '+$('#work').value+'\n\nAttach the saved PDF ('+fname()+'.pdf) before sending.';const url='mailto:'+(defs.email||'')+'?subject='+encodeURIComponent(s)+'&body='+encodeURIComponent(b);try{navigator.clipboard&&navigator.clipboard.writeText(s+'\n\n'+b).catch(()=>{})}catch(e){}const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();toast('Opening email app. If nothing opens, the details are copied - paste them into an email.')}
 function updModels(){const d=$('#dmod').value.trim()||'dead tester',l=$('#lmod').value.trim()||'live tester';$$('.dm').forEach(e=>e.textContent=d);$$('.lm').forEach(e=>e.textContent=l)}
 const JK='ev_jobs',TK='ev_trash';let viewTrash=false;
-function hasData(s){return !!(s.addr||s.job||s.work||Object.keys(s).some(k=>/^(pe|zs|ir|r\d+[abcr]|c\d+n|r\d+n)/.test(k)&&String(s[k]).trim())||Object.keys(s).some(k=>/^([cd]\d|f[rzo]\d)$/.test(k)&&s[k]===true))}
+function hasData(s){return !!(s.addr||s.job||s.work||Object.keys(s).some(k=>/^(pe|zs|ir|r\d+[abcdefgjkr]|c\d+n|r\d+n)/.test(k)&&String(s[k]).trim())||Object.keys(s).some(k=>/^([cd]\d|f[rzo]\d)$/.test(k)&&s[k]===true))}
 function upsertJob(s){if(!hasData(s)){updBadge();return}const j=LS.get(JK,{});if(!(j[s.jid]&&JSON.stringify(j[s.jid].state)===JSON.stringify(s)))j[s.jid]={updated:Date.now(),state:s};{const d=LS.get('ev_bkd',{});if(!d[s.jid]){d[s.jid]=1;LS.set('ev_bkd',d);setTimeout(bkN,0)}}const ids=Object.keys(j);if(ids.length>150)ids.sort((a,b)=>j[a].updated-j[b].updated).slice(0,ids.length-150).forEach(k=>delete j[k]);LS.set(JK,j);updBadge()}
 function updBadge(){const j=LS.get(JK,{});const n=Object.values(j).filter(v=>!(v.state.job||'').trim()).length;const u=unsynced();const h='Saved jobs'+(n?' <span class="bdg">'+n+' need COES</span>':'')+(u?' <span class="bdg r">'+u+' unsynced</span>':'');if($('#jobs').dataset.h!==h){$('#jobs').dataset.h=h;$('#jobs').innerHTML=h}}
 function purgeTrash(){const t=LS.get(TK,{});let ch=false;Object.keys(t).forEach(k=>{if(Date.now()-t[k].deleted>30*864e5){delete t[k];ch=true}});if(ch)LS.set(TK,t);return t}
 function showTrash(t){const ids=Object.keys(t).sort((a,b)=>t[b].deleted-t[a].deleted);$('#jlist').innerHTML=ids.length?ids.map(id=>{const s=t[id].job.state;const left=Math.max(0,30-Math.floor((Date.now()-t[id].deleted)/864e5));return `<div class="jrow" data-id="${id}"><div><b>${esc(s.addr||'No address')}</b><br><span class="note">${esc(s.date||'')} | ${(s.job||'').trim()?'COES '+esc(s.job):'COES not entered'} | removed in ${left} day${left===1?'':'s'}</span></div><div class="jb2"><button class="s" data-a="restore">Restore</button><button class="s" data-a="purge">Delete forever</button></div></div>`}).join(''):'<div class="note">Nothing recently deleted. Deleted jobs stay here for 30 days.</div>';$('#jb').hidden=false}
-const hasRead=s=>Object.keys(s).some(k=>/^(pe\d+|zs\d+|ir\d+|r\d+[abcr])$/.test(k)&&String(s[k]).trim()!=='');
+const hasRead=s=>Object.keys(s).some(k=>/^(pe\d+|zs\d+|ir\d+|r\d+[abcdefgjkr])$/.test(k)&&String(s[k]).trim()!=='');
 const jstat=s=>s.sent?['Completed',3]:(s.job||'').trim()?['COES entered',2]:hasRead(s)?['Tested',1]:['Draft',0];
 function failsOf(s){const f=[],g=k=>String(s[k]===undefined?'':s[k]).trim();for(let i=1;i<=(s.n||8);i++){const nm=g('c'+i+'n')||g('r'+i+'n')||('Circuit '+i);
  const ir=g('ir'+i);if(ir){const v=parseFloat(ir.replace(/[^0-9.]/g,'').split('/')[0]);if(!isNaN(v)&&v<1)f.push(nm+' IR')}
  const pl=peMax(g('bk'+i));if(g('pe'+i)!==''&&pl!=null&&parseFloat(g('pe'+i))>pl)f.push(nm+' PE');
  const zm=zsMax(g('bk'+i));if(g('zs'+i)!==''&&zm!=null&&parseFloat(g('zs'+i))>zm)f.push(nm+' Zs');
- [['a',300,'1x'],['b',150,'2x'],['c',40,'5x']].forEach(([x,l,t])=>{const v=g('r'+i+x);if(v!==''&&parseFloat(v)>l)f.push(nm+' RCD '+t)});
- const h=g('r'+i+'h');if(g('r'+i+'a')===''&&h==='No trip'){}else if(h==='Tripped')f.push(nm+' RCD 0.5x tripped')}{const [a,b]=vlim();[['ln','L-N'],['le','L-E']].forEach(([k,n])=>{const v=g(k);if(v!==''&&(parseFloat(v)<a||parseFloat(v)>b))f.push(n+' voltage')})}return f}
+ [['a',300,'1x'],['d',300,'1x 0\u00B0'],['e',300,'1x 180\u00B0'],['b',150,'2x'],['f',150,'2x 0\u00B0'],['g',150,'2x 180\u00B0'],['c',40,'5x'],['j',40,'5x 0\u00B0'],['k',40,'5x 180\u00B0']].forEach(([x,l,t])=>{const v=g('r'+i+x);if(v!==''&&parseFloat(v)>l)f.push(nm+' RCD '+t)});
+ const h=g('r'+i+'h');if(['a','d','e'].every(k=>g('r'+i+k)==='')&&h==='No trip'){}else if(h==='Tripped')f.push(nm+' RCD 0.5x tripped')}{const [a,b]=vlim();[['ln','L-N'],['le','L-E']].forEach(([k,n])=>{const v=g(k);if(v!==''&&(parseFloat(v)<a||parseFloat(v)>b))f.push(n+' voltage')})}return f}
 function issuesOf(s,hasPh){const o=[],f=failsOf(s);if(f.length)o.push(['bad','Out of limits: '+f.join(', ')]);if(!(s.job||'').trim())o.push(['warn','COES number missing']);if(!(s.sig||'').trim()&&!s.sigImg)o.push(['warn','Not signed']);if(!s.pol)o.push(['warn','Polarity not selected']);if(!s.con)o.push(['warn','Connections not selected']);
  const un=['c1','c2','c3','c4','c5','c6','c7','c8','d1','d3','d4'].filter(k=>s[k]!==true).length;if(un)o.push(['warn',un+' checklist item(s) not ticked']);if(!hasRead(s))o.push(['warn','No test readings entered']);
  if(!s.sent)o.push(['info','Not marked completed']);if(!s.pdfAt)o.push(['info','PDF not uploaded to Drive']);if(hasPh===false)o.push(['info','No photos saved']);return o}
@@ -995,7 +1002,8 @@ const CHANGES=[
  {v:27,t:['Checklist sections start folded. Change it in Edit defaults']},
  {v:28,t:['More menu: Review job, with Fix buttons for anything missing','Close-to-limit and likely-typo warnings (tap Keep to confirm a value)','Search jobs by circuit or work, filter by date, weekly summary and Share CSV','Install prompt']},
  {v:29,t:['On the phone, swipe between circuits one at a time. Switch off in Edit defaults']},
- {v:30,t:['Welcome tour and these what\'s new notes (More > What\'s new & tour)','Offline badge in the progress bar']}];
+ {v:30,t:['Welcome tour and these what\'s new notes (More > What\'s new & tour)','Offline badge in the progress bar']},
+ {v:31,t:['RCD results: new 0\u00B0 and 180\u00B0 trip-time columns for the 1x, 2x and 5x tests (checked against the same limits)']}];
 const wnCur=()=>parseInt(String(APP_VERSION).replace(/\D/g,''),10)||0;
 function wnHtml(list){return list.slice().reverse().map(c=>`<div style="margin:8px 0"><b>Update ${c.v}</b><ul style="margin:4px 0 0">${c.t.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul></div>`).join('')}
 function showWN(all){const last=all?0:LS.get('ev_wn',23);const list=CHANGES.filter(c=>c.v>last);if(!list.length&&!all)return;$('#wnl').innerHTML=wnHtml(list.length?list:CHANGES);const mt=document.querySelector('#wn .mt');if(mt)mt.textContent=all?'What\'s new & tour':'What\'s new';$('#wn').hidden=false}
@@ -1086,7 +1094,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v30'; // keep in step with VERSION in sw.js
+const APP_VERSION='v31'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
