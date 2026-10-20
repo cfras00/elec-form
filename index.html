@@ -1128,10 +1128,11 @@ async function mpRead(){const key=(defs.gkey||'').trim();if(!key){toast('Add a f
  try{const data=await mpB64(mpFile),model=(defs.gmodel||'gemini-flash-latest').trim();
   const prompt='This is a photo of the AUTO RCD test result screen of a Metrel MI 3122 tester. Rows are: x1 (trip time in ms), x5 (trip time in ms), x1/2 (a time such as >300ms means the RCD did not trip), and the trip current Ia in mA. The left value column is the 0 degree test and the right value column is the 180 degree test. Reply with JSON only using these keys: x1_0,x1_180,x5_0,x5_180 (numbers in ms), half_0,half_180 (the string "no_trip" if it shows >300ms, "tripped" if it shows a trip time, otherwise null), ramp_0,ramp_180 (numbers in mA). Use null for anything not clearly legible. Do not guess.';
   const body=JSON.stringify({contents:[{parts:[{text:prompt},{inline_data:{mime_type:'image/jpeg',data}}]}],generationConfig:{responseMimeType:'application/json',temperature:0}});
-  const call=m=>fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(m)+':generateContent?key='+encodeURIComponent(key),{method:'POST',headers:{'Content-Type':'application/json'},body});
+  const H={'Content-Type':'application/json','x-goog-api-key':key};let lastErr='';
+  const call=async m=>{const x=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(m)+':generateContent',{method:'POST',headers:H,body});if(!x.ok){try{lastErr=x.status+': '+((await x.clone().json()).error||{}).message}catch(e){lastErr=String(x.status)}}return x};
   let r=await call(model);
-  if(r.status===404){const L=await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200&key='+encodeURIComponent(key));if(L.ok){const ms=((await L.json()).models||[]).filter(x=>(x.supportedGenerationMethods||[]).includes('generateContent')&&/flash/i.test(x.name)&&!/lite|image|tts|live|audio|thinking|exp|preview/i.test(x.name)).map(x=>x.name.replace('models/','')).sort().reverse();for(const m of ms.slice(0,3)){r=await call(m);if(r.ok)break}}}
-  if(!r.ok){const t=await r.text();throw new Error(r.status===429?'The free limit was reached. Try again in a minute.':(r.status===400||r.status===403)?'Gemini rejected the key or request. Check the key in Edit defaults.':'Reading failed ('+r.status+'). No working Gemini model found for this key.')}
+  if(r.status===404){const L=await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200',{headers:H});if(!L.ok){try{lastErr='List models '+L.status+': '+((await L.json()).error||{}).message}catch(e){}}if(L.ok){const ms=((await L.json()).models||[]).filter(x=>(x.supportedGenerationMethods||[]).includes('generateContent')&&/flash/i.test(x.name)&&!/lite|image|tts|live|audio|thinking|exp|preview/i.test(x.name)).map(x=>x.name.replace('models/','')).sort().reverse();for(const m of ms.slice(0,3)){r=await call(m);if(r.ok)break}}}
+  if(!r.ok){const t=await r.text();throw new Error(r.status===429?'The free limit was reached. Try again in a minute.':'Reading failed. Google said '+(lastErr||r.status).slice(0,160))}
   const j=await r.json();let t=(((j.candidates||[])[0]||{}).content||{}).parts;t=(t&&t[0]&&t[0].text)||'';t=t.replace(/^```(?:json)?/i,'').replace(/```$/,'').trim();const o=JSON.parse(t);mpConfirm(o)}
  catch(e){toast(e&&e.message&&!/JSON/.test(e.message)?e.message:'Could not read that photo. Try a closer, sharper picture.')}
  finally{b.disabled=false;b.textContent='Read it for me'}}
@@ -1190,7 +1191,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v46'; // keep in step with VERSION in sw.js
+const APP_VERSION='v47'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
