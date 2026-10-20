@@ -591,7 +591,7 @@ function addRow(i){
  <td data-l="Ramp 0° (mA)"><input type="number" step="0.1" data-k="r${i}r"></td>
  <td data-l="Ramp 180° (mA)"><input type="number" step="0.1" data-k="r${i}s"></td></tr>`);
  [$(`[data-k=c${i}n]`).closest('tr'),$(`[data-k=r${i}n]`).closest('tr')].forEach(r=>r.querySelectorAll('[data-u],input[type=number]').forEach(wrapU));
- $(`[data-k=r${i}t]`).value=defs.rcd||'';$(`[data-k=r${i}h]`).value=$(`[data-k=r${i}m]`).value=defs.nt!==undefined?defs.nt:'No trip';
+ $(`[data-k=r${i}t]`).value=defs.rcd||'';$(`[data-k=r${i}t]`).dataset.autot='1';$(`[data-k=r${i}h]`).value=$(`[data-k=r${i}m]`).value=defs.nt!==undefined?defs.nt:'No trip';
 }
 function setN(n){n=(n|0)||1;n=Math.max(1,Math.min(30,n));while(N<n){N++;addRow(N)}while(N>n){$(`[data-k=c${N}n]`).closest('tr').remove();$(`[data-k=r${N}n]`).closest('tr').remove();N--}$('#nc').textContent=N;if(typeof applyEnter==='function')applyEnter()}
 $$('.inline [data-u]').forEach(wrapU);
@@ -634,9 +634,11 @@ function init(){
   if(el.type==='checkbox')el.checked=!!v; else if(v!==undefined)el.value=v;
   else if(/^r\d+t$/.test(el.dataset.k))el.value=defs.rcd; else if(/^r\d+[hm]$/.test(el.dataset.k))el.value=defs.nt!==undefined?defs.nt:'No trip'; else el.value='';});
  ['pol','con','fun'].forEach(n=>$$(`input[name=${n}]`).forEach(r=>r.checked=(state[n]!==undefined?state[n]:(defs[n]||''))===r.value));
- $$('[data-k]').forEach(e=>{if(/^r\d+n$/.test(e.dataset.k))delete e.dataset.auto}); loadSig(state.sigImg||''); sync(); check(); updBadge(); applyEnter(); applyLock();
+ $$('[data-k]').forEach(e=>{const k=e.dataset.k;if(/^r\d+n$/.test(k))delete e.dataset.auto;if(/^r\d+t$/.test(k))e.dataset.autot=(state[k]===undefined||state[k]==='')?'1':'0'}); loadSig(state.sigImg||''); sync(); check(); updBadge(); applyEnter(); applyLock();
 }
-function sync(){updModels();for(let i=1;i<=N;i++){const c=$(`[data-k=c${i}n]`),r=$(`[data-k=r${i}n]`);if(!c||!r)continue;if(r.dataset.auto===undefined)r.dataset.auto=(r.value===''||r.value===c.value)?'1':'0';if(r.dataset.auto==='1'&&r.value!==c.value)r.value=c.value}
+function rcdFor(bk){const base=(defs.rcd||'A/30mA').trim(),pp=base.split('/');bk=String(bk||'').trim().toUpperCase().replace(/\s+/g,'');if(!bk||pp.length<2)return base;return pp[0]+'/'+bk+'/'+pp[pp.length-1]}
+function mirrorT(){for(let i=1;i<=N;i++){const t=$(`[data-k=r${i}t]`),b=$(`[data-k=bk${i}]`);if(!t||!b)continue;if(t.dataset.autot==='1'){const v=rcdFor(b.value);if(t.value!==v)t.value=v}}}
+function sync(){updModels();mirrorT();for(let i=1;i<=N;i++){const c=$(`[data-k=c${i}n]`),r=$(`[data-k=r${i}n]`);if(!c||!r)continue;if(r.dataset.auto===undefined)r.dataset.auto=(r.value===''||r.value===c.value)?'1':'0';if(r.dataset.auto==='1'&&r.value!==c.value)r.value=c.value}
  $('#fname').textContent='PDF file name: '+fname()+'.pdf';$('#date2').value=$('#date').value;$('#addr2').value=$('#addr').value===NEW?'':$('#addr').value;$('#job2').value=$('#job').value}
 
 // checks
@@ -644,6 +646,7 @@ function mark(td,ok){td=td.closest('td');td.classList.remove('pass','fail');if(o
 const vlim=()=>[parseFloat(defs.vmin)||216,parseFloat(defs.vmax)||253];
 let lastFails=[];
 function check(){
+ mirrorT();
  const fails=[];let any=false;lastOdd=[];lastMarg=[];
  for(let i=1;i<=N;i++){const a=$(`[data-k=ir${i}]`),v=$(`[data-k=irv${i}]`);if(a.value.trim()&&v.value===''&&!v.dataset.touched)v.value=defs.irv||'500';fpAuto(i);a.closest('.irw').querySelector('span:not(.unit)').style.visibility=(a.value.trim()||v.value)?'visible':'hidden'}
  for(let i=1;i<=N;i++){const n=$(`[data-k=r${i}n]`);n.closest('tr').classList.toggle('blank',['n','a','c','r','e','k','s'].every(s=>$(`[data-k=r${i}${s}]`).value.trim()===''))}
@@ -674,7 +677,7 @@ function save(){
  ['pol','con','fun'].forEach(n=>{const c=$(`input[name=${n}]:checked`);s[n]=c?c.value:''});
  s.n=N;s.sent=state.sent||'';s.sigImg=sigData;s.jid=state.jid||('j'+Date.now().toString(36));pushHist(state,s);state=s;LS.set('ev_state',s);upsertJob(s);
 }
-document.addEventListener('input',e=>{const k0=e.target.dataset&&e.target.dataset.k;if(k0&&/^r\d+n$/.test(k0))e.target.dataset.auto=e.target.value===''?'1':'0'},true);
+document.addEventListener('input',e=>{const k0=e.target.dataset&&e.target.dataset.k;if(k0&&/^r\d+n$/.test(k0))e.target.dataset.auto=e.target.value===''?'1':'0';if(k0&&/^r\d+t$/.test(k0))e.target.dataset.autot=e.target.value===''?'1':'0'},true);
 document.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.k;if(k&&k.startsWith('irv'))e.target.dataset.touched=1;sync();check();save()});
 document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.k;if(k&&/^f[rzo]\d/.test(k))e.target.dataset.touched=1;sync();check();save()});
 
@@ -1002,7 +1005,8 @@ const CHANGES=[
  {v:30,t:['Welcome tour and these what\'s new notes (More > What\'s new & tour)','Offline badge in the progress bar']},
  {v:31,t:['RCD results: 0\u00B0 and 180\u00B0 readings for 0.5x, 1x, 5x and ramp, matching the Metrel auto test screen (checked against the same limits)']},
  {v:33,t:['RCD results: the Circuit / RCD ID now fills in from the circuit name above (you can still overtype it)']},
- {v:34,t:['RCD results: ramp (trip current) readings now show mA','The 2x test column is removed (the Metrel auto test does not give it)']}];
+ {v:34,t:['RCD results: ramp (trip current) readings now show mA','The 2x test column is removed (the Metrel auto test does not give it)']},
+ {v:36,t:['RCD results: the RCD / RCBO type fills in from the breaker above, e.g. C20 gives A/C20/30mA (you can still overtype it)']}];
 const wnCur=()=>parseInt(String(APP_VERSION).replace(/\D/g,''),10)||0;
 function wnHtml(list){return list.slice().reverse().map(c=>`<div style="margin:8px 0"><b>Update ${c.v}</b><ul style="margin:4px 0 0">${c.t.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul></div>`).join('')}
 function showWN(all){const last=all?0:LS.get('ev_wn',23);const list=CHANGES.filter(c=>c.v>last);if(!list.length&&!all)return;$('#wnl').innerHTML=wnHtml(list.length?list:CHANGES);const mt=document.querySelector('#wn .mt');if(mt)mt.textContent=all?'What\'s new & tour':'What\'s new';$('#wn').hidden=false}
@@ -1093,7 +1097,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v35'; // keep in step with VERSION in sw.js
+const APP_VERSION='v36'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
