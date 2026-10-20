@@ -214,7 +214,6 @@ body.big #addrSug div{padding:14px 12px;font-size:17px}
  #t1 td:nth-child(2){order:2}
  #t1 td.mt{grid-column:1/-1;order:5}
  #t2 td:nth-child(2){grid-column:1/-1}
- #t2 td:nth-child(7){grid-column:1/-1}
  #t2 td .cw input{padding:11px 6px!important}
  #t2 td .cw .unit{min-width:0;padding:0}
  #t1 td:first-child input.bk{margin-top:6px}
@@ -499,9 +498,9 @@ body.offline #barSync{opacity:.5}
 
  <div class="sec">2 <span class="lm"></span> | RCD / RCBO RESULTS</div>
  <div class="scroll"><table id="t2">
-  <tr><th>Circuit / RCD ID</th><th>RCD / RCBO<br><small>e.g. A/C40/30mA</small></th><th>0.5x 0&deg;<br>No trip</th><th>0.5x 180&deg;<br>No trip</th><th>1x 0&deg;<br><small>&le;300 ms</small></th><th>1x 180&deg;<br><small>&le;300 ms</small></th><th>2x ms<br><small>&le;150</small></th><th>5x 0&deg;<br><small>&le;40 ms</small></th><th>5x 180&deg;<br><small>&le;40 ms</small></th><th>Ramp 0&deg;<br>mA</th><th>Ramp 180&deg;<br>mA</th></tr>
+  <tr><th>Circuit / RCD ID</th><th>RCD / RCBO<br><small>e.g. A/C40/30mA</small></th><th>0.5x 0&deg;<br>No trip</th><th>0.5x 180&deg;<br>No trip</th><th>1x 0&deg;<br><small>&le;300 ms</small></th><th>1x 180&deg;<br><small>&le;300 ms</small></th><th>5x 0&deg;<br><small>&le;40 ms</small></th><th>5x 180&deg;<br><small>&le;40 ms</small></th><th>Ramp 0&deg;<br>mA</th><th>Ramp 180&deg;<br>mA</th></tr>
  </table></div>
- <p class="note">Typical non-delayed 30 mA RCD: 0.5x = NO TRIP | 1x &le; 300 ms | 2x &le; 150 ms | 5x &le; 40 ms. Use applicable device/test-waveform requirements. Example: A/C40/30mA = Type A RCD, C-curve 40 A breaker, 30 mA trip sensitivity. Cells turn green/red against these limits.</p>
+ <p class="note">Typical non-delayed 30 mA RCD: 0.5x = NO TRIP | 1x &le; 300 ms | 5x &le; 40 ms. Use applicable device/test-waveform requirements. Example: A/C40/30mA = Type A RCD, C-curve 40 A breaker, 30 mA trip sensitivity. Cells turn green/red against these limits.</p>
  <div id="sum" class="sumbox"></div>
 
  <div class="sec">3 FINAL CHECKS / EXCEPTIONS</div>
@@ -574,7 +573,7 @@ function tbl(t){return _tc[t]||(_tc[t]=(()=>{const m={};String(t).split('\n').fo
 function zsMap(){const m={},t=tbl(zsText());Object.keys(t).forEach(k=>m[k]=t[k][0]);return m}
 function zsMax(v){const k=devKey(v);if(!k)return null;const x=zsMap()[k];return x==null?null:x}
 function peMax(v){const k=devKey(v);if(!k)return null;const t=tbl(rzText())[k];if(!t)return null;const x=defs.pemode==='R1R2'?t[0]:t[1];return x==null?null:x}
-function wrapU(i){const u=i.dataset.u||(/r[rs]$/.test(i.dataset.k||'')?'mA':'ms');const w=document.createElement('div');w.className='cw';i.parentNode.insertBefore(w,i);w.appendChild(i);const s=document.createElement('span');s.className='unit';s.dataset.u=u;w.appendChild(s)}
+function wrapU(i){const u=i.dataset.u||(/\d[rs]$/.test(i.dataset.k||'')?'mA':'ms');const w=document.createElement('div');w.className='cw';i.parentNode.insertBefore(w,i);w.appendChild(i);const s=document.createElement('span');s.className='unit';s.dataset.u=u;w.appendChild(s)}
 function addRow(i){
  $('#t1').insertAdjacentHTML('beforeend',`<tr><td data-n="${i}"><input type="text" data-k="c${i}n" list="cnames" placeholder="Circuit ${i}"><input type="text" class="bk" data-k="bk${i}" list="brk" placeholder="Breaker e.g. C20">${i>1?'<button type="button" class="cp noprint" data-cp="'+i+'">Copy breaker/ticks from above</button>':''}</td>
  <td data-chk="pe" data-l="PE continuity (Ω)"><input type="number" step="0.01" data-k="pe${i}" data-u="Ω"><div class="mx"></div><div class="rbar noprint"><i></i></div><div class="mgn noprint"></div></td>
@@ -587,7 +586,6 @@ function addRow(i){
  <td data-l="0.5x 180° (no trip)"><select data-k="r${i}m"><option value=""></option><option>No trip</option><option>Tripped</option></select></td>
  <td data-chk="1x" data-l="1x 0° ms (max 300)"><input type="number" data-k="r${i}a"></td>
  <td data-l="1x 180° ms (max 300)"><input type="number" data-k="r${i}e"></td>
- <td data-chk="2x" data-l="2x ms (max 150)"><input type="number" data-k="r${i}b"></td>
  <td data-chk="5x" data-l="5x 0° ms (max 40)"><input type="number" data-k="r${i}c"></td>
  <td data-l="5x 180° ms (max 40)"><input type="number" data-k="r${i}k"></td>
  <td data-l="Ramp 0° (mA)"><input type="number" step="0.1" data-k="r${i}r"></td>
@@ -598,7 +596,7 @@ function addRow(i){
 function setN(n){n=(n|0)||1;n=Math.max(1,Math.min(30,n));while(N<n){N++;addRow(N)}while(N>n){$(`[data-k=c${N}n]`).closest('tr').remove();$(`[data-k=r${N}n]`).closest('tr').remove();N--}$('#nc').textContent=N;if(typeof applyEnter==='function')applyEnter()}
 $$('.inline [data-u]').forEach(wrapU);
 $('#addC').onclick=()=>{if(N>=30)return toast('Maximum 30 circuits');setN(N+1);check();save();toast('Circuit '+N+' added')};
-$('#delC').onclick=()=>{if(N<=1)return;const i=N;const used=[`c${i}n`,`pe${i}`,`ir${i}`,`zs${i}`,`bk${i}`,`r${i}a`,`r${i}b`,`r${i}c`,`r${i}r`,`r${i}e`,`r${i}k`,`r${i}s`].some(k=>$(`[data-k=${k}]`).value.trim())||['fr','fz','fo'].some(k=>$(`[data-k=${k}${i}]`).checked);const snap={};$$('[data-k]').forEach(e=>{if(e.dataset.k.replace(/\D/g,'')===String(i))snap[e.dataset.k]=e.type==='checkbox'?e.checked:e.value});
+$('#delC').onclick=()=>{if(N<=1)return;const i=N;const used=[`c${i}n`,`pe${i}`,`ir${i}`,`zs${i}`,`bk${i}`,`r${i}a`,`r${i}c`,`r${i}r`,`r${i}e`,`r${i}k`,`r${i}s`].some(k=>$(`[data-k=${k}]`).value.trim())||['fr','fz','fo'].some(k=>$(`[data-k=${k}${i}]`).checked);const snap={};$$('[data-k]').forEach(e=>{if(e.dataset.k.replace(/\D/g,'')===String(i))snap[e.dataset.k]=e.type==='checkbox'?e.checked:e.value});
  setN(N-1);check();save();if(used)toastU('Circuit '+i+' removed',()=>{setN(N+1);$$('[data-k]').forEach(e=>{const v=snap[e.dataset.k];if(v!==undefined){if(e.type==='checkbox')e.checked=v;else e.value=v}});check();save()});else toast('Circuit removed')};
 // signature pad
 let inked=false,sigData='',drawing=false;
@@ -648,7 +646,7 @@ let lastFails=[];
 function check(){
  const fails=[];let any=false;lastOdd=[];lastMarg=[];
  for(let i=1;i<=N;i++){const a=$(`[data-k=ir${i}]`),v=$(`[data-k=irv${i}]`);if(a.value.trim()&&v.value===''&&!v.dataset.touched)v.value=defs.irv||'500';fpAuto(i);a.closest('.irw').querySelector('span:not(.unit)').style.visibility=(a.value.trim()||v.value)?'visible':'hidden'}
- for(let i=1;i<=N;i++){const n=$(`[data-k=r${i}n]`);n.closest('tr').classList.toggle('blank',['n','a','b','c','r','e','k','s'].every(s=>$(`[data-k=r${i}${s}]`).value.trim()===''))}
+ for(let i=1;i<=N;i++){const n=$(`[data-k=r${i}n]`);n.closest('tr').classList.toggle('blank',['n','a','c','r','e','k','s'].every(s=>$(`[data-k=r${i}${s}]`).value.trim()===''))}
  $$('.unit').forEach(s=>{s.textContent=s.previousElementSibling.value!==''?s.dataset.u:''});
  for(let i=1;i<=N;i++){
   const f0=fails.length;const nm=$(`[data-k=c${i}n]`).value.trim()||$(`[data-k=r${i}n]`).value.trim()||('Circuit '+i);
@@ -660,10 +658,10 @@ function check(){
   const z=$(`[data-k=zs${i}]`),mx=zsMax($(`[data-k=bk${i}]`).value);z.closest('td').querySelector('.mx').textContent=mx!=null?'max '+mx+' Ω':'';
   let zok=null;if(z.value!==''){any=true;if(mx!=null)zok=parseFloat(z.value)<=mx}
   mark(z,zok);if(zok===false)fails.push(nm+' Zs');bar(z,z.value,mx);fieldNote(z,'zs',mx,nm,'Zs');
-  [['a',300,'1x 0\u00B0'],['e',300,'1x 180\u00B0'],['b',150,'2x'],['c',40,'5x 0\u00B0'],['k',40,'5x 180\u00B0']].forEach(([s,l,t])=>{const e=$(`[data-k=r${i}${s}]`);let k=null;if(e.value!==''){any=true;k=parseFloat(e.value)<=l}mark(e.parentElement,k);if(k===false)fails.push(nm+' RCD '+t)});
+  [['a',300,'1x 0\u00B0'],['e',300,'1x 180\u00B0'],['c',40,'5x 0\u00B0'],['k',40,'5x 180\u00B0']].forEach(([s,l,t])=>{const e=$(`[data-k=r${i}${s}]`);let k=null;if(e.value!==''){any=true;k=parseFloat(e.value)<=l}mark(e.parentElement,k);if(k===false)fails.push(nm+' RCD '+t)});
   if(+$(`[data-k=pe${i}]`).value||$(`[data-k=pe${i}]`).value!=='')any=true;
   const e1=['a','e'].every(k=>$(`[data-k=r${i}${k}]`).value==='');[['h','0\u00B0'],['m','180\u00B0']].forEach(([k,d])=>{const h=$(`[data-k=r${i}${k}]`);const hk=e1&&h.value==='No trip'?null:h.value===''?null:h.value==='No trip';mark(h.parentElement,hk);if(hk===false)fails.push(nm+' RCD 0.5x '+d+' tripped')});
-  {const has=['ir','pe','zs'].some(k=>$(`[data-k=${k}${i}]`).value.trim()!=='')||['a','b','c','e','k'].some(k=>$(`[data-k=r${i}${k}]`).value!=='');const cs=fails.length>f0?'bad':has?'ok':'';[$(`[data-k=c${i}n]`),$(`[data-k=r${i}n]`)].forEach(e=>{const tr=e&&e.closest('tr');if(tr)tr.dataset.cs=cs})}
+  {const has=['ir','pe','zs'].some(k=>$(`[data-k=${k}${i}]`).value.trim()!=='')||['a','c','e','k'].some(k=>$(`[data-k=r${i}${k}]`).value!=='');const cs=fails.length>f0?'bad':has?'ok':'';[$(`[data-k=c${i}n]`),$(`[data-k=r${i}n]`)].forEach(e=>{const tr=e&&e.closest('tr');if(tr)tr.dataset.cs=cs})}
  }
  {const [vmn,vmx]=vlim();$('#vhint').textContent='Expected '+vmn+' to '+vmx+' V (L-N, L-E)';[['ln','L-N'],['le','L-E']].forEach(([k,n])=>{const el=$('#'+k),w=el.closest('.cw'),v=el.value;let ok=null;if(v!==''){any=true;ok=parseFloat(v)>=vmn&&parseFloat(v)<=vmx}w.classList.toggle('vok',ok===true);w.classList.toggle('vbad',ok===false);if(ok===false)fails.push(n+' voltage')})}
  const m=parseFloat($('#main').value);$('#mainFlag').textContent=isNaN(m)?'':(m<=0.5?'OK (≤ 0.5 Ω)':'Above 0.5 Ω – assess');
@@ -753,7 +751,7 @@ function failsOf(s){const f=[],g=k=>String(s[k]===undefined?'':s[k]).trim();for(
  const ir=g('ir'+i);if(ir){const v=parseFloat(ir.replace(/[^0-9.]/g,'').split('/')[0]);if(!isNaN(v)&&v<1)f.push(nm+' IR')}
  const pl=peMax(g('bk'+i));if(g('pe'+i)!==''&&pl!=null&&parseFloat(g('pe'+i))>pl)f.push(nm+' PE');
  const zm=zsMax(g('bk'+i));if(g('zs'+i)!==''&&zm!=null&&parseFloat(g('zs'+i))>zm)f.push(nm+' Zs');
- [['a',300,'1x 0\u00B0'],['e',300,'1x 180\u00B0'],['b',150,'2x'],['c',40,'5x 0\u00B0'],['k',40,'5x 180\u00B0']].forEach(([x,l,t])=>{const v=g('r'+i+x);if(v!==''&&parseFloat(v)>l)f.push(nm+' RCD '+t)});
+ [['a',300,'1x 0\u00B0'],['e',300,'1x 180\u00B0'],['c',40,'5x 0\u00B0'],['k',40,'5x 180\u00B0']].forEach(([x,l,t])=>{const v=g('r'+i+x);if(v!==''&&parseFloat(v)>l)f.push(nm+' RCD '+t)});
  [['h','0\u00B0'],['m','180\u00B0']].forEach(([k,d])=>{const h=g('r'+i+k);if(['a','e'].every(x=>g('r'+i+x)==='')&&h==='No trip'){}else if(h==='Tripped')f.push(nm+' RCD 0.5x '+d+' tripped')})}{const [a,b]=vlim();[['ln','L-N'],['le','L-E']].forEach(([k,n])=>{const v=g(k);if(v!==''&&(parseFloat(v)<a||parseFloat(v)>b))f.push(n+' voltage')})}return f}
 function issuesOf(s,hasPh){const o=[],f=failsOf(s);if(f.length)o.push(['bad','Out of limits: '+f.join(', ')]);if(!(s.job||'').trim())o.push(['warn','COES number missing']);if(!(s.sig||'').trim()&&!s.sigImg)o.push(['warn','Not signed']);if(!s.pol)o.push(['warn','Polarity not selected']);if(!s.con)o.push(['warn','Connections not selected']);
  const un=['c1','c2','c3','c4','c5','c6','c7','c8','d1','d3','d4'].filter(k=>s[k]!==true).length;if(un)o.push(['warn',un+' checklist item(s) not ticked']);if(!hasRead(s))o.push(['warn','No test readings entered']);
@@ -1003,7 +1001,8 @@ const CHANGES=[
  {v:29,t:['On the phone, swipe between circuits one at a time. Switch off in Edit defaults']},
  {v:30,t:['Welcome tour and these what\'s new notes (More > What\'s new & tour)','Offline badge in the progress bar']},
  {v:31,t:['RCD results: 0\u00B0 and 180\u00B0 readings for 0.5x, 1x, 5x and ramp, matching the Metrel auto test screen (checked against the same limits)']},
- {v:33,t:['RCD results: the Circuit / RCD ID now fills in from the circuit name above (you can still overtype it)']}];
+ {v:33,t:['RCD results: the Circuit / RCD ID now fills in from the circuit name above (you can still overtype it)']},
+ {v:34,t:['RCD results: ramp (trip current) readings now show mA','The 2x test column is removed (the Metrel auto test does not give it)']}];
 const wnCur=()=>parseInt(String(APP_VERSION).replace(/\D/g,''),10)||0;
 function wnHtml(list){return list.slice().reverse().map(c=>`<div style="margin:8px 0"><b>Update ${c.v}</b><ul style="margin:4px 0 0">${c.t.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul></div>`).join('')}
 function showWN(all){const last=all?0:LS.get('ev_wn',23);const list=CHANGES.filter(c=>c.v>last);if(!list.length&&!all)return;$('#wnl').innerHTML=wnHtml(list.length?list:CHANGES);const mt=document.querySelector('#wn .mt');if(mt)mt.textContent=all?'What\'s new & tour':'What\'s new';$('#wn').hidden=false}
@@ -1094,7 +1093,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v33'; // keep in step with VERSION in sw.js
+const APP_VERSION='v35'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
