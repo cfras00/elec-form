@@ -634,7 +634,7 @@ function init(){
   if(el.type==='checkbox')el.checked=!!v; else if(v!==undefined)el.value=v;
   else if(/^r\d+t$/.test(el.dataset.k))el.value=defs.rcd; else if(/^r\d+[hm]$/.test(el.dataset.k))el.value=defs.nt!==undefined?defs.nt:'No trip'; else el.value='';});
  ['pol','con','fun'].forEach(n=>$$(`input[name=${n}]`).forEach(r=>r.checked=(state[n]!==undefined?state[n]:(defs[n]||''))===r.value));
- $$('[data-k]').forEach(e=>{const k=e.dataset.k;if(/^r\d+n$/.test(k))delete e.dataset.auto;if(/^r\d+t$/.test(k))e.dataset.autot=(state[k]===undefined||state[k]==='')?'1':'0'}); loadSig(state.sigImg||''); sync(); check(); updBadge(); applyEnter(); applyLock();
+ $$('[data-k]').forEach(e=>{const k=e.dataset.k;if(/^r\d+n$/.test(k))delete e.dataset.auto;if(/^r\d+t$/.test(k))e.dataset.autot=(state[k]===undefined||state[k]===''||state[k]===(defs.rcd||'A/30mA')||state[k]==='A/30mA')?'1':'0'}); loadSig(state.sigImg||''); sync(); check(); updBadge(); applyEnter(); applyLock();
 }
 function rcdFor(bk){const base=(defs.rcd||'A/30mA').trim(),pp=base.split('/');bk=String(bk||'').trim().toUpperCase().replace(/\s+/g,'');if(!bk||pp.length<2)return base;return pp[0]+'/'+bk+'/'+pp[pp.length-1]}
 function mirrorT(){for(let i=1;i<=N;i++){const t=$(`[data-k=r${i}t]`),b=$(`[data-k=bk${i}]`);if(!t||!b)continue;if(t.dataset.autot==='1'){const v=rcdFor(b.value);if(t.value!==v)t.value=v}}}
@@ -1097,7 +1097,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v36'; // keep in step with VERSION in sw.js
+const APP_VERSION='v37'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
