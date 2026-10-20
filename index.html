@@ -636,9 +636,10 @@ function init(){
   if(el.type==='checkbox')el.checked=!!v; else if(v!==undefined)el.value=v;
   else if(/^r\d+t$/.test(el.dataset.k))el.value=defs.rcd; else if(/^r\d+[hm]$/.test(el.dataset.k))el.value=defs.nt!==undefined?defs.nt:'No trip'; else el.value='';});
  ['pol','con','fun'].forEach(n=>$$(`input[name=${n}]`).forEach(r=>r.checked=(state[n]!==undefined?state[n]:(defs[n]||''))===r.value));
- loadSig(state.sigImg||''); sync(); check(); updBadge(); applyEnter(); applyLock();
+ $$('[data-k]').forEach(e=>{if(/^r\d+n$/.test(e.dataset.k))delete e.dataset.auto}); loadSig(state.sigImg||''); sync(); check(); updBadge(); applyEnter(); applyLock();
 }
-function sync(){updModels();$('#fname').textContent='PDF file name: '+fname()+'.pdf';$('#date2').value=$('#date').value;$('#addr2').value=$('#addr').value===NEW?'':$('#addr').value;$('#job2').value=$('#job').value}
+function sync(){updModels();for(let i=1;i<=N;i++){const c=$(`[data-k=c${i}n]`),r=$(`[data-k=r${i}n]`);if(!c||!r)continue;if(r.dataset.auto===undefined)r.dataset.auto=(r.value===''||r.value===c.value)?'1':'0';if(r.dataset.auto==='1'&&r.value!==c.value)r.value=c.value}
+ $('#fname').textContent='PDF file name: '+fname()+'.pdf';$('#date2').value=$('#date').value;$('#addr2').value=$('#addr').value===NEW?'':$('#addr').value;$('#job2').value=$('#job').value}
 
 // checks
 function mark(td,ok){td=td.closest('td');td.classList.remove('pass','fail');if(ok===true)td.classList.add('pass');if(ok===false)td.classList.add('fail')}
@@ -675,6 +676,7 @@ function save(){
  ['pol','con','fun'].forEach(n=>{const c=$(`input[name=${n}]:checked`);s[n]=c?c.value:''});
  s.n=N;s.sent=state.sent||'';s.sigImg=sigData;s.jid=state.jid||('j'+Date.now().toString(36));pushHist(state,s);state=s;LS.set('ev_state',s);upsertJob(s);
 }
+document.addEventListener('input',e=>{const k0=e.target.dataset&&e.target.dataset.k;if(k0&&/^r\d+n$/.test(k0))e.target.dataset.auto=e.target.value===''?'1':'0'},true);
 document.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.k;if(k&&k.startsWith('irv'))e.target.dataset.touched=1;sync();check();save()});
 document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.k;if(k&&/^f[rzo]\d/.test(k))e.target.dataset.touched=1;sync();check();save()});
 
@@ -1000,7 +1002,8 @@ const CHANGES=[
  {v:28,t:['More menu: Review job, with Fix buttons for anything missing','Close-to-limit and likely-typo warnings (tap Keep to confirm a value)','Search jobs by circuit or work, filter by date, weekly summary and Share CSV','Install prompt']},
  {v:29,t:['On the phone, swipe between circuits one at a time. Switch off in Edit defaults']},
  {v:30,t:['Welcome tour and these what\'s new notes (More > What\'s new & tour)','Offline badge in the progress bar']},
- {v:31,t:['RCD results: 0\u00B0 and 180\u00B0 readings for 0.5x, 1x, 5x and ramp, matching the Metrel auto test screen (checked against the same limits)']}];
+ {v:31,t:['RCD results: 0\u00B0 and 180\u00B0 readings for 0.5x, 1x, 5x and ramp, matching the Metrel auto test screen (checked against the same limits)']},
+ {v:33,t:['RCD results: the Circuit / RCD ID now fills in from the circuit name above (you can still overtype it)']}];
 const wnCur=()=>parseInt(String(APP_VERSION).replace(/\D/g,''),10)||0;
 function wnHtml(list){return list.slice().reverse().map(c=>`<div style="margin:8px 0"><b>Update ${c.v}</b><ul style="margin:4px 0 0">${c.t.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul></div>`).join('')}
 function showWN(all){const last=all?0:LS.get('ev_wn',23);const list=CHANGES.filter(c=>c.v>last);if(!list.length&&!all)return;$('#wnl').innerHTML=wnHtml(list.length?list:CHANGES);const mt=document.querySelector('#wn .mt');if(mt)mt.textContent=all?'What\'s new & tour':'What\'s new';$('#wn').hidden=false}
@@ -1091,7 +1094,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v32'; // keep in step with VERSION in sw.js
+const APP_VERSION='v33'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
