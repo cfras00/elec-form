@@ -85,6 +85,7 @@ body.big td input[type=text],body.big td input[type=number]{padding:10px 6px}
  .pb{display:none}
  input,select,textarea{border:0!important;border-bottom:1px solid #888!important;background:#fff!important;padding:2px!important;-webkit-appearance:none;appearance:none}
  td.pass,td.fail,td.mg{background:#fff!important}
+ td.nv .mx{display:none!important}
  .scroll{overflow:visible} table{min-width:0}
  @page{size:A4;margin:9mm}
  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -656,11 +657,11 @@ function check(){
   const ir=$(`[data-k=ir${i}]`).value.trim(); let ok=null;
   if(ir){any=true;const n=parseFloat(ir.replace(/[^0-9.]/g,'').split(/[\/]/)[0]);if(!isNaN(n))ok=n>=1}
   mark($(`[data-k=ir${i}]`).parentElement,ok);if(ok===false)fails.push(nm+' IR');fieldNote($(`[data-k=ir${i}]`),'ir',null,nm,'IR');
-  const pe=$(`[data-k=pe${i}]`),pl=peMax($(`[data-k=bk${i}]`).value);pe.closest('td').querySelector('.mx').textContent=pl!=null?'max '+pl+' Ω':'';
-  let pk=null;if(pe.value!==''){any=true;if(pl!=null)pk=parseFloat(pe.value)<=pl}mark(pe,pk);if(pk===false)fails.push(nm+' PE');bar(pe,pe.value,pl);fieldNote(pe,'pe',pl,nm,'PE');
-  const z=$(`[data-k=zs${i}]`),mx=zsMax($(`[data-k=bk${i}]`).value);z.closest('td').querySelector('.mx').textContent=mx!=null?'max '+mx+' Ω':'';
+  const pe=$(`[data-k=pe${i}]`),pl=peMax($(`[data-k=bk${i}]`).value);pe.closest('td').querySelector('.mx').textContent=pl!=null?'limit ≤ '+pl+' Ω':'';
+  let pk=null;if(pe.value!==''){any=true;if(pl!=null)pk=parseFloat(pe.value)<=pl}mark(pe,pk);if(pk===false)fails.push(nm+' PE');bar(pe,pe.value,pl);pe.closest('td').classList.toggle('nv',pe.value==='');fieldNote(pe,'pe',pl,nm,'PE');
+  const z=$(`[data-k=zs${i}]`),mx=zsMax($(`[data-k=bk${i}]`).value);z.closest('td').querySelector('.mx').textContent=mx!=null?'limit ≤ '+mx+' Ω':'';
   let zok=null;if(z.value!==''){any=true;if(mx!=null)zok=parseFloat(z.value)<=mx}
-  mark(z,zok);if(zok===false)fails.push(nm+' Zs');bar(z,z.value,mx);fieldNote(z,'zs',mx,nm,'Zs');
+  mark(z,zok);if(zok===false)fails.push(nm+' Zs');bar(z,z.value,mx);z.closest('td').classList.toggle('nv',z.value==='');fieldNote(z,'zs',mx,nm,'Zs');
   [['a',300,'1x 0\u00B0'],['e',300,'1x 180\u00B0'],['c',40,'5x 0\u00B0'],['k',40,'5x 180\u00B0']].forEach(([s,l,t])=>{const e=$(`[data-k=r${i}${s}]`);let k=null;if(e.value!==''){any=true;k=parseFloat(e.value)<=l}mark(e.parentElement,k);if(k===false)fails.push(nm+' RCD '+t)});
   if(+$(`[data-k=pe${i}]`).value||$(`[data-k=pe${i}]`).value!=='')any=true;
   const e1=['a','e'].every(k=>$(`[data-k=r${i}${k}]`).value==='');[['h','0\u00B0'],['m','180\u00B0']].forEach(([k,d])=>{const h=$(`[data-k=r${i}${k}]`);const hk=e1&&h.value==='No trip'?null:h.value===''?null:h.value==='No trip';mark(h.parentElement,hk);if(hk===false)fails.push(nm+' RCD 0.5x '+d+' tripped')});
@@ -1097,7 +1098,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v37'; // keep in step with VERSION in sw.js
+const APP_VERSION='v40'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
