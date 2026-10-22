@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Residential Electrical Verification</title>
+<title>Electrical Installation Verification Record</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0b5cab">
 <link rel="icon" href="icon-192.png">
@@ -57,7 +57,8 @@ td.pass input{color:var(--ok);font-weight:600} td.fail input{color:var(--bad);fo
 .foot{display:none}
 #t1 td:first-child{white-space:nowrap}#t1 td:first-child input[data-k^=c]{width:58%}.bk{width:40%!important;margin-left:2%;font-size:12px!important;color:var(--mute)}
 .mx{font-size:11px;color:var(--mute);text-align:center}
-.csa{display:flex;gap:4px;justify-content:center;margin-top:4px}.irq{display:block;margin:3px auto 0;font-size:11px;padding:3px 8px;min-height:0;color:var(--mute)}
+.csa{display:flex;gap:4px;justify-content:center;margin-top:4px}.nrb{display:block;margin:3px 0 0;font-size:10.5px;padding:2px 6px;min-height:0;color:var(--mute)}
+.irq{display:block;margin:3px auto 0;font-size:11px;padding:3px 8px;min-height:0;color:var(--mute)}
 .csa{align-items:center;flex-wrap:wrap}.exp{font-size:11px;color:var(--mute);text-align:center;margin-top:2px}td.nv .exp{display:none!important}td .csa input{color:var(--mute)!important;font-weight:400!important}.csa .cw{gap:2px}.csa input{width:7ch!important;font-size:12px!important;padding:3px!important;text-align:center}.csa[hidden]{display:none}
 @media print{.csa.e0{display:none}.csa input{width:4ch!important;font-size:9px!important}.exp{display:none!important}.csa input::placeholder{color:transparent}}
 .sumbox:empty{display:none}.sumbox{border:1px solid var(--line);padding:6px 10px;margin:8px 0;font-weight:700}.sumbox.bad{background:var(--badbg);color:var(--bad)}.sumbox.ok{background:var(--okbg);color:var(--ok)}
@@ -398,7 +399,7 @@ body.offline #barSync{opacity:.5}
 
 <!-- PAGE 1 -->
 <section class="page" id="p1">
- <h1>RESIDENTIAL ELECTRICAL VERIFICATION</h1>
+ <h1>ELECTRICAL INSTALLATION VERIFICATION RECORD</h1>
  <div class="sub"><span>Quick job checklist | ordered workflow | tick only when verified</span><b id="pg1">1 / 2</b></div>
  <div class="row">
   <label class="f">Date<input type="date" id="date"></label>
@@ -598,7 +599,7 @@ function addRow(i){
  <td data-l="Zs loop impedance (Ω)"><input type="number" step="0.01" data-k="zs${i}" data-u="Ω"><div class="mx"></div><div class="rbar noprint"><i></i></div><div class="mgn noprint"></div></td>
  <td class="mt" data-l="Fault protection verified"><label><input type="checkbox" data-k="fr${i}"> RCD</label><label><input type="checkbox" data-k="fz${i}"> Zs</label><label><input type="checkbox" data-k="fo${i}"> Other</label></td></tr>`);
  $('#t2').insertAdjacentHTML('beforeend',`<tr><td data-n="${i}"><input type="text" data-k="r${i}n" list="cnames" placeholder="Circuit ${i}"></td>
- <td data-l="RCD / RCBO type"><input type="text" data-k="r${i}t"></td>
+ <td data-l="RCD / RCBO type"><input type="text" data-k="r${i}t"><button type="button" class="s nrb noprint" data-i="${i}"></button></td>
  <td data-chk="nt" data-l="0.5x 0° (no trip)"><select data-k="r${i}h"><option value=""></option><option>No trip</option><option>Tripped</option></select></td>
  <td data-l="0.5x 180° (no trip)"><select data-k="r${i}m"><option value=""></option><option>No trip</option><option>Tripped</option></select></td>
  <td data-chk="1x" data-l="1x 0° ms (max 300)"><input type="number" data-k="r${i}a"></td>
@@ -655,7 +656,9 @@ function init(){
 }
 function rcdFor(bk){const base=(defs.rcd||'A/30mA').trim(),pp=base.split('/');bk=String(bk||'').trim().toUpperCase().replace(/\s+/g,'');if(!bk||pp.length<2)return base;return pp[0]+'/'+bk+'/'+pp[pp.length-1]}
 function mirrorT(){for(let i=1;i<=N;i++){const t=$(`[data-k=r${i}t]`),b=$(`[data-k=bk${i}]`);if(!t||!b)continue;if(t.dataset.autot==='1'){const v=rcdFor(b.value);if(t.value!==v)t.value=v}}}
-function sync(){pemUpd();updModels();mirrorT();for(let i=1;i<=N;i++){const c=$(`[data-k=c${i}n]`),r=$(`[data-k=r${i}n]`);if(!c||!r)continue;if(r.dataset.auto===undefined)r.dataset.auto=(r.value===''||r.value===c.value)?'1':'0';if(r.dataset.auto==='1'&&r.value!==c.value)r.value=c.value}
+const isNA=v=>/^\s*n\/?a\b/i.test(v||'');
+function naUpd(){for(let i=1;i<=N;i++){const t=$(`[data-k=r${i}t]`),h=$(`[data-k=r${i}h]`),m=$(`[data-k=r${i}m]`),b=$(`.nrb[data-i="${i}"]`);if(!t||!h||!m)continue;const na=isNA(t.value);[h,m].forEach(x=>{if(na){if(x.value==='No trip'){x.value='';x.dataset.nab='1'}}else if(x.dataset.nab==='1'){if(x.value==='')x.value=defs.nt!==undefined?defs.nt:'No trip';delete x.dataset.nab}});if(b)b.textContent=na?'Has RCD':'No RCD (breaker only)'}}
+function sync(){naUpd();pemUpd();updModels();mirrorT();for(let i=1;i<=N;i++){const c=$(`[data-k=c${i}n]`),r=$(`[data-k=r${i}n]`);if(!c||!r)continue;if(r.dataset.auto===undefined)r.dataset.auto=(r.value===''||r.value===c.value)?'1':'0';if(r.dataset.auto==='1'&&r.value!==c.value)r.value=c.value}
  $('#fname').textContent='PDF file name: '+fname()+'.pdf';$('#date2').value=$('#date').value;$('#addr2').value=$('#addr').value===NEW?'':$('#addr').value;$('#job2').value=$('#job').value}
 
 // checks
@@ -698,6 +701,7 @@ document.addEventListener('input',e=>{const k0=e.target.dataset&&e.target.datase
 document.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.k;if(k&&k.startsWith('irv'))e.target.dataset.touched=1;sync();check();save()});
 document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.k;if(k&&/^f[rzo]\d/.test(k))e.target.dataset.touched=1;sync();check();save()});
 
+document.addEventListener('click',e=>{const b=e.target.closest('.nrb');if(!b)return;const i=b.dataset.i,t=$(`[data-k=r${i}t]`);if(isNA(t.value)){t.dataset.autot='1';t.value=rcdFor($(`[data-k=bk${i}]`).value);['h','m'].forEach(k=>{const x=$(`[data-k=r${i}${k}]`);if(x.value==='')x.value=defs.nt!==undefined?defs.nt:'No trip'})}else{t.dataset.autot='0';t.value='N/A (Circuit breaker)'}t.dispatchEvent(new Event('input',{bubbles:true}))});
 // address
 $('#addr').addEventListener('change',e=>{const n=e.target.value===NEW;$('#newAddrRow').hidden=!n;if(n)$('#newAddr').focus();sync()});
 // address suggestions (OpenStreetMap data via Photon; needs internet, falls back to manual typing)
@@ -1056,7 +1060,9 @@ const CHANGES=[
  {v:52,t:['R1+R2 column heading now reads R1+R2 Ω (Rphe). Cable size boxes show mm²']},
  {v:53,t:['Insulation resistance: a > 500 MΩ button under each IR box for over-range readings. Counts as a pass']},
  {v:55,t:['PE: cable Active mm², Earth mm² and Length (m) boxes now show for both methods, with an expected reading worked out from the cable (R2, or R1+R2)']},
- {v:56,t:['The expected cable reading is for your screen only and no longer prints on the PDF']}];
+ {v:56,t:['The expected cable reading is for your screen only and no longer prints on the PDF']},
+ {v:57,t:['RCD table: tap No RCD (breaker only) under the type for a circuit breaker. The 0.5x results go blank and stay blank (typing N/A in the type does the same)']},
+ {v:58,t:['Form title is now Electrical Installation Verification Record']}];
 const wnCur=()=>parseInt(String(APP_VERSION).replace(/\D/g,''),10)||0;
 function wnHtml(list){return list.slice().reverse().map(c=>`<div style="margin:8px 0"><b>Update ${c.v}</b><ul style="margin:4px 0 0">${c.t.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul></div>`).join('')}
 function showWN(all){const last=all?0:LS.get('ev_wn',23);const list=CHANGES.filter(c=>c.v>last);if(!list.length&&!all)return;$('#wnl').innerHTML=wnHtml(list.length?list:CHANGES);const mt=document.querySelector('#wn .mt');if(mt)mt.textContent=all?'What\'s new & tour':'What\'s new';$('#wn').hidden=false}
@@ -1064,7 +1070,7 @@ $('#wnok').onclick=()=>{$('#wn').hidden=true;LS.set('ev_wn',wnCur())};
 $('#wntour').onclick=()=>{$('#wn').hidden=true;LS.set('ev_wn',wnCur());startTour()};
 $('#tourBtn').onclick=()=>showWN(true);
 const TSTEPS=[
- {t:'Welcome to Elec Verify',b:'This fills in your Residential Electrical Verification and test results form, saves everything on this device as you type, and prints the same PDF. This takes about 30 seconds.'},
+ {t:'Welcome to Elec Verify',b:'This fills in your Electrical Installation Verification Record and test results form, saves everything on this device as you type, and prints the same PDF. This takes about 30 seconds.'},
  {s:['#prog'],t:'Progress and saving',b:'See how much of the job is done. "Saved on this device" means nothing is lost, even if you close the app. An Offline badge appears here when there is no signal.'},
  {s:['#p1 .sec'],t:'Checklist sections',b:'Tap a heading to open or fold a section. Open one and use "Tick all" to tick the whole section in one tap.',sec:1},
  {s:['.cpg','#t1'],t:'Enter your readings',b:'On a phone, swipe left or right (or tap Next) for the next circuit. Green means pass, red means out of limits, and amber means close to the limit.'},
@@ -1165,7 +1171,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v56'; // keep in step with VERSION in sw.js
+const APP_VERSION='v58'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
