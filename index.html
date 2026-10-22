@@ -59,7 +59,7 @@ td.pass input{color:var(--ok);font-weight:600} td.fail input{color:var(--bad);fo
 .mx{font-size:11px;color:var(--mute);text-align:center}
 .csa{display:flex;gap:4px;justify-content:center;margin-top:4px}.irq{display:block;margin:3px auto 0;font-size:11px;padding:3px 8px;min-height:0;color:var(--mute)}
 .csa{align-items:center;flex-wrap:wrap}.exp{font-size:11px;color:var(--mute);text-align:center;margin-top:2px}td.nv .exp{display:none!important}td .csa input{color:var(--mute)!important;font-weight:400!important}.csa .cw{gap:2px}.csa input{width:7ch!important;font-size:12px!important;padding:3px!important;text-align:center}.csa[hidden]{display:none}
-@media print{.csa.e0{display:none}.csa input{width:4ch!important;font-size:9px!important}.exp{font-size:8.5px;color:#000;text-align:left}.csa input::placeholder{color:transparent}}
+@media print{.csa.e0{display:none}.csa input{width:4ch!important;font-size:9px!important}.exp{display:none!important}.csa input::placeholder{color:transparent}}
 .sumbox:empty{display:none}.sumbox{border:1px solid var(--line);padding:6px 10px;margin:8px 0;font-weight:700}.sumbox.bad{background:var(--badbg);color:var(--bad)}.sumbox.ok{background:var(--okbg);color:var(--ok)}
 .jb2{flex-wrap:wrap;max-width:200px;justify-content:flex-end}
 #sigPad{width:100%;max-width:340px;height:96px;border:1px dashed var(--line);background:#fff;touch-action:none;border-radius:5px;display:block}
@@ -1055,7 +1055,8 @@ const CHANGES=[
  {v:51,t:['PE (R2) method: optional Active / Earth mm² boxes under each PE reading. The R2 limit is then worked out from your cable sizes (Rphe x active / (active + earth))']},
  {v:52,t:['R1+R2 column heading now reads R1+R2 Ω (Rphe). Cable size boxes show mm²']},
  {v:53,t:['Insulation resistance: a > 500 MΩ button under each IR box for over-range readings. Counts as a pass']},
- {v:55,t:['PE: cable Active mm², Earth mm² and Length (m) boxes now show for both methods, with an expected reading worked out from the cable (R2, or R1+R2)']}];
+ {v:55,t:['PE: cable Active mm², Earth mm² and Length (m) boxes now show for both methods, with an expected reading worked out from the cable (R2, or R1+R2)']},
+ {v:56,t:['The expected cable reading is for your screen only and no longer prints on the PDF']}];
 const wnCur=()=>parseInt(String(APP_VERSION).replace(/\D/g,''),10)||0;
 function wnHtml(list){return list.slice().reverse().map(c=>`<div style="margin:8px 0"><b>Update ${c.v}</b><ul style="margin:4px 0 0">${c.t.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul></div>`).join('')}
 function showWN(all){const last=all?0:LS.get('ev_wn',23);const list=CHANGES.filter(c=>c.v>last);if(!list.length&&!all)return;$('#wnl').innerHTML=wnHtml(list.length?list:CHANGES);const mt=document.querySelector('#wn .mt');if(mt)mt.textContent=all?'What\'s new & tour':'What\'s new';$('#wn').hidden=false}
@@ -1164,7 +1165,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v55'; // keep in step with VERSION in sw.js
+const APP_VERSION='v56'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
