@@ -488,8 +488,9 @@ body.offline #barSync{opacity:.5}
 
  <div id="rsum" class="rsum noprint" hidden></div>
  <div class="sec">1 CIRCUIT MEASUREMENTS | enter actual readings</div>
+ <div class="inline" style="font-size:13px">PE reading method: <select data-k="pem" id="pem"></select></div>
  <div class="scroll"><table id="t1">
-  <tr><th>Circuit / test point</th><th>PE &Omega;</th><th>IR M&Omega; / V</th><th>Zs &Omega;</th><th>Fault protection verified</th></tr>
+  <tr><th>Circuit / test point</th><th id="peth">PE &Omega;</th><th>IR M&Omega; / V</th><th>Zs &Omega;</th><th>Fault protection verified</th></tr>
  </table></div>
  <p class="note">RCD = 30 mA RCD/RCBO operation + protective earth verified | Zs = loop impedance | Other = explain below. IR below 1 M&Omega; is flagged red. Max Zs and max PE resistance come from AS/NZS 3000 Tables 8.1 and 8.2 when a breaker is entered (e.g. C20, or F32 for an HRC fuse at 0.4 s, F32/5s for 5 s). Table 8.2 assumes the cable sizes printed in it.</p>
  <div class="inline noprint"><button class="s" id="addC">+ Add circuit</button><button class="s" id="delC">Remove last circuit</button><span class="tplbox" style="display:inline-flex;gap:6px;flex-wrap:wrap;align-items:center"><select id="tplSel"></select><button class="s" id="tplLoad">Load template</button><button class="s" id="tplSave">Save circuits as template</button><button class="s" id="tplDel">Delete template</button></span> <span class="note">Circuits beyond 8 continue onto an extra printed page.</span></div>
@@ -575,7 +576,11 @@ const _tc={};
 function tbl(t){return _tc[t]||(_tc[t]=(()=>{const m={};String(t).split('\n').forEach(l=>{const r=l.match(/^(.*?)[=:]\s*([\d.]+)(?:\s*\/\s*([\d.]+))?\s*$/);if(!r)return;const k=devKey(r[1]);if(k)m[k]=[parseFloat(r[2]),r[3]!==undefined?parseFloat(r[3]):null]});return m})())}
 function zsMap(){const m={},t=tbl(zsText());Object.keys(t).forEach(k=>m[k]=t[k][0]);return m}
 function zsMax(v){const k=devKey(v);if(!k)return null;const x=zsMap()[k];return x==null?null:x}
-function peMax(v){const k=devKey(v);if(!k)return null;const t=tbl(rzText())[k];if(!t)return null;const x=defs.pemode==='R1R2'?t[0]:t[1];return x==null?null:x}
+const PEL={R2:'Earth conductor only (R2)',R1R2:'Active + earth (R1+R2)'};
+function peMode(){const e=document.getElementById('pem'),d=defs.pemode==='R1R2'?'R1R2':'R2';return e&&e.value?e.value:d}
+function pemUpd(){const e=document.getElementById('pem');if(!e)return;const d=defs.pemode==='R1R2'?'R1R2':'R2',o=d==='R2'?'R1R2':'R2',cur=e.value;e.innerHTML='<option value="">'+PEL[d]+'</option><option value="'+o+'">'+PEL[o]+'</option>';e.value=cur===o?o:'';const m=peMode(),th=document.getElementById('peth');if(th)th.innerHTML=m==='R1R2'?'R1+R2 &Omega;':'PE &Omega;'}
+try{pemUpd()}catch(e){}
+function peMax(v){const k=devKey(v);if(!k)return null;const t=tbl(rzText())[k];if(!t)return null;const x=peMode()==='R1R2'?t[0]:t[1];return x==null?null:x}
 function wrapU(i){const u=i.dataset.u||(/\d[rs]$/.test(i.dataset.k||'')?'mA':'ms');const w=document.createElement('div');w.className='cw';i.parentNode.insertBefore(w,i);w.appendChild(i);const s=document.createElement('span');s.className='unit';s.dataset.u=u;w.appendChild(s)}
 function addRow(i){
  $('#t1').insertAdjacentHTML('beforeend',`<tr><td data-n="${i}"><input type="text" data-k="c${i}n" list="cnames" placeholder="Circuit ${i}"><input type="text" class="bk" data-k="bk${i}" list="brk" placeholder="Breaker e.g. C20">${i>1?'<button type="button" class="cp noprint" data-cp="'+i+'">Copy breaker/ticks from above</button>':''}</td>
@@ -641,7 +646,7 @@ function init(){
 }
 function rcdFor(bk){const base=(defs.rcd||'A/30mA').trim(),pp=base.split('/');bk=String(bk||'').trim().toUpperCase().replace(/\s+/g,'');if(!bk||pp.length<2)return base;return pp[0]+'/'+bk+'/'+pp[pp.length-1]}
 function mirrorT(){for(let i=1;i<=N;i++){const t=$(`[data-k=r${i}t]`),b=$(`[data-k=bk${i}]`);if(!t||!b)continue;if(t.dataset.autot==='1'){const v=rcdFor(b.value);if(t.value!==v)t.value=v}}}
-function sync(){updModels();mirrorT();for(let i=1;i<=N;i++){const c=$(`[data-k=c${i}n]`),r=$(`[data-k=r${i}n]`);if(!c||!r)continue;if(r.dataset.auto===undefined)r.dataset.auto=(r.value===''||r.value===c.value)?'1':'0';if(r.dataset.auto==='1'&&r.value!==c.value)r.value=c.value}
+function sync(){pemUpd();updModels();mirrorT();for(let i=1;i<=N;i++){const c=$(`[data-k=c${i}n]`),r=$(`[data-k=r${i}n]`);if(!c||!r)continue;if(r.dataset.auto===undefined)r.dataset.auto=(r.value===''||r.value===c.value)?'1':'0';if(r.dataset.auto==='1'&&r.value!==c.value)r.value=c.value}
  $('#fname').textContent='PDF file name: '+fname()+'.pdf';$('#date2').value=$('#date').value;$('#addr2').value=$('#addr').value===NEW?'':$('#addr').value;$('#job2').value=$('#job').value}
 
 // checks
@@ -1035,7 +1040,8 @@ const CHANGES=[
  {v:34,t:['RCD results: ramp (trip current) readings now show mA','The 2x test column is removed (the Metrel auto test does not give it)']},
  {v:36,t:['RCD results: the RCD / RCBO type fills in from the breaker above, e.g. C20 gives A/C20/30mA (you can still overtype it)']},
  {v:41,t:['Sync safety: if the same job is edited on two devices, the older copy is kept under Saved jobs > Recover older copies instead of being lost','Opening or tapping around a job no longer counts as an edit, so an old copy on one device can no longer overwrite newer results from another']},
- {v:42,t:['Sync never overwrites a newer version silently. If a job was changed on two devices you are asked which to keep (or keep both), and the other version is saved under Recover older copies','Each job remembers which device last edited it. Name this device in Edit defaults']}];
+ {v:42,t:['Sync never overwrites a newer version silently. If a job was changed on two devices you are asked which to keep (or keep both), and the other version is saved under Recover older copies','Each job remembers which device last edited it. Name this device in Edit defaults']},
+ {v:50,t:['PE method: choose Earth conductor only (R2) or Active + earth (R1+R2) per job, above the circuit table. The PE limit and column heading change to match']}];
 const wnCur=()=>parseInt(String(APP_VERSION).replace(/\D/g,''),10)||0;
 function wnHtml(list){return list.slice().reverse().map(c=>`<div style="margin:8px 0"><b>Update ${c.v}</b><ul style="margin:4px 0 0">${c.t.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul></div>`).join('')}
 function showWN(all){const last=all?0:LS.get('ev_wn',23);const list=CHANGES.filter(c=>c.v>last);if(!list.length&&!all)return;$('#wnl').innerHTML=wnHtml(list.length?list:CHANGES);const mt=document.querySelector('#wn .mt');if(mt)mt.textContent=all?'What\'s new & tour':'What\'s new';$('#wn').hidden=false}
@@ -1144,7 +1150,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v49'; // keep in step with VERSION in sw.js
+const APP_VERSION='v50'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
