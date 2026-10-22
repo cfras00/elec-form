@@ -58,8 +58,8 @@ td.pass input{color:var(--ok);font-weight:600} td.fail input{color:var(--bad);fo
 #t1 td:first-child{white-space:nowrap}#t1 td:first-child input[data-k^=c]{width:58%}.bk{width:40%!important;margin-left:2%;font-size:12px!important;color:var(--mute)}
 .mx{font-size:11px;color:var(--mute);text-align:center}
 .csa{display:flex;gap:4px;justify-content:center;margin-top:4px}.irq{display:block;margin:3px auto 0;font-size:11px;padding:3px 8px;min-height:0;color:var(--mute)}
-.csa{align-items:center}td .csa input{color:var(--mute)!important;font-weight:400!important}.csa .cw{gap:2px}.csa input{width:7ch!important;font-size:12px!important;padding:3px!important;text-align:center}.csa[hidden]{display:none}
-@media print{.csa.e0{display:none}.csa input{width:4ch!important;font-size:9px!important}.csa input::placeholder{color:transparent}}
+.csa{align-items:center;flex-wrap:wrap}.exp{font-size:11px;color:var(--mute);text-align:center;margin-top:2px}td.nv .exp{display:none!important}td .csa input{color:var(--mute)!important;font-weight:400!important}.csa .cw{gap:2px}.csa input{width:7ch!important;font-size:12px!important;padding:3px!important;text-align:center}.csa[hidden]{display:none}
+@media print{.csa.e0{display:none}.csa input{width:4ch!important;font-size:9px!important}.exp{font-size:8.5px;color:#000;text-align:left}.csa input::placeholder{color:transparent}}
 .sumbox:empty{display:none}.sumbox{border:1px solid var(--line);padding:6px 10px;margin:8px 0;font-weight:700}.sumbox.bad{background:var(--badbg);color:var(--bad)}.sumbox.ok{background:var(--okbg);color:var(--ok)}
 .jb2{flex-wrap:wrap;max-width:200px;justify-content:flex-end}
 #sigPad{width:100%;max-width:340px;height:96px;border:1px dashed var(--line);background:#fff;touch-action:none;border-radius:5px;display:block}
@@ -581,7 +581,10 @@ function zsMap(){const m={},t=tbl(zsText());Object.keys(t).forEach(k=>m[k]=t[k][
 function zsMax(v){const k=devKey(v);if(!k)return null;const x=zsMap()[k];return x==null?null:x}
 const PEL={R2:'Earth conductor only (R2)',R1R2:'Active + earth (R1+R2)'};
 function peMode(){const e=document.getElementById('pem'),d=defs.pemode==='R1R2'?'R1R2':'R2';return e&&e.value?e.value:d}
-function csaUpd(){const r2=peMode()!=='R1R2';document.querySelectorAll('.csa').forEach(d=>{const a=d.querySelector('[data-k^=ca]').value,e=d.querySelector('[data-k^=ce]').value;d.classList.toggle('e0',a===''&&e==='');d.hidden=!r2&&a===''&&e===''})}
+const RKM={1.5:12.1,2.5:7.41,4:4.61,6:3.08,10:1.83,16:1.15,25:0.727,35:0.524,50:0.387,70:0.268,95:0.193,120:0.153,150:0.124,185:0.0991,240:0.0754};
+const rkm=a=>RKM[a]!==undefined?RKM[a]:18.4/a;
+function peExp(i){const g=k=>parseFloat((document.querySelector(`[data-k=${k}${i}]`)||{}).value),a=g('ca'),e=g('ce'),L=g('cl');if(!(L>0))return '';const r2=peMode()!=='R1R2';let v;if(r2){if(!(e>0))return '';v=rkm(e)*L/1000}else{if(!(a>0&&e>0))return '';v=(rkm(a)+rkm(e))*L/1000}return 'expected ≈ '+v.toFixed(2)+' Ω ('+(r2?'R2':'R1+R2')+', cable at 20°C)'}
+function csaUpd(){const r2=peMode()!=='R1R2';document.querySelectorAll('.csa').forEach(d=>{const a=d.querySelector('[data-k^=ca]').value,e=d.querySelector('[data-k^=ce]').value;d.classList.toggle('e0',a===''&&e===''&&d.querySelector('[data-k^=cl]').value==='');d.hidden=false})}
 function pemUpd(){const e=document.getElementById('pem');if(!e)return;const d=defs.pemode==='R1R2'?'R1R2':'R2',o=d==='R2'?'R1R2':'R2',cur=e.value;e.innerHTML='<option value="">'+PEL[d]+'</option><option value="'+o+'">'+PEL[o]+'</option>';e.value=cur===o?o:'';const m=peMode(),th=document.getElementById('peth');if(th)th.innerHTML=m==='R1R2'?'R1+R2 &Omega; (Rphe)':'PE &Omega;';csaUpd()}
 try{pemUpd()}catch(e){}
 function peMax(v,i){const k=devKey(v);if(!k)return null;const t=tbl(rzText())[k];if(!t)return null;if(peMode()==='R1R2')return t[0]==null?null:t[0];
@@ -590,7 +593,7 @@ function peMax(v,i){const k=devKey(v);if(!k)return null;const t=tbl(rzText())[k]
 function wrapU(i){const u=i.dataset.u||(/\d[rs]$/.test(i.dataset.k||'')?'mA':'ms');const w=document.createElement('div');w.className='cw';i.parentNode.insertBefore(w,i);w.appendChild(i);const s=document.createElement('span');s.className='unit';s.dataset.u=u;w.appendChild(s)}
 function addRow(i){
  $('#t1').insertAdjacentHTML('beforeend',`<tr><td data-n="${i}"><input type="text" data-k="c${i}n" list="cnames" placeholder="Circuit ${i}"><input type="text" class="bk" data-k="bk${i}" list="brk" placeholder="Breaker e.g. C20">${i>1?'<button type="button" class="cp noprint" data-cp="'+i+'">Copy breaker/ticks from above</button>':''}</td>
- <td data-chk="pe" data-l="PE continuity (Ω)"><input type="number" step="0.01" data-k="pe${i}" data-u="Ω"><div class="mx"></div><div class="rbar noprint"><i></i></div><div class="mgn noprint"></div><div class="csa e0"><input type="number" step="0.5" min="0" data-k="ca${i}" data-u="mm²" placeholder="Active" title="Active conductor size, mm²"><input type="number" step="0.5" min="0" data-k="ce${i}" data-u="mm²" placeholder="Earth" title="Earth conductor size, mm²"></div></td>
+ <td data-chk="pe" data-l="PE continuity (Ω)"><input type="number" step="0.01" data-k="pe${i}" data-u="Ω"><div class="mx"></div><div class="rbar noprint"><i></i></div><div class="mgn noprint"></div><div class="csa e0"><input type="number" step="0.5" min="0" data-k="ca${i}" data-u="mm²" placeholder="Active" title="Active conductor size, mm²"><input type="number" step="0.5" min="0" data-k="ce${i}" data-u="mm²" placeholder="Earth" title="Earth conductor size, mm²"><input type="number" step="1" min="0" data-k="cl${i}" data-u="m" placeholder="Length" title="Cable run length, metres"></div><div class="exp"></div></td>
  <td data-chk="ir" data-l="Insulation resistance (MΩ / V)"><div class="irw"><input type="text" inputmode="decimal" data-k="ir${i}" data-u="MΩ"><span>/</span><input type="number" data-k="irv${i}" data-u="V"></div><button type="button" class="s irq noprint" data-irq="${i}" title="Reading is over range">&gt; 500 MΩ</button><div class="mgn noprint"></div></td>
  <td data-l="Zs loop impedance (Ω)"><input type="number" step="0.01" data-k="zs${i}" data-u="Ω"><div class="mx"></div><div class="rbar noprint"><i></i></div><div class="mgn noprint"></div></td>
  <td class="mt" data-l="Fault protection verified"><label><input type="checkbox" data-k="fr${i}"> RCD</label><label><input type="checkbox" data-k="fz${i}"> Zs</label><label><input type="checkbox" data-k="fo${i}"> Other</label></td></tr>`);
@@ -670,7 +673,7 @@ function check(){
   const ir=$(`[data-k=ir${i}]`).value.trim(); let ok=null;
   if(ir){any=true;const n=parseFloat(ir.replace(/[^0-9.]/g,'').split(/[\/]/)[0]);if(!isNaN(n))ok=n>=1;else if(/[>∞]|inf|^ol/i.test(ir))ok=true}
   mark($(`[data-k=ir${i}]`).parentElement,ok);if(ok===false)fails.push(nm+' IR');fieldNote($(`[data-k=ir${i}]`),'ir',null,nm,'IR');
-  const pe=$(`[data-k=pe${i}]`),pl=peMax($(`[data-k=bk${i}]`).value,i);pe.closest('td').querySelector('.mx').textContent=pl!=null?'limit ≤ '+pl+' Ω':'';
+  const pe=$(`[data-k=pe${i}]`),pl=peMax($(`[data-k=bk${i}]`).value,i);pe.closest('td').querySelector('.mx').textContent=pl!=null?'limit ≤ '+pl+' Ω':'';{const x=pe.closest('td').querySelector('.exp');if(x)x.textContent=peExp(i)}
   let pk=null;if(pe.value!==''){any=true;if(pl!=null)pk=parseFloat(pe.value)<=pl}mark(pe,pk);if(pk===false)fails.push(nm+' PE');bar(pe,pe.value,pl);pe.closest('td').classList.toggle('nv',pe.value==='');fieldNote(pe,'pe',pl,nm,'PE');
   const z=$(`[data-k=zs${i}]`),mx=zsMax($(`[data-k=bk${i}]`).value);z.closest('td').querySelector('.mx').textContent=mx!=null?'limit ≤ '+mx+' Ω':'';
   let zok=null;if(z.value!==''){any=true;if(mx!=null)zok=parseFloat(z.value)<=mx}
@@ -1051,7 +1054,8 @@ const CHANGES=[
  {v:50,t:['PE method: choose Earth conductor only (R2) or Active + earth (R1+R2) per job, above the circuit table. The PE limit and column heading change to match']},
  {v:51,t:['PE (R2) method: optional Active / Earth mm² boxes under each PE reading. The R2 limit is then worked out from your cable sizes (Rphe x active / (active + earth))']},
  {v:52,t:['R1+R2 column heading now reads R1+R2 Ω (Rphe). Cable size boxes show mm²']},
- {v:53,t:['Insulation resistance: a > 500 MΩ button under each IR box for over-range readings. Counts as a pass']}];
+ {v:53,t:['Insulation resistance: a > 500 MΩ button under each IR box for over-range readings. Counts as a pass']},
+ {v:55,t:['PE: cable Active mm², Earth mm² and Length (m) boxes now show for both methods, with an expected reading worked out from the cable (R2, or R1+R2)']}];
 const wnCur=()=>parseInt(String(APP_VERSION).replace(/\D/g,''),10)||0;
 function wnHtml(list){return list.slice().reverse().map(c=>`<div style="margin:8px 0"><b>Update ${c.v}</b><ul style="margin:4px 0 0">${c.t.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul></div>`).join('')}
 function showWN(all){const last=all?0:LS.get('ev_wn',23);const list=CHANGES.filter(c=>c.v>last);if(!list.length&&!all)return;$('#wnl').innerHTML=wnHtml(list.length?list:CHANGES);const mt=document.querySelector('#wn .mt');if(mt)mt.textContent=all?'What\'s new & tour':'What\'s new';$('#wn').hidden=false}
@@ -1160,7 +1164,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v54'; // keep in step with VERSION in sw.js
+const APP_VERSION='v55'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
