@@ -59,9 +59,10 @@ td.pass input{color:var(--ok);font-weight:600} td.fail input{color:var(--bad);fo
 .mx{font-size:11px;color:var(--mute);text-align:center}
 .csa{display:flex;gap:4px;justify-content:center;margin-top:4px}.nrb{display:block;margin:3px 0 0;font-size:10.5px;padding:2px 6px;min-height:0;color:var(--mute)}
 .irq{display:block;margin:3px auto 0;font-size:11px;padding:3px 8px;min-height:0;color:var(--mute)}
+.nmp{display:none}
 .pmc{display:block;width:100%;margin:2px 0;font-size:10.5px!important;padding:2px 2px!important;color:var(--mute)!important;font-weight:400!important;text-align:center}
 .csa{align-items:center;flex-wrap:wrap}.exp{font-size:11px;color:var(--mute);text-align:center;margin-top:2px}td.nv .exp{display:none!important}td .csa input{color:var(--mute)!important;font-weight:400!important}.csa .cw{gap:2px}.csa input{width:7ch!important;font-size:12px!important;padding:3px!important;text-align:center}.csa[hidden]{display:none}
-@media print{.csa.e0{display:none}.csa input{width:4ch!important;font-size:9px!important}.exp{display:none!important}.csa input::placeholder{color:transparent}}
+@media print{.nmi{display:none!important}.nmp{display:block!important;font-weight:700;white-space:normal;overflow-wrap:anywhere;line-height:1.2}.csa.e0{display:none}.csa input{width:4ch!important;font-size:9px!important}.exp{display:none!important}.csa input::placeholder{color:transparent}}
 .sumbox:empty{display:none}.sumbox{border:1px solid var(--line);padding:6px 10px;margin:8px 0;font-weight:700}.sumbox.bad{background:var(--badbg);color:var(--bad)}.sumbox.ok{background:var(--okbg);color:var(--ok)}
 .jb2{flex-wrap:wrap;max-width:200px;justify-content:flex-end}
 #sigPad{width:100%;max-width:340px;height:96px;border:1px dashed var(--line);background:#fff;touch-action:none;border-radius:5px;display:block}
@@ -659,7 +660,8 @@ function rcdFor(bk){const base=(defs.rcd||'A/30mA').trim(),pp=base.split('/');bk
 function mirrorT(){for(let i=1;i<=N;i++){const t=$(`[data-k=r${i}t]`),b=$(`[data-k=bk${i}]`);if(!t||!b)continue;if(t.dataset.autot==='1'){const v=rcdFor(b.value);if(t.value!==v)t.value=v}}}
 const isNA=v=>/^\s*n\/?a\b/i.test(v||'');
 function naUpd(){for(let i=1;i<=N;i++){const t=$(`[data-k=r${i}t]`),h=$(`[data-k=r${i}h]`),m=$(`[data-k=r${i}m]`),b=$(`.nrb[data-i="${i}"]`);if(!t||!h||!m)continue;const na=isNA(t.value);[h,m].forEach(x=>{if(na){if(x.value==='No trip'){x.value='';x.dataset.nab='1'}}else if(x.dataset.nab==='1'){if(x.value==='')x.value=defs.nt!==undefined?defs.nt:'No trip';delete x.dataset.nab}});if(b)b.textContent=na?'Has RCD':'No RCD (breaker only)'}}
-function sync(){naUpd();pemUpd();updModels();mirrorT();for(let i=1;i<=N;i++){const c=$(`[data-k=c${i}n]`),r=$(`[data-k=r${i}n]`);if(!c||!r)continue;if(r.dataset.auto===undefined)r.dataset.auto=(r.value===''||r.value===c.value)?'1':'0';if(r.dataset.auto==='1'&&r.value!==c.value)r.value=c.value}
+function nmUpd(){document.querySelectorAll('#t1 [data-k$=n],#t2 [data-k$=n]').forEach(el=>{if(!/^[cr]\d+n$/.test(el.dataset.k))return;let m=el.nextElementSibling;if(!m||!m.classList.contains('nmp')){m=document.createElement('div');m.className='nmp';el.classList.add('nmi');el.after(m)}if(m.textContent!==el.value)m.textContent=el.value})}
+function sync(){nmUpd();naUpd();pemUpd();updModels();mirrorT();for(let i=1;i<=N;i++){const c=$(`[data-k=c${i}n]`),r=$(`[data-k=r${i}n]`);if(!c||!r)continue;if(r.dataset.auto===undefined)r.dataset.auto=(r.value===''||r.value===c.value)?'1':'0';if(r.dataset.auto==='1'&&r.value!==c.value)r.value=c.value}
  $('#fname').textContent='PDF file name: '+fname()+'.pdf';$('#date2').value=$('#date').value;$('#addr2').value=$('#addr').value===NEW?'':$('#addr').value;$('#job2').value=$('#job').value}
 
 // checks
@@ -1064,7 +1066,8 @@ const CHANGES=[
  {v:56,t:['The expected cable reading is for your screen only and no longer prints on the PDF']},
  {v:57,t:['RCD table: tap No RCD (breaker only) under the type for a circuit breaker. The 0.5x results go blank and stay blank (typing N/A in the type does the same)']},
  {v:58,t:['Form title is now Electrical Installation Verification Record']},
- {v:59,t:['PE method can now be chosen per circuit (small dropdown in each PE cell). The one above the table is the default for the job']}];
+ {v:59,t:['PE method can now be chosen per circuit (small dropdown in each PE cell). The one above the table is the default for the job']},
+ {v:60,t:['PDF: long circuit names now wrap onto two lines instead of being cut off']}];
 const wnCur=()=>parseInt(String(APP_VERSION).replace(/\D/g,''),10)||0;
 function wnHtml(list){return list.slice().reverse().map(c=>`<div style="margin:8px 0"><b>Update ${c.v}</b><ul style="margin:4px 0 0">${c.t.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul></div>`).join('')}
 function showWN(all){const last=all?0:LS.get('ev_wn',23);const list=CHANGES.filter(c=>c.v>last);if(!list.length&&!all)return;$('#wnl').innerHTML=wnHtml(list.length?list:CHANGES);const mt=document.querySelector('#wn .mt');if(mt)mt.textContent=all?'What\'s new & tour':'What\'s new';$('#wn').hidden=false}
@@ -1173,7 +1176,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v59'; // keep in step with VERSION in sw.js
+const APP_VERSION='v60'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
