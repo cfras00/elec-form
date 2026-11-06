@@ -376,6 +376,72 @@ td.mg:not(.fail){background:rgba(224,168,0,.18)}
 body.offline #barSync{opacity:.5}
 .cfg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}.cfc{border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--band)}
 #jb .wbox{overscroll-behavior:contain}#ptr{height:0;overflow:hidden;text-align:center;color:var(--mute);font-size:13px;transition:height .15s}
+/* ---- JSA tab ---- */
+#tabs{display:flex;gap:6px;padding:0 16px 8px;background:var(--paper)}
+#tabs button{flex:1;max-width:220px;padding:7px 12px;border-radius:999px;font-weight:600}
+#tabs button.on{background:var(--acc);color:var(--paper);border-color:var(--acc)}
+#jsa{display:none}
+body.jsa-on #jsa{display:block}
+body.jsa-on #p1,body.jsa-on #p2,body.jsa-on #pp,body.jsa-on .pb,body.jsa-on #xtra,body.jsa-on #prog,body.jsa-on #bnav,body.jsa-on #lockbar,body.jsa-on #jobs,body.jsa-on #clr,body.jsa-on #failpill,body.jsa-on #utoast{display:none!important}
+#jsa textarea{width:100%;min-height:54px;resize:vertical}
+#jsa .jbtns{gap:8px}
+.jstep{border:1px solid var(--line);border-radius:8px;padding:10px;margin:10px 0;background:var(--inp)}
+.jstep label.f{margin-top:6px}
+.jsh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.jsh span{display:flex;gap:6px}
+#jsx{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:30;display:flex;align-items:center;justify-content:center}#jsx[hidden]{display:none}
+#jsx textarea{width:100%;min-height:180px}
+#jsaWrap{display:none}
+body.jpv-on #jsaWrap{display:block;position:fixed;inset:0;z-index:40;background:#4a4f55;overflow:auto;padding-bottom:30px}
+#jsaWrap .jbar{position:sticky;top:0;z-index:2;display:flex;gap:8px;padding:10px 12px;background:#2b2f33;justify-content:flex-end}
+.jscaler{width:277mm;margin:0 auto;transform-origin:top left}
+.jsa-sheet{zoom:var(--jz,1);width:277mm;background:#fff;color:#000;margin:12px 0;font-family:Calibri,Carlito,"Segoe UI",Arial,sans-serif;font-size:10pt;line-height:1.2;text-align:left}
+.jsa-sheet *{box-sizing:border-box}
+#jsaMeasure{position:absolute;left:-9999px;top:0;visibility:hidden;zoom:1;margin:0}
+.js-box{border:.55mm solid #333}
+.js-top{display:grid;grid-template-columns:150.7mm 1fr;height:13.8mm;border-bottom:.3mm solid #444}
+.js-title{background:#aebce6;border-right:.3mm solid #444;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12pt;line-height:1.3;color:#2b2b2b}
+.js-jd{display:grid;grid-template-rows:1fr 1fr}
+.js-jd>div{padding:1mm 1mm 0;font-size:10pt;overflow:hidden;white-space:nowrap}
+.js-jd>div:first-child{border-bottom:.3mm solid #444}
+.js-r{border-bottom:.3mm solid #444;padding:1.2mm 1mm 0;white-space:pre-line;overflow-wrap:anywhere;font-size:10pt}
+.js-team{height:6.3mm;padding-left:3mm}
+.js-task{height:7mm;padding-top:1.7mm}
+.js-loc{min-height:15.8mm;border-bottom:.5mm solid #333;display:flex;flex-direction:column;justify-content:space-between;padding-top:1.7mm}
+.js-loc .hint{margin-top:2mm;padding-bottom:1.2mm}
+.val{color:#000}
+.js-gap{height:5.3mm}
+.js-hd{display:grid;grid-template-columns:26.64fr 33.17fr 40.19fr;border-top:.3mm solid #444;border-bottom:.3mm solid #444;min-height:15.5mm}
+.js-hd>div{background:#c8d5f5;padding:1.2mm 1mm;text-align:center;font-size:10pt;line-height:1.35;color:#2b2b2b}
+.js-hd>div+div{border-left:.3mm solid #444}.js-hd>div:first-child{padding:1.2mm 6.5mm}
+.js-ent{display:grid;grid-template-columns:26.64fr 33.17fr 40.19fr;min-height:5mm;border-bottom:.5mm solid #333}
+.js-ent>div{padding:.8mm 1.5mm;font-size:9pt;white-space:pre-wrap;overflow-wrap:anywhere}
+.js-t{width:100%;border-collapse:collapse;table-layout:fixed}
+.js-t th,.js-t td{border:.3mm solid #444;vertical-align:top;padding:1mm 1.5mm;font-size:9pt;white-space:pre-wrap;overflow-wrap:anywhere;text-align:left}
+.js-t tr>*:first-child{border-left:0}.js-t tr>*:last-child{border-right:0}
+.js-t thead th{background:#fff!important;height:20.6mm;font-weight:400;text-align:center;border-top:0}
+.js-t thead th:first-child{text-align:left;font-size:10pt}
+.js-t thead th b{display:block;font-weight:400;font-size:10pt;line-height:4.6mm;color:#2b2b2b}
+.js-t thead th span{display:block;margin-top:1.4mm;font-size:6.5pt;line-height:5.1mm;color:#444}
+.js-t tbody tr{height:10.3mm;break-inside:avoid;page-break-inside:avoid}
+.js-t tbody tr:last-child td{border-bottom:0}
+.js-t td.jn{text-align:center;vertical-align:bottom;font-size:10pt;padding-bottom:.6mm}
+.js-sig{display:grid;grid-template-columns:6.71fr 26.7fr 26.38fr 20.1fr 20.1fr;margin-top:1.5mm;font-size:9.5pt;color:#444;row-gap:2mm}
+.js-sig .ln{border-bottom:.3mm solid #444;height:6.2mm}
+.js-sig .c3{display:flex;justify-content:space-between;align-items:flex-end;padding-left:1mm}
+.js-sig .c45{grid-column:4/6;display:flex;align-items:flex-end}
+.js-sig .c45 .ln{width:66.5%;flex:none}
+.js-sig .c45 span{padding-left:1mm}
+.js-sig .c1{align-self:end}
+@media print{
+ body.jsa-on #jsaWrap{display:block!important;position:static!important;background:#fff!important;overflow:visible!important;padding:0!important}
+ body.jsa-on #jsaWrap .jbar{display:none!important}
+ #jsaWrap .jscaler{zoom:1!important;margin:0 auto!important}
+ .jsa-sheet{margin:0 auto;page:jsaL}
+ #jsaMeasure{display:none!important}
+ body.jsa-on{background:#fff}
+}
+@page jsaL{size:A4 landscape;margin:8mm}
 </style>
 </head>
 <body>
@@ -389,6 +455,7 @@ body.offline #barSync{opacity:.5}
  <button class="p" id="prn">Print / save PDF</button>
  <button id="moreBtn" aria-haspopup="true">&#8943; More</button>
 </div>
+<div id="tabs" class="noprint"><button data-tab="ver" class="on">Verification</button><button data-tab="jsa">JSA</button></div>
 <div id="moreMenu" class="noprint" hidden>
  <button id="undoBtn">Undo last change</button><button id="rvBtn">Review job</button><button id="tourBtn">What's new &amp; tour</button><button id="instBtn" hidden>Install app</button><button id="doneBtn">Mark job completed</button><button id="xgo">Notes / photos</button><button id="sendpc">Send to PC</button><button id="dup">Duplicate job</button><button id="eml">Email</button><button id="defs">Edit defaults</button><button id="themeBtn">Theme: Auto</button>
 </div>
@@ -529,6 +596,10 @@ body.offline #barSync{opacity:.5}
  <div><button class="s" id="phAdd">Add photo</button> <input type="file" id="phIn" accept="image/*" multiple hidden> <label style="margin-left:8px"><input type="checkbox" id="phPrint"> Include photos as an extra page when printing</label></div>
  <div id="thumbs"></div>
  <div style="margin-top:12px"><b>PDF copy</b> <span class="note">After printing and saving the PDF on this device, upload it to your Drive folder "Elec Verify PDFs" (named by date, address and COES number).</span><br><button class="s" id="pdfUp">Upload saved PDF to Google Drive</button> <input type="file" id="pdfIn" accept="application/pdf" hidden> <span class="note" id="pdfStat"></span></div></div>
+<section class="page noprint" id="jsa"></section>
+<div id="jsaWrap"><div class="jbar noprint"><button id="jpvClose">Close preview</button><button class="p" id="jpvPrint">Print / save PDF</button></div><div class="jscaler"><div class="jsa-sheet" id="jsaSheet"></div></div></div>
+<div class="jsa-sheet" id="jsaMeasure" aria-hidden="true"></div>
+<div id="jsx" class="noprint" hidden><div class="wbox dbox"><b>Job locations</b><div class="note">One location per line. These show in the JSA location list and sync with your other defaults.</div><textarea id="jxl"></textarea><div class="wbtn"><button class="p" id="jxs">Save list</button><button id="jxc">Cancel</button></div></div></div>
 <div id="cf" class="noprint" hidden><div class="wbox"><b>Sync conflict</b><div id="cfBody"></div><div class="wbtn" style="flex-direction:column;align-items:stretch"><button class="p" id="cfMine">Keep this device's version</button><button class="p" id="cfDrive">Keep Drive's version</button><button id="cfBoth">Keep both</button><button id="cfLater">Decide later</button></div></div></div>
 <div id="wn" class="noprint" hidden><div class="wbox"><b>What's new</b><div id="wnl"></div><div class="wbtn"><button id="wntour">Take the tour</button><button class="p" id="wnok">Got it</button></div></div></div>
 <div id="tour" class="noprint" hidden><div id="tspot"></div><div id="tcard"><div class="tstep"></div><b class="tt"></b><p class="tb"></p><div class="tbtn"><button class="s" id="tskip">Skip</button><span class="tdots"></span><button class="s" id="tback">Back</button><button class="p" id="tnext">Next</button></div></div></div>
@@ -1071,7 +1142,8 @@ const CHANGES=[
  {v:59,t:['PE method can now be chosen per circuit (small dropdown in each PE cell). The one above the table is the default for the job']},
  {v:60,t:['PDF: long circuit names now wrap onto two lines instead of being cut off']},
  {v:61,t:['PDF: the job-wide PE method line no longer prints, since each circuit already shows its own method']},
- {v:62,t:['PDF: the RCD / RCBO type column no longer cuts off long text such as N/A (Circuit breaker)']}];
+ {v:62,t:['PDF: the RCD / RCBO type column no longer cuts off long text such as N/A (Circuit breaker)']},
+ {v:63,t:['New JSA tab: fill in a Job Safety Analysis and save it as a PDF that matches your paper form. Pick job locations from a list, start from starter JSAs (new DPP, replace DPP, replace oven, light fittings) or save your own templates']}];
 const wnCur=()=>parseInt(String(APP_VERSION).replace(/\D/g,''),10)||0;
 function wnHtml(list){return list.slice().reverse().map(c=>`<div style="margin:8px 0"><b>Update ${c.v}</b><ul style="margin:4px 0 0">${c.t.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul></div>`).join('')}
 function showWN(all){const last=all?0:LS.get('ev_wn',23);const list=CHANGES.filter(c=>c.v>last);if(!list.length&&!all)return;$('#wnl').innerHTML=wnHtml(list.length?list:CHANGES);const mt=document.querySelector('#wn .mt');if(mt)mt.textContent=all?'What\'s new & tour':'What\'s new';$('#wn').hidden=false}
@@ -1180,7 +1252,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v62'; // keep in step with VERSION in sw.js
+const APP_VERSION='v63'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
@@ -1193,6 +1265,156 @@ if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').then(r=>{r.update().catch(()=>{})}).catch(()=>{})});
 }
 init();bkCheck();hashImport();
+</script>
+<script>
+// ---- JSA tab ----
+(function(){
+const JK2='ev_jsa';
+const BLK=()=>({jn:'',date:today(),team:(defs&&defs.elec)||'',task:'',loc:'',det:'',ppe:'',plant:'',iso:'',steps:[{ins:'',haz:'',ctl:'',who:''}]});
+let J=Object.assign(BLK(),LS.get(JK2,{}));if(!Array.isArray(J.steps)||!J.steps.length)J.steps=[{ins:'',haz:'',ctl:'',who:''}];
+let ownMode=false;
+const E=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const fd=d=>{const m=/^(\d{4})-(\d\d)-(\d\d)$/.exec(d||'');return m?m[3]+'/'+m[2]+'/'+m[1]:(d||'')};
+const persist=()=>LS.set(JK2,J);
+const saveDefs=()=>LS.set('ev_defs',defs);
+const EL='Electrician';
+const PPE='Safety glasses, safety boots, long sleeves and pants, gloves as needed, dust mask / hearing protection when drilling or cutting, sunscreen and hat outdoors';
+const TOOLS='Insulated hand tools, voltage tester (proved before and after use), multimeter / test instruments, drill, ladder (inspected), torch / head lamp';
+const ISO='Isolate at switchboard, lock off and tag, PROVE-TEST-PROVE dead. Tell occupants. Barricade / sign work area if needed.';
+const BUILTIN={
+'Install new double power point (DPP)':{ppe:PPE,plant:TOOLS+', stud / cable finder, cable fishing rods',iso:ISO,steps:[
+ ['Assess the job: confirm location, circuit, cable route and condition of existing wiring','Asbestos or hidden services behind linings; unknown or damaged wiring; slips and trips','Check for asbestos before cutting or drilling (stop if suspected). Scan wall for services. Keep area tidy.',EL],
+ ['Isolate the circuit, lock off and tag, then prove dead at the point of work','Electric shock; circuit accidentally re-energised','Lock and tag at switchboard. Test with proved tester before and after. Tell occupants.',EL],
+ ['Cut opening, drill and run cable to the new point','Cutting into hidden services; dust; sharp edges; ladder use; ceiling space heat, insulation, falls','Safety glasses and dust mask. Inspected ladder on firm ground. Walk on joists only. Take breaks in heat.',EL],
+ ['Terminate cable, fit and secure the DPP','Cuts from tools; loose or incorrect terminations; overheating','Correct cable size and protection. Tight terminations, earth sleeved. Check polarity.',EL],
+ ['Re-energise and test (polarity, earth continuity, insulation resistance, RCD)','Shock during live testing; faulty wiring','Complete dead tests first. Use test leads in good condition. Do not leave energised if any test fails.',EL],
+ ['Make good, clean up, advise customer and complete certificate of electrical safety','Slips and trips; leftover debris and offcuts','Remove waste, check area is clear, explain use and RCD testing to customer, lodge CoES.',EL]]},
+'Replace double power point (DPP)':{ppe:PPE,plant:TOOLS,iso:ISO,steps:[
+ ['Assess the job: check existing DPP, wiring condition and circuit protection','Burnt or damaged fitting; old or brittle cable insulation; asbestos in old linings','Inspect before touching. Check for asbestos. Do not reuse damaged cable or fittings.',EL],
+ ['Isolate the circuit, lock off and tag, then prove dead at the DPP','Electric shock; circuit accidentally re-energised','Lock and tag at switchboard. Test with proved tester before and after. Tell occupants.',EL],
+ ['Remove the old DPP and check cable ends and terminations','Cuts from sharp edges; exposed conductors; dust','Gloves and safety glasses. Cut back and re-strip damaged conductors.',EL],
+ ['Terminate and fit the new DPP, secure to wall and refit cover','Loose terminations; incorrect polarity; damage to wall','Tight terminations, earth sleeved, correct polarity. Fit to wall securely.',EL],
+ ['Re-energise and test (polarity, earth continuity, insulation resistance, RCD)','Shock during live testing; faulty wiring','Complete dead tests first. Use test leads in good condition. Stop and fix if any test fails.',EL],
+ ['Clean up, remove old fitting and advise customer','Slips and trips; leftover debris','Dispose of old fitting, tidy work area, advise customer of completed work.',EL]]},
+'Replace oven':{ppe:PPE+', gloves for lifting',plant:TOOLS+', trolley / lifting aid, screwdrivers',iso:ISO+' Isolate the oven circuit and check the isolating switch.',steps:[
+ ['Assess the job: new oven size, rating, supply cable, circuit protection and cabinet','Cable or circuit too small for new oven; heat damage to old cable; limited access','Check oven rating against circuit and cable. Check clearances and ventilation. Replace cable if damaged.',EL],
+ ['Isolate the oven circuit, lock off and tag, then prove dead at the oven connection','Electric shock; circuit accidentally re-energised','Lock and tag at switchboard. Test with proved tester before and after. Tell occupants.',EL],
+ ['Disconnect and remove the old oven','Manual handling (heavy oven); hot surfaces; sharp edges; crushing','Let oven cool. Two-person lift or lifting aid. Gloves. Clear path of travel and protect floors.',EL],
+ ['Connect supply to the new oven and slide into position and secure','Loose terminations; cable trapped or damaged; manual handling','Terminate to manufacturer instructions. Check cable not trapped. Two-person lift. Secure oven in cabinet.',EL],
+ ['Re-energise and test (earth continuity, insulation resistance, RCD) and run oven to check operation','Shock during live testing; faulty appliance; hot surfaces','Complete dead tests first. Run oven briefly and check heating and controls. Stop if any fault.',EL],
+ ['Remove old oven and packaging, clean up and advise customer','Manual handling; slips and trips; packaging debris','Take old oven away safely. Tidy area. Show customer how isolation works. Complete certificate.',EL]]},
+'Replace light fitting':{ppe:PPE+', safety glasses when working overhead',plant:TOOLS+', step ladder, screwdrivers',iso:ISO+' Switching off at the wall switch is not isolation.',steps:[
+ ['Assess the job: check existing fitting, ceiling type, cable condition and lamp or transformer rating','Old or brittle cable insulation; asbestos in old ceilings; fitting overheated','Inspect cable. Check for asbestos before drilling or cutting. Replace damaged cable.',EL],
+ ['Isolate the lighting circuit, lock off and tag, then prove dead at the fitting','Electric shock; circuit accidentally re-energised','Lock and tag at switchboard. Test with proved tester before and after. Tell occupants.',EL],
+ ['Set up ladder and remove the old fitting','Falls from height; hot lamps; broken glass; dust falling in eyes','Inspected ladder on firm level ground. Let lamps cool. Safety glasses. Keep three points of contact.',EL],
+ ['Connect and fit the new light fitting and lamp','Loose terminations; fitting not suited to ceiling; manual handling overhead','Tight terminations and correct earthing. Fit to ceiling securely. Use correct lamp rating.',EL],
+ ['Re-energise and test (polarity, insulation resistance and operation of the light)','Shock during live testing; faulty wiring','Complete dead tests first. Check switch operation. Stop and fix if any test fails.',EL],
+ ['Clean up, dispose of old fitting and advise customer','Slips and trips; broken glass and waste','Dispose of old fitting and lamps correctly. Tidy area. Advise customer of completed work.',EL]]},
+'Install new light fitting':{ppe:PPE+', safety glasses when working overhead',plant:TOOLS+', step ladder, cable fishing rods, stud / cable finder',iso:ISO,steps:[
+ ['Assess the job: confirm light position, switch position, circuit capacity and cable route','Overloaded circuit; asbestos or hidden services; unknown wiring','Check circuit capacity. Check for asbestos (stop if suspected). Scan for services before cutting.',EL],
+ ['Isolate the circuit, lock off and tag, then prove dead where work is to be done','Electric shock; circuit accidentally re-energised','Lock and tag at switchboard. Test with proved tester before and after. Tell occupants.',EL],
+ ['Set up ladder, cut opening and run cable to the new point and switch','Falls from height; cutting into hidden services; dust; ceiling space heat, insulation, falls','Inspected ladder. Safety glasses and dust mask. Walk on joists only. Take breaks in heat.',EL],
+ ['Terminate cable, fit and secure the light fitting and switch','Cuts from tools; loose or incorrect terminations; manual handling overhead','Correct cable size and protection. Tight terminations, earth sleeved. Fit securely.',EL],
+ ['Re-energise and test (polarity, earth continuity, insulation resistance, RCD) and check light operation','Shock during live testing; faulty wiring','Complete dead tests first. Use test leads in good condition. Stop and fix if any test fails.',EL],
+ ['Make good, clean up, advise customer and complete certificate of electrical safety','Slips and trips; leftover debris and offcuts','Remove waste, check area is clear, explain operation to customer, lodge CoES.',EL]]}
+};
+function hasContent(){return !!(J.task||J.ppe||J.plant||J.iso||J.steps.some(s=>s.ins||s.haz||s.ctl||s.who))}
+// ---------- sheet ----------
+function sheetHtml(){
+ const n=Math.max(6,J.steps.length);let rows='';
+ for(let i=0;i<n;i++){const s=J.steps[i]||{};rows+=`<tr><td class="jn">${i+1}</td><td>${E(s.ins)}</td><td>${E(s.haz)}</td><td>${E(s.ctl)}</td><td>${E(s.who)}</td></tr>`}
+ const loc=[J.loc,J.det].map(x=>(x||'').trim()).filter(Boolean).join('\n');
+ return `<div class="js-box">
+<div class="js-top"><div class="js-title"><div>DAY'S ELECTRICAL CONTRACTING PORTLAND<br>JOB SAFETY ANALYSIS</div></div><div class="js-jd"><div>JOB NUMBER <span class="val">${E(J.jn)}</span></div><div>DATE: <span class="val">${E(fd(J.date))}</span></div></div></div>
+<div class="js-r js-team">JSA TEAM: <span class="val">${E(J.team)}</span></div>
+<div class="js-r js-task">WORK ACTIVITY/TASK: <span class="val">${E(J.task)}</span></div>
+<div class="js-r js-loc"><div>JOB LOCATION &amp; DETAILS: <span class="val">${E(loc)}</span></div><div class="hint">(Eg: Dept, location, task, equipment, name &amp; number)</div></div>
+<div class="js-gap"></div>
+<div class="js-hd"><div>Personal Protection Requirements<br>Eg: Harness, safety suits, respiratory protection etc.</div><div>Plant, Equipment &amp; Tools Requirements<br>Eg: Elevating equipment, special tools etc.</div><div>Isolation, Tagging, Barricades &amp; Signs Requirements<br>Obtain clearance and safety work permits as required<br>Abide by the conditions, eg. Confined space etc.</div></div>
+<div class="js-ent"><div>${E(J.ppe)}</div><div>${E(J.plant)}</div><div>${E(J.iso)}</div></div>
+<table class="js-t"><colgroup><col style="width:6.71%"><col style="width:26.7%"><col style="width:26.38%"><col style="width:20.1%"><col style="width:20.1%"></colgroup>
+<thead><tr><th>Step No.</th><th><b>Job Instruction</b><span>List the steps required to perform the<br>task in the sequence they are carried out</span></th><th><b>Hazards</b><span>List the potential hazards against<br>each step that could cause injury<br>when the tasks are performed</span></th><th><b>Hazard Control Measures</b><span>For each hazard identified, list the<br>control measures required to<br>eliminate or minimise the risk of injury</span></th><th><b>Person Responsible</b><span>Name of person responsible to<br>implement the control measure</span></th></tr></thead>
+<tbody>${rows}</tbody></table></div>
+<div class="js-sig"><div class="c1">Signature:</div><div class="ln"></div><div class="c3"><span>Manager</span><span>Signature:</span></div><div class="c45"><div class="ln"></div><span>Manager</span></div>
+<div></div><div class="ln"></div><div class="c3"><span>JSA Team Leader</span></div><div class="c45"><div class="ln"></div><span>JSA Team Leader</span></div></div>`;
+}
+function renderSheet(){const h=sheetHtml();$('#jsaSheet').innerHTML=h;const m=$('#jsaMeasure');m.innerHTML=h;const H=m.offsetHeight;const z=H>0?Math.max(.72,Math.min(1,725/H)):1;$('#jsaSheet').style.setProperty('--jz',z)}
+// ---------- editor ----------
+function stepsHtml(){return J.steps.map((s,i)=>`<div class="jstep" data-i="${i}"><div class="jsh"><b>Step ${i+1}</b><span><button class="s" data-a="up"${i?'':' disabled'}>&#9650;</button><button class="s" data-a="dn"${i<J.steps.length-1?'':' disabled'}>&#9660;</button><button class="s" data-a="rm">Remove</button></span></div>
+<label class="f">Job instruction<textarea data-s="ins" rows="2">${E(s.ins)}</textarea></label>
+<label class="f">Hazards<textarea data-s="haz" rows="2">${E(s.haz)}</textarea></label>
+<label class="f">Hazard control measures<textarea data-s="ctl" rows="2">${E(s.ctl)}</textarea></label>
+<label class="f">Person responsible<input type="text" data-s="who" value="${E(s.who)}"></label></div>`).join('')}
+function locUI(){const L=defs.jsal||[];const own=ownMode||(J.loc&&!L.includes(J.loc));
+ $('#jloc').innerHTML='<option value="">— choose location —</option>'+L.map(x=>`<option value="${E(x)}"${x===J.loc&&!own?' selected':''}>${E(x)}</option>`).join('')+`<option value="__own"${own?' selected':''}>Other (type my own)…</option>`;
+ $('#jlocOwnW').hidden=!own;if(own&&document.activeElement!==$('#jlocOwn'))$('#jlocOwn').value=J.loc;$('#jlSave').hidden=!(own&&(J.loc||'').trim()&&!L.includes(J.loc.trim()))}
+function tplUI(){const mine=Object.keys(defs.jsat||{}).sort();
+ $('#jtpl').innerHTML='<option value="">Choose a template…</option><optgroup label="Starter JSAs">'+Object.keys(BUILTIN).map(k=>`<option value="b:${E(k)}">${E(k)}</option>`).join('')+'</optgroup>'+(mine.length?'<optgroup label="My templates">'+mine.map(k=>`<option value="u:${E(k)}">${E(k)}</option>`).join('')+'</optgroup>':'')}
+function fillFields(){$$('#jsa [data-j]').forEach(el=>{if(document.activeElement!==el)el.value=J[el.dataset.j]||''})}
+function build(){$('#jsa').innerHTML=`<h1>Job Safety Analysis (JSA)</h1>
+<div class="sub"><span>Fill in, then Print / save PDF. The PDF copies your paper JSA form.</span></div>
+<div class="sec">Start from a template</div>
+<div class="row"><label class="f" style="flex:2">Template<select id="jtpl"></select></label></div>
+<div class="row jbtns"><button class="s" id="jtLoad">Load template</button><button class="s" id="jtSave">Save current as template</button><button class="s" id="jtDel">Delete my template</button><button class="s" id="jNew">New blank JSA</button></div>
+<div class="sec">Job details</div>
+<div class="row"><label class="f">Job number<input type="text" data-j="jn"></label><label class="f">Date<input type="date" data-j="date"></label></div>
+<div class="row"><label class="f" style="flex:2">JSA team<input type="text" data-j="team" placeholder="Names of everyone on the job"></label></div>
+<div class="row"><label class="f" style="flex:2">Work activity / task<input type="text" data-j="task"></label></div>
+<div class="row"><label class="f" style="flex:2">Job location<select id="jloc"></select></label><label class="f" id="jlocOwnW" hidden>Type location<input type="text" id="jlocOwn"></label></div>
+<div class="row jbtns"><button class="s" id="jlSave" hidden>Save this location to my list</button><button class="s" id="jlEdit">Edit location list</button><button class="s" id="jlUse">Use current verification job</button></div>
+<label class="f">Details (dept, equipment, name and number)<textarea data-j="det" rows="2"></textarea></label>
+<div class="sec">Requirements</div>
+<label class="f">Personal protection requirements<textarea data-j="ppe" rows="3"></textarea></label>
+<label class="f" style="margin-top:8px">Plant, equipment and tools requirements<textarea data-j="plant" rows="3"></textarea></label>
+<label class="f" style="margin-top:8px">Isolation, tagging, barricades and signs requirements<textarea data-j="iso" rows="3"></textarea></label>
+<div class="sec">Steps</div><div id="jsteps"></div>
+<div class="row jbtns"><button class="s" id="jAdd">+ Add step</button></div>
+<div class="row" style="margin-top:16px"><button id="jPrev">Preview</button><button class="p" id="jPrint">Print / save PDF</button></div>`;
+ tplUI();locUI();fillFields();$('#jsteps').innerHTML=stepsHtml()}
+function steps(){$('#jsteps').innerHTML=stepsHtml();persist();renderSheet()}
+function setTab(t){document.body.classList.toggle('jsa-on',t==='jsa');$$('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));LS.set('ev_tab',t);if(t==='jsa'){if(!$('#jtpl'))build();else{tplUI();locUI();fillFields()}renderSheet()}else closePrev();window.scrollTo(0,0)}
+// ---------- preview + print ----------
+function fit(){const w=$('#jsaWrap'),sc=$('#jsaWrap .jscaler');sc.style.zoom=Math.min(1,(w.clientWidth-16)/(277/25.4*96))}
+function openPrev(){renderSheet();document.body.classList.add('jpv-on');fit();$('#jsaWrap').scrollTop=0}
+function closePrev(){document.body.classList.remove('jpv-on')}
+window.addEventListener('resize',()=>{if(document.body.classList.contains('jpv-on'))fit()});
+const jname=()=>'JSA_'+[J.date||today(),slug(J.task||J.loc||'').slice(0,50)].filter(Boolean).join('_');
+function jsaPrint(){renderSheet();persist();const old=document.title;document.title=jname();const back=()=>{document.title=old;window.removeEventListener('afterprint',back)};window.addEventListener('afterprint',back);setTimeout(back,60000);try{window.print()}catch(e){back();toast('Printing is blocked here. Open the app as a file in Chrome.')}}
+// ---------- wiring ----------
+$('#tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-tab]');if(b)setTab(b.dataset.tab)});
+const prn0=$('#prn').onclick;$('#prn').onclick=function(e){if(document.body.classList.contains('jsa-on'))return jsaPrint();return prn0&&prn0.call(this,e)};
+const jsa=$('#jsa');
+function onEdit(e){const t=e.target;let ch=false;
+ if(t.dataset&&t.dataset.j){J[t.dataset.j]=t.value;ch=true}
+ else if(t.id==='jlocOwn'){J.loc=t.value;ch=true;$('#jlSave').hidden=!(t.value.trim()&&!(defs.jsal||[]).includes(t.value.trim()))}
+ else if(t.dataset&&t.dataset.s){const st=t.closest('.jstep');if(st){J.steps[+st.dataset.i][t.dataset.s]=t.value;ch=true}}
+ if(ch){persist();renderSheet()}
+ e.stopPropagation()}
+jsa.addEventListener('input',onEdit);
+jsa.addEventListener('change',e=>{const t=e.target;
+ if(t.id==='jloc'){if(t.value==='__own'){ownMode=true;J.loc='';persist();renderSheet();locUI();$('#jlocOwn').focus()}else{ownMode=false;J.loc=t.value;persist();renderSheet();locUI()}}
+ else onEdit(e);e.stopPropagation()});
+jsa.addEventListener('keydown',e=>e.stopPropagation());
+jsa.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const id=b.id,a=b.dataset.a;
+ if(a){const i=+b.closest('.jstep').dataset.i;if(a==='rm'){if(J.steps.length===1){J.steps=[{ins:'',haz:'',ctl:'',who:''}]}else J.steps.splice(i,1)}else if(a==='up'&&i>0)[J.steps[i-1],J.steps[i]]=[J.steps[i],J.steps[i-1]];else if(a==='dn'&&i<J.steps.length-1)[J.steps[i+1],J.steps[i]]=[J.steps[i],J.steps[i+1]];steps();return}
+ if(id==='jAdd'){J.steps.push({ins:'',haz:'',ctl:'',who:''});steps();const t=$$('#jsteps textarea');t[t.length-3].focus();return}
+ if(id==='jPrev')return openPrev();
+ if(id==='jPrint')return jsaPrint();
+ if(id==='jNew'){if(hasContent()&&!confirm('Clear this JSA and start a blank one?'))return;const keep={loc:J.loc,det:''};J=BLK();J.loc=keep.loc;ownMode=false;persist();build();renderSheet();toast('New blank JSA');return}
+ if(id==='jtLoad'){const v=$('#jtpl').value;if(!v)return toast('Choose a template first');const k=v.slice(2),T=v[0]==='b'?BUILTIN[k]:(defs.jsat||{})[k];if(!T)return;if(hasContent()&&!confirm('Replace the task, requirements and steps with this template?'))return;
+  J.task=T.task||k;J.ppe=T.ppe||'';J.plant=T.plant||'';J.iso=T.iso||'';J.steps=(T.steps||[]).map(s=>Array.isArray(s)?{ins:s[0]||'',haz:s[1]||'',ctl:s[2]||'',who:s[3]||''}:{ins:s.ins||'',haz:s.haz||'',ctl:s.ctl||'',who:s.who||''});if(!J.steps.length)J.steps=[{ins:'',haz:'',ctl:'',who:''}];persist();build();renderSheet();toast('Template loaded. Check it suits this job.');return}
+ if(id==='jtSave'){const nm=(prompt('Template name (e.g. Replace ceiling fan)',J.task||'')||'').trim();if(!nm)return;defs.jsat=defs.jsat||{};if(defs.jsat[nm]&&!confirm('A template called "'+nm+'" exists. Replace it?'))return;defs.jsat[nm]={task:J.task,ppe:J.ppe,plant:J.plant,iso:J.iso,steps:J.steps.map(s=>({ins:s.ins,haz:s.haz,ctl:s.ctl,who:s.who}))};saveDefs();tplUI();$('#jtpl').value='u:'+nm;toast('Template saved');return}
+ if(id==='jtDel'){const v=$('#jtpl').value;if(v[0]!=='u')return toast('Pick one of your own templates to delete');const k=v.slice(2);if(!confirm('Delete template "'+k+'"?'))return;delete defs.jsat[k];saveDefs();tplUI();toast('Template deleted');return}
+ if(id==='jlSave'){const v=(J.loc||'').trim();if(!v)return;defs.jsal=defs.jsal||[];if(!defs.jsal.includes(v))defs.jsal.push(v);saveDefs();ownMode=false;locUI();toast('Location saved to your list');return}
+ if(id==='jlEdit'){$('#jxl').value=(defs.jsal||[]).join('\n');$('#jsx').hidden=false;return}
+ if(id==='jlUse'){try{const ad=$('#addr').value;if(ad&&ad!==NEW){J.loc=ad;ownMode=!(defs.jsal||[]).includes(ad)}if(!J.jn)J.jn=$('#job').value||'';if(!J.task)J.task=$('#work').value||''}catch(x){}persist();fillFields();locUI();renderSheet();toast('Filled from the current verification job');return}});
+$('#jxs').onclick=()=>{const L=[...new Set($('#jxl').value.split('\n').map(s=>s.trim()).filter(Boolean))];defs.jsal=L;saveDefs();$('#jsx').hidden=true;if(J.loc&&!L.includes(J.loc))ownMode=true;locUI();toast('Location list saved')};
+$('#jxc').onclick=()=>{$('#jsx').hidden=true};
+$('#jpvClose').onclick=closePrev;$('#jpvPrint').onclick=jsaPrint;
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('jpv-on'))closePrev()});
+renderSheet();
+if(LS.get('ev_tab','ver')==='jsa')setTab('jsa');
+})();
 </script>
 </body>
 </html>
