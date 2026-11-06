@@ -59,10 +59,10 @@ td.pass input{color:var(--ok);font-weight:600} td.fail input{color:var(--bad);fo
 .mx{font-size:11px;color:var(--mute);text-align:center}
 .csa{display:flex;gap:4px;justify-content:center;margin-top:4px}.nrb{display:block;margin:3px 0 0;font-size:10.5px;padding:2px 6px;min-height:0;color:var(--mute)}
 .irq{display:block;margin:3px auto 0;font-size:11px;padding:3px 8px;min-height:0;color:var(--mute)}
-.nmp{display:none}
+.nmp{display:none}.dtp{display:none}
 .pmc{display:block;width:100%;margin:2px 0;font-size:10.5px!important;padding:2px 2px!important;color:var(--mute)!important;font-weight:400!important;text-align:center}
 .csa{align-items:center;flex-wrap:wrap}.exp{font-size:11px;color:var(--mute);text-align:center;margin-top:2px}td.nv .exp{display:none!important}td .csa input{color:var(--mute)!important;font-weight:400!important}.csa .cw{gap:2px}.csa input{width:7ch!important;font-size:12px!important;padding:3px!important;text-align:center}.csa[hidden]{display:none}
-@media print{.nmi{display:none!important}.nmp{display:block!important;font-weight:700;white-space:normal;overflow-wrap:anywhere;line-height:1.2}.csa.e0{display:none}.csa input{width:4ch!important;font-size:9px!important}.exp{display:none!important}.csa input::placeholder{color:transparent}}
+@media print{.dti{display:none!important}.dtp{display:inline!important;font-size:inherit}.nmi{display:none!important}.nmp{display:block!important;font-weight:700;white-space:normal;overflow-wrap:anywhere;line-height:1.2}.csa.e0{display:none}.csa input{width:4ch!important;font-size:9px!important}.exp{display:none!important}.csa input::placeholder{color:transparent}}
 .sumbox:empty{display:none}.sumbox{border:1px solid var(--line);padding:6px 10px;margin:8px 0;font-weight:700}.sumbox.bad{background:var(--badbg);color:var(--bad)}.sumbox.ok{background:var(--okbg);color:var(--ok)}
 .jb2{flex-wrap:wrap;max-width:200px;justify-content:flex-end}
 #sigPad{width:100%;max-width:340px;height:96px;border:1px dashed var(--line);background:#fff;touch-action:none;border-radius:5px;display:block}
@@ -434,6 +434,8 @@ body.jpv-on #jsaWrap{display:block;position:fixed;inset:0;z-index:40;background:
 .js-sig .c45 span{padding-left:1mm}
 .js-sig .c1{align-self:end}
 @media print{
+ body.inc-jsa:not(.jsa-on) #jsaWrap{display:block!important;position:static!important;background:#fff!important;overflow:visible!important;padding:0!important}
+ body.inc-jsa #jsaWrap .jbar{display:none!important}
  body.jsa-on #jsaWrap{display:block!important;position:static!important;background:#fff!important;overflow:visible!important;padding:0!important}
  body.jsa-on #jsaWrap .jbar{display:none!important}
  #jsaWrap .jscaler{zoom:1!important;margin:0 auto!important}
@@ -442,6 +444,13 @@ body.jpv-on #jsaWrap{display:block;position:fixed;inset:0;z-index:40;background:
  body.jsa-on{background:#fff}
 }
 @page jsaL{size:A4 landscape;margin:8mm}
+
+#jsg,#jsd{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:30;display:flex;align-items:center;justify-content:center}#jsg[hidden],#jsd[hidden]{display:none}
+#jgC{width:100%;max-width:420px;aspect-ratio:640/220;background:#fff;border:1px solid #888;border-radius:6px;touch-action:none;display:block;margin-top:6px}
+#jdL{max-height:50vh;overflow:auto}.jdi{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(128,128,128,.35)}.jdt{display:flex;flex-direction:column;min-width:0}.jdt span{font-size:12px;opacity:.7}.jda{display:flex;gap:4px;flex:none}
+.jchips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.jchips button.on{background:#2f6fd6;color:#fff;border-color:#2f6fd6}
+.jsgb{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.jsimg{height:34px;background:#fff;border:1px solid #888;border-radius:4px}
+.js-sig .ln.has{height:auto;min-height:6.2mm;display:block;break-inside:avoid;padding-top:.5mm}.js-sig .sn{display:block;font-size:9pt;color:#000;line-height:1.1;margin-bottom:.5mm}.js-sig .si{display:block;height:8mm;width:32mm;max-width:100%;background:no-repeat left bottom/contain;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 </style>
 </head>
 <body>
@@ -594,12 +603,15 @@ body.jpv-on #jsaWrap{display:block;position:fixed;inset:0;z-index:40;background:
 <div id="xtra" class="noprint"><b>Private notes and photos</b> <span class="note">(notes are never printed; photos are stored on this device)</span>
  <label class="f" style="display:block;margin:8px 0">Private notes (access, contact, follow-ups)<textarea id="pnotes"></textarea></label>
  <div><button class="s" id="phAdd">Add photo</button> <input type="file" id="phIn" accept="image/*" multiple hidden> <label style="margin-left:8px"><input type="checkbox" id="phPrint"> Include photos as an extra page when printing</label></div>
+ <div class="noprint" id="jsaLinkRow" style="margin-top:8px"><button class="s" id="jsaOpen">Create JSA for this job</button> <button class="s" id="jsaPick">Link existing JSA…</button> <label style="margin-left:8px"><input type="checkbox" id="jsaInc"> Print the linked JSA after this record</label><div class="note" id="jsaLinkT"></div></div>
  <div id="thumbs"></div>
  <div style="margin-top:12px"><b>PDF copy</b> <span class="note">After printing and saving the PDF on this device, upload it to your Drive folder "Elec Verify PDFs" (named by date, address and COES number).</span><br><button class="s" id="pdfUp">Upload saved PDF to Google Drive</button> <input type="file" id="pdfIn" accept="application/pdf" hidden> <span class="note" id="pdfStat"></span></div></div>
 <section class="page noprint" id="jsa"></section>
 <div id="jsaWrap"><div class="jbar noprint"><button id="jpvClose">Close preview</button><button class="p" id="jpvPrint">Print / save PDF</button></div><div class="jscaler"><div class="jsa-sheet" id="jsaSheet"></div></div></div>
 <div class="jsa-sheet" id="jsaMeasure" aria-hidden="true"></div>
-<div id="jsx" class="noprint" hidden><div class="wbox dbox"><b>Job locations</b><div class="note">One location per line. These show in the JSA location list and sync with your other defaults.</div><textarea id="jxl"></textarea><div class="wbtn"><button class="p" id="jxs">Save list</button><button id="jxc">Cancel</button></div></div></div>
+<div id="jsg" class="noprint" hidden><div class="wbox dbox"><b id="jgT">Sign</b><div class="note">Draw your signature with your finger or mouse.</div><canvas id="jgC" width="640" height="220"></canvas><label id="jgRW" style="display:block;margin-top:6px"><input type="checkbox" id="jgR" checked> Remember as my signature</label><div class="wbtn"><button class="p" id="jgS">Use signature</button><button id="jgCl">Clear</button><button id="jgX">Cancel</button></div></div></div>
+<div id="jsd" class="noprint" hidden><div class="wbox dbox"><b id="jdT"></b><div class="note" id="jdN"></div><input type="text" id="jdQ" placeholder="Search…" style="width:100%;margin:6px 0"><div id="jdL"></div><div class="wbtn"><button id="jdX">Close</button></div></div></div>
+<div id="jsx" class="noprint" hidden><div class="wbox dbox"><b id="jxt">Job locations</b><div class="note" id="jxn">One location per line. These show in the JSA location list and sync with your other defaults.</div><textarea id="jxl"></textarea><div class="wbtn"><button class="p" id="jxs">Save list</button><button id="jxc">Cancel</button></div></div></div>
 <div id="cf" class="noprint" hidden><div class="wbox"><b>Sync conflict</b><div id="cfBody"></div><div class="wbtn" style="flex-direction:column;align-items:stretch"><button class="p" id="cfMine">Keep this device's version</button><button class="p" id="cfDrive">Keep Drive's version</button><button id="cfBoth">Keep both</button><button id="cfLater">Decide later</button></div></div></div>
 <div id="wn" class="noprint" hidden><div class="wbox"><b>What's new</b><div id="wnl"></div><div class="wbtn"><button id="wntour">Take the tour</button><button class="p" id="wnok">Got it</button></div></div></div>
 <div id="tour" class="noprint" hidden><div id="tspot"></div><div id="tcard"><div class="tstep"></div><b class="tt"></b><p class="tb"></p><div class="tbtn"><button class="s" id="tskip">Skip</button><span class="tdots"></span><button class="s" id="tback">Back</button><button class="p" id="tnext">Next</button></div></div></div>
@@ -717,7 +729,7 @@ function init(){
  $('#job').value=state.job||''; $('#work').value=state.work!==undefined?state.work:(defs.work||'');
  $('#elec').value=state.elec??defs.elec; $('#sig').value=state.sig||''; $('#sigTime').value=state.sigTime||'';
  $('#kyo').value=state.kyo??defs.kyo; $('#met').value=state.met??defs.met; $('#dmod').value=state.dmod??(defs.dmod??'Kyoritsu 3132A'); $('#lmod').value=state.lmod??(defs.lmod??'Metrel MI 3122'); $('#calD').value=state.calD??(defs.calD||''); $('#calL').value=state.calL??(defs.calL||'');
- $('#pnotes').value=state.pnotes||'';$('#phPrint').checked=!!state.phPrint;loadPhotos(state.jid);pdfShow();
+ $('#pnotes').value=state.pnotes||'';$('#phPrint').checked=!!state.phPrint;if($('#jsaInc'))$('#jsaInc').checked=!!state.jsaInc;try{window.jsaLinkUI&&window.jsaLinkUI()}catch(e){}loadPhotos(state.jid);pdfShow();
  $('#notes').value=state.notes||''; $('#notes2').value=state.notes2||''; $('#main').value=state.main||'';
  ['ln','le','ne'].forEach(k=>$('#'+k).value=state[k]!==undefined?state[k]:(defs[k]||''));
  for(let q=1;q<=30;q++){if(state['r'+q+'d']&&!state['r'+q+'a'])state['r'+q+'a']=state['r'+q+'d'];if(state['r'+q+'j']&&!state['r'+q+'c'])state['r'+q+'c']=state['r'+q+'j']}
@@ -740,7 +752,8 @@ function sync(){naUpd();pemUpd();updModels();mirrorT();for(let i=1;i<=N;i++){con
 function mark(td,ok){td=td.closest('td');td.classList.remove('pass','fail');if(ok===true)td.classList.add('pass');if(ok===false)td.classList.add('fail')}
 const vlim=()=>[parseFloat(defs.vmin)||216,parseFloat(defs.vmax)||253];
 let lastFails=[];
-{const _sy=sync;sync=function(){_sy.apply(this,arguments);nmUpd()}}
+function dtUpd(){['date','date2','calD','calL','sigTime'].forEach(id=>{const el=document.getElementById(id);if(!el)return;let m=el.nextElementSibling;if(!m||!m.classList.contains('dtp')){m=document.createElement('span');m.className='dtp';el.classList.add('dti');el.after(m)}let v=el.value||'';const d=/^(\d{4})-(\d\d)-(\d\d)$/.exec(v);if(d)v=d[3]+'/'+d[2]+'/'+d[1];if(m.textContent!==v)m.textContent=v})}
+{const _sy=sync;sync=function(){_sy.apply(this,arguments);nmUpd();dtUpd()}}
 function check(){
  mirrorT();
  const fails=[];let any=false;lastOdd=[];lastMarg=[];
@@ -768,7 +781,7 @@ function check(){
  lastFails=fails;rsum();swRefresh();if(window.updTick)updTick();if(typeof progress==='function')progress();{const fp=$('#failpill');fp.hidden=!fails.length;fp.textContent='✗ '+fails.length+' out of limits'}const sm=$('#sum');if(!any){sm.textContent='';sm.className='sumbox'}else if(fails.length){sm.textContent='✗ OUT OF LIMITS: '+fails.join(', ');sm.className='sumbox bad'}else{sm.textContent='✓ All entered readings are within the limits shown on this form.';sm.className='sumbox ok'}
 }
 function save(){
- const s={date:$('#date').value,time:$('#time').value,addr:$('#addr').value===NEW?'':$('#addr').value,job:$('#job').value,work:$('#work').value,elec:$('#elec').value,sig:$('#sig').value,sigTime:$('#sigTime').value,kyo:$('#kyo').value,met:$('#met').value,dmod:$('#dmod').value,lmod:$('#lmod').value,notes:$('#notes').value,notes2:$('#notes2').value,main:$('#main').value,ln:$('#ln').value,le:$('#le').value,ne:$('#ne').value,calD:$('#calD').value,calL:$('#calL').value,pnotes:$('#pnotes').value,phPrint:$('#phPrint').checked,pdfAt:state.pdfAt||0};
+ const s={date:$('#date').value,time:$('#time').value,addr:$('#addr').value===NEW?'':$('#addr').value,job:$('#job').value,work:$('#work').value,elec:$('#elec').value,sig:$('#sig').value,sigTime:$('#sigTime').value,kyo:$('#kyo').value,met:$('#met').value,dmod:$('#dmod').value,lmod:$('#lmod').value,notes:$('#notes').value,notes2:$('#notes2').value,main:$('#main').value,ln:$('#ln').value,le:$('#le').value,ne:$('#ne').value,calD:$('#calD').value,calL:$('#calL').value,pnotes:$('#pnotes').value,phPrint:$('#phPrint').checked,jsaId:state.jsaId||'',jsaInc:!!($('#jsaInc')&&$('#jsaInc').checked),pdfAt:state.pdfAt||0};
  $$('[data-k]').forEach(el=>s[el.dataset.k]=el.type==='checkbox'?el.checked:el.value);
  ['pol','con','fun'].forEach(n=>{const c=$(`input[name=${n}]:checked`);s[n]=c?c.value:''});
  s.n=N;s.sent=state.sent||'';s.sigImg=sigData;s.jid=state.jid||('j'+Date.now().toString(36));pushHist(state,s);state=s;LS.set('ev_state',s);upsertJob(s);
@@ -884,11 +897,11 @@ $('#jlist').onclick=e=>{const b=e.target.closest('button');if(!b)return;const id
  else if(a==='dup'&&j[id]){dupFrom(j[id].state);$('#jb').hidden=true}
  else if(a==='sent'&&j[id]){const v=j[id].state.sent?'':today();j[id].state.sent=v;LS.set(JK,j);if(id===state.jid){state.sent=v;LS.set('ev_state',state);applyLock()}showJobs()}
  else if(a==='del'){if(true){const t=LS.get(TK,{});if(j[id]){t[id]={deleted:Date.now(),job:j[id]};LS.set(TK,t)}delete j[id];LS.set(JK,j);{const tb=LS.get('ev_tomb',{});tb[id]=Date.now();LS.set('ev_tomb',tb)}toastU('Job moved to Recently deleted',()=>{const t2=LS.get(TK,{}),j2=LS.get(JK,{});if(t2[id]){j2[id]=t2[id].job;j2[id].updated=Date.now();LS.set(JK,j2);delete t2[id];LS.set(TK,t2);const tb=LS.get('ev_tomb',{});delete tb[id];LS.set('ev_tomb',tb)}if(!$('#jb').hidden)showJobs();updBadge()});if(state.jid===id){state={};LS.set('ev_state',{});init()}showJobs()}else{b.dataset.sure=1;b.textContent='Sure?'}}};
-$('#jexp').onclick=async()=>{save();const data={app:'electrical-verification',v:2,exported:new Date().toISOString(),defs:defsSafe(),jobs:LS.get(JK,{})};{const ph=await phAll();if(Object.keys(ph).length&&confirm('Include photos in the backup? (makes the file bigger)'))data.photos=ph}const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));a.download='electrical-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);LS.set('ev_bk',Date.now());LS.set('ev_bkd',{});$('#bkbar').hidden=true;toast('Backup downloaded')};
+$('#jexp').onclick=async()=>{save();const data={app:'electrical-verification',v:2,exported:new Date().toISOString(),defs:defsSafe(),jobs:LS.get(JK,{}),jsas:LS.get('ev_jsas',{})};{const ph=await phAll();if(Object.keys(ph).length&&confirm('Include photos in the backup? (makes the file bigger)'))data.photos=ph}const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));a.download='electrical-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);LS.set('ev_bk',Date.now());LS.set('ev_bkd',{});$('#bkbar').hidden=true;toast('Backup downloaded')};
 $('#jimpb').onclick=()=>$('#jimp').click();
 try{if(navigator.canShare&&navigator.canShare({files:[new File(['x'],'a.json',{type:'application/json'})]}))$('#jshare').hidden=false}catch(e){}
-$('#jshare').onclick=async()=>{save();const data={app:'electrical-verification',v:2,exported:new Date().toISOString(),defs:defsSafe(),jobs:LS.get(JK,{})};const js=JSON.stringify(data),nm='electrical-backup-'+today();const cands=[['.json','application/json'],['.txt','text/plain'],['.csv','text/csv']].map(([e,t])=>new File([js],nm+e,{type:t}));let pick=null;try{pick=cands.find(f=>navigator.canShare({files:[f]}))}catch(e){}const asText=$('#jshare').dataset.t==='1';const sh=(pick&&!asText)?{files:[pick]}:{title:'Electrical backup',text:js};try{await navigator.share(sh);LS.set('ev_bk',Date.now());LS.set('ev_bkd',{});$('#bkbar').hidden=true;toast('Backup shared')}catch(e){if(e&&e.name==='AbortError')return;{if(!asText){$('#jshare').dataset.t='1';toast('File share was blocked. Tap Share backup again to send as text (paste into Gmail/Notes), or use Export backup.')}else toast('Sharing failed ('+(e&&e.name||'error')+'). Use Export backup.')}}};
-$('#jimp').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(d.app!=='electrical-verification')throw 0;const j=LS.get(JK,{});let add=0;let one=null;Object.entries(d.jobs||{}).forEach(([id,v])=>{if(!j[id]||j[id].updated<v.updated){j[id]=v;add++;one=v}});const nj=Object.keys(d.jobs||{}).length;LS.set(JK,j);if(d.photos)for(const [id,a] of Object.entries(d.photos)){const cur=await phGet(id);if(!cur.length)await phSet(id,a)}if(d.defs&&confirm('Also replace your defaults (testers, addresses, Zs table, etc.) with the ones in the backup?')){defs=d.defs;LS.set('ev_defs',defs)}if(nj===1&&one){state=Object.assign({},one.state);LS.set('ev_state',state);init();$('#jb').hidden=true;toast('Job loaded')}else{init();showJobs();toast(add+' job(s) imported')}}catch(err){toast('That file is not a valid backup')}e.target.value=''};
+$('#jshare').onclick=async()=>{save();const data={app:'electrical-verification',v:2,exported:new Date().toISOString(),defs:defsSafe(),jobs:LS.get(JK,{}),jsas:LS.get('ev_jsas',{})};const js=JSON.stringify(data),nm='electrical-backup-'+today();const cands=[['.json','application/json'],['.txt','text/plain'],['.csv','text/csv']].map(([e,t])=>new File([js],nm+e,{type:t}));let pick=null;try{pick=cands.find(f=>navigator.canShare({files:[f]}))}catch(e){}const asText=$('#jshare').dataset.t==='1';const sh=(pick&&!asText)?{files:[pick]}:{title:'Electrical backup',text:js};try{await navigator.share(sh);LS.set('ev_bk',Date.now());LS.set('ev_bkd',{});$('#bkbar').hidden=true;toast('Backup shared')}catch(e){if(e&&e.name==='AbortError')return;{if(!asText){$('#jshare').dataset.t='1';toast('File share was blocked. Tap Share backup again to send as text (paste into Gmail/Notes), or use Export backup.')}else toast('Sharing failed ('+(e&&e.name||'error')+'). Use Export backup.')}}};
+$('#jimp').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(d.app!=='electrical-verification')throw 0;const j=LS.get(JK,{});let add=0;let one=null;Object.entries(d.jobs||{}).forEach(([id,v])=>{if(!j[id]||j[id].updated<v.updated){j[id]=v;add++;one=v}});const nj=Object.keys(d.jobs||{}).length;LS.set(JK,j);if(d.jsas&&window.jsaImport)window.jsaImport(d.jsas);if(d.photos)for(const [id,a] of Object.entries(d.photos)){const cur=await phGet(id);if(!cur.length)await phSet(id,a)}if(d.defs&&confirm('Also replace your defaults (testers, addresses, Zs table, etc.) with the ones in the backup?')){defs=d.defs;LS.set('ev_defs',defs)}if(nj===1&&one){state=Object.assign({},one.state);LS.set('ev_state',state);init();$('#jb').hidden=true;toast('Job loaded')}else{init();showJobs();toast(add+' job(s) imported')}}catch(err){toast('That file is not a valid backup')}e.target.value=''};
 // Enter moves to next field
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t.closest('#dp,#em,#jb,#warn'))return;const ok=(t.tagName==='INPUT'&&['text','number','time','date'].includes(t.type))||t.tagName==='SELECT';if(!ok)return;const f=$$('input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=file]),select').filter(x=>!x.readOnly&&!x.disabled&&!x.closest('[hidden]')&&x.offsetParent!==null);const k=f.indexOf(t);if(k>=0&&f[k+1]){e.preventDefault();f[k+1].focus()}});
 function emailModal(){sync();save();const ad=$('#addr').value;const s='Electrical verification - '+(ad&&ad!==NEW?ad:'no address')+' - '+($('#date').value||today());const b='Job: '+($('#job').value||'(COES not entered yet)')+'\nWork: '+$('#work').value+'\n\nAttach the saved PDF ('+fname()+'.pdf) before sending.';$('#emTo').value=defs.email||'';$('#emSub').value=s;$('#emBody').value=b;$('#emShare').hidden=!navigator.share;$('#em').hidden=false}
@@ -923,7 +936,7 @@ $('#failpill').onclick=()=>{toast('Out of limits: '+lastFails.join(', '));const 
 $('#xgo').onclick=()=>{$('#xtra').scrollIntoView({behavior:'smooth'})};
 // ---- copy from above ----
 $('#t1').addEventListener('click',e=>{const q=e.target.closest('.irq');if(!q)return;const f=$(`[data-k=ir${q.dataset.irq}]`);f.value='>500';f.dispatchEvent(new Event('input',{bubbles:true}));f.dispatchEvent(new Event('change',{bubbles:true}))});
-$('#t1').addEventListener('click',e=>{const b=e.target.closest('[data-cp]');if(!b)return;const i=+b.dataset.cp,p=i-1;const cp=(k,pk)=>{const d=$(`[data-k=${k}${i}]`),s=$(`[data-k=${pk||k}${p}]`);if(!d||!s)return;if(d.type==='checkbox'){d.checked=s.checked;d.dataset.touched=1}else d.value=s.value};['bk','irv'].forEach(k=>cp(k));['fr','fz','fo'].forEach(k=>cp(k));$(`[data-k=irv${i}]`).dataset.touched=1;check();save();toast('Copied from circuit '+p)});
+$('#t1').addEventListener('click',e=>{const b=e.target.closest('[data-cp]');if(!b)return;const i=+b.dataset.cp,p=i-1;const cp=(k,pk)=>{const d=$(`[data-k=${k}${i}]`),s=$(`[data-k=${pk||k}${p}]`);if(!d||!s)return;if(d.type==='checkbox'){d.checked=s.checked;d.dataset.touched=1}else d.value=s.value};['bk','irv','pc','ca','ce'].forEach(k=>cp(k));['fr','fz','fo'].forEach(k=>cp(k));{const t=$(`[data-k=r${i}t]`),u=$(`[data-k=r${p}t]`);if(t&&u&&(isNA(u.value)||isNA(t.value))){t.value=u.value;t.dataset.autot='0'}}csaUpd();sync();$(`[data-k=irv${i}]`).dataset.touched=1;check();save();toast('Copied from circuit '+p)});
 // ---- backup after X changed jobs ----
 function bump(id){const d=LS.get('ev_bkd',{});d[id]=1;LS.set('ev_bkd',d);bkN()}
 function bkN(){const x=parseInt(defs.abk===undefined?'5':defs.abk,10);if(!(x>0))return;const n=Object.keys(LS.get('ev_bkd',{})).length;if(n>=x){$('#bktxt').textContent=n+' job(s) changed since your last backup. Jobs are stored only on this device.';$('#bkbar').hidden=false}}
@@ -985,6 +998,7 @@ async function gSync(interactive){if(gbusy)return;gbusy=true;let rel=false;try{c
  const before=(LS.get(JK,{})[state.jid]||{}).updated;let remote=null;if(files[GFILE])remote=await gGet(tok,files[GFILE].id);const m=mergeSync(remote);
  await gPut(tok,fid,files[GFILE],GFILE,{v:2,jobs:m.jobs,tomb:m.tomb,at:Date.now()});markSynced(m);
  const cur=LS.get(JK,{})[state.jid];if(cur&&before!==undefined&&cur.updated>before){state=Object.assign({},cur.state);LS.set('ev_state',state);rel=true}
+ try{if(window.jsaSync)await window.jsaSync(tok,fid,files,gGet,gPut)}catch(e){console.warn(e)}
  // defaults (templates, addresses, serials, tables); newer side wins
  let gotDef=false;{const lh=defHash(),dh=LS.get('ev_dh',null);if(dh!==null&&lh!==dh)LS.set('ev_du',Date.now());const lu=dh===null?0:LS.get('ev_du',0);const rd=files[GDEF]?await gGet(tok,files[GDEF].id):null;
   if(rd&&rd.u>lu){const keep={};DEFX.forEach(k=>{if(defs[k]!==undefined)keep[k]=defs[k]});defs=Object.assign({},rd.d,keep);LS.set('ev_defs',defs);LS.set('ev_du',rd.u);gotDef=true;rel=true}
@@ -1143,7 +1157,8 @@ const CHANGES=[
  {v:60,t:['PDF: long circuit names now wrap onto two lines instead of being cut off']},
  {v:61,t:['PDF: the job-wide PE method line no longer prints, since each circuit already shows its own method']},
  {v:62,t:['PDF: the RCD / RCBO type column no longer cuts off long text such as N/A (Circuit breaker)']},
- {v:63,t:['New JSA tab: fill in a Job Safety Analysis and save it as a PDF that matches your paper form. Pick job locations from a list, start from starter JSAs (new DPP, replace DPP, replace oven, light fittings) or save your own templates']}];
+ {v:63,t:['New JSA tab: fill in a Job Safety Analysis and save it as a PDF that matches your paper form. Pick job locations from a list, start from starter JSAs (new DPP, replace DPP, replace oven, light fittings) or save your own templates']},
+ {v:64,t:['JSA: team defaults to Cameron F with tap-to-add names, draw your signature with your name printed above it, saved JSAs list (open, duplicate, delete), step library, and new starters (switchboard, smoke alarms, ceiling fan, outdoor power point, EV charger, fault finding, fault find dishwasher, test and tag)','JSA can be linked to a verification job and printed after the record. JSAs are included in backups and Drive sync','PDF dates now print day-first (dd/mm/yyyy) and the signature time prints in 24h','Copy from above now also copies the PE method, cable sizes and the No RCD choice']}];
 const wnCur=()=>parseInt(String(APP_VERSION).replace(/\D/g,''),10)||0;
 function wnHtml(list){return list.slice().reverse().map(c=>`<div style="margin:8px 0"><b>Update ${c.v}</b><ul style="margin:4px 0 0">${c.t.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul></div>`).join('')}
 function showWN(all){const last=all?0:LS.get('ev_wn',23);const list=CHANGES.filter(c=>c.v>last);if(!list.length&&!all)return;$('#wnl').innerHTML=wnHtml(list.length?list:CHANGES);const mt=document.querySelector('#wn .mt');if(mt)mt.textContent=all?'What\'s new & tour':'What\'s new';$('#wn').hidden=false}
@@ -1252,7 +1267,7 @@ $('#eodDate').onchange=eodShow;
 $('#eodClose').onclick=()=>{$('#eod').hidden=true};
 $('#eodList').onclick=e=>{const b=e.target.closest('[data-a=eopen]');if(!b)return;const id=b.closest('.jrow').dataset.id,j=LS.get(JK,{});if(!j[id])return;state=Object.assign({},j[id].state);LS.set('ev_state',state);init();$('#eod').hidden=true;toast('Job opened')};
 $('#forceUpd').onclick=async()=>{toast('Updating…');try{const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch(e){}location.reload()};
-const APP_VERSION='v63'; // keep in step with VERSION in sw.js
+const APP_VERSION='v64'; // keep in step with VERSION in sw.js
 $('#appver').textContent=APP_VERSION;
 const netTxt=()=>{$('#net').textContent=navigator.onLine?'online':'offline (everything still works)'};
 addEventListener('online',netTxt);addEventListener('offline',netTxt);netTxt();
@@ -1269,14 +1284,18 @@ init();bkCheck();hashImport();
 <script>
 // ---- JSA tab ----
 (function(){
-const JK2='ev_jsa';
-const BLK=()=>({jn:'',date:today(),team:(defs&&defs.elec)||'',task:'',loc:'',det:'',ppe:'',plant:'',iso:'',steps:[{ins:'',haz:'',ctl:'',who:''}]});
-let J=Object.assign(BLK(),LS.get(JK2,{}));if(!Array.isArray(J.steps)||!J.steps.length)J.steps=[{ins:'',haz:'',ctl:'',who:''}];
-let ownMode=false;
+const JK2='ev_jsa',SK='ev_jsas',TK='ev_jsat',ME='Cameron F';
 const E=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const fd=d=>{const m=/^(\d{4})-(\d\d)-(\d\d)$/.exec(d||'');return m?m[3]+'/'+m[2]+'/'+m[1]:(d||'')};
-const persist=()=>LS.set(JK2,J);
+const nid=()=>'s'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+const teamList=()=>Array.isArray(defs.jsaTeam)&&defs.jsaTeam.length?defs.jsaTeam:[ME];
+const emptyStep=()=>({ins:'',haz:'',ctl:'',who:''});
+const BLK=()=>({id:nid(),jn:'',date:today(),team:teamList()[0]||ME,task:'',loc:'',det:'',ppe:'',plant:'',iso:'',mgr:defs.jsaMgr||'',lead:defs.jsaLead||ME,sigM:'',sigL:'',steps:[emptyStep()]});
+let J=Object.assign(BLK(),LS.get(JK2,{}));if(!Array.isArray(J.steps)||!J.steps.length)J.steps=[emptyStep()];
+let ownMode=false;
 const saveDefs=()=>LS.set('ev_defs',defs);
+function hasContent(){return !!(J.jn||J.task||J.loc||J.det||J.ppe||J.plant||J.iso||J.steps.some(s=>s.ins||s.haz||s.ctl||s.who))}
+function persist(force){J.updated=Date.now();LS.set(JK2,J);if(force||hasContent()){const a=LS.get(SK,{});a[J.id]=JSON.parse(JSON.stringify(J));LS.set(SK,a)}}
 const EL='Electrician';
 const PPE='Safety glasses, safety boots, long sleeves and pants, gloves as needed, dust mask / hearing protection when drilling or cutting, sunscreen and hat outdoors';
 const TOOLS='Insulated hand tools, voltage tester (proved before and after use), multimeter / test instruments, drill, ladder (inspected), torch / head lamp';
@@ -1318,29 +1337,107 @@ const BUILTIN={
  ['Re-energise and test (polarity, earth continuity, insulation resistance, RCD) and check light operation','Shock during live testing; faulty wiring','Complete dead tests first. Use test leads in good condition. Stop and fix if any test fails.',EL],
  ['Make good, clean up, advise customer and complete certificate of electrical safety','Slips and trips; leftover debris and offcuts','Remove waste, check area is clear, explain operation to customer, lodge CoES.',EL]]}
 };
-function hasContent(){return !!(J.task||J.ppe||J.plant||J.iso||J.steps.some(s=>s.ins||s.haz||s.ctl||s.who))}
-// ---------- sheet ----------
-function sheetHtml(){
- const n=Math.max(6,J.steps.length);let rows='';
- for(let i=0;i<n;i++){const s=J.steps[i]||{};rows+=`<tr><td class="jn">${i+1}</td><td>${E(s.ins)}</td><td>${E(s.haz)}</td><td>${E(s.ctl)}</td><td>${E(s.who)}</td></tr>`}
- const loc=[J.loc,J.det].map(x=>(x||'').trim()).filter(Boolean).join('\n');
+{const T=(ppe,plant,iso,st)=>({ppe,plant,iso,steps:st});
+const iso1=['Isolate the circuit, lock off and tag, then prove dead at the point of work','Electric shock; circuit accidentally re-energised','Lock and tag at switchboard. Test with proved tester before and after. Tell occupants.',EL];
+const cln=['Clean up, advise customer and complete certificate of electrical safety','Slips and trips; leftover debris and offcuts','Remove waste, check area is clear, explain use to customer, lodge CoES.',EL];
+Object.assign(BUILTIN,{
+'Switchboard / meter box upgrade':T(PPE+', insulated gloves for work near live supply',TOOLS+', cable cutters, torque screwdriver, label maker',ISO+' Arrange supply disconnection and reconnection with the distributor. Treat supply side as live until isolated.',[
+ ['Assess the job: existing board, mains size, supply arrangement, clearances, load and asbestos','Asbestos in old backing panels; undersized mains; unknown wiring; limited access','Treat old panels as asbestos until proven otherwise and stop if suspected. Check mains and demand. Plan circuit layout.',EL],
+ ['Arrange supply isolation, notify occupants, lock off main switch and prove dead','Contact with live supply conductors; occupants without power','Distributor to isolate supply where required. Treat supply side as live until isolated. Lock, tag and prove dead.',EL],
+ ['Label every circuit, disconnect and remove the old switchboard','Unknown or mislabelled circuits; sharp edges; dust; manual handling','Label conductors before removal. Cap and insulate ends. Safety glasses and dust mask. Two-person lift.',EL],
+ ['Mount the new switchboard, fit protection devices and terminate circuits','Loose terminations; wrong breaker or RCD rating; damaged cables','Correct ratings for each circuit. Torque terminations. Secure board level. Fit barriers and blanks.',EL],
+ ['Carry out dead tests (insulation resistance, earth continuity, polarity) before reconnection','Faulty wiring causing a fault on energisation','Complete all dead tests. Fix any fault before reconnecting supply.',EL],
+ ['Arrange reconnection, re-energise, test RCDs and live tests, label board','Shock or arcing on energisation; wrong polarity','Stand clear and switch on one at a time. Verify Zs, RCD trip times and polarity. Fit labels and warning signs.',EL],
+ cln]),
+'Install / replace smoke alarms':T(PPE,TOOLS+', step ladder, cable fishing rods',ISO,[
+ ['Assess the job: alarm locations and number required, existing interconnection, ceiling type and cable route','Asbestos in ceilings; hidden services; ceiling space access','Check for asbestos before drilling or cutting. Plan positions to current requirements for the building.',EL],
+ iso1,
+ ['Set up ladder, run cable and fit alarm bases at the planned positions','Falls from height; dust; ceiling space heat, insulation and falls','Inspected ladder on firm ground. Safety glasses and dust mask. Walk on joists only.',EL],
+ ['Connect and fit alarms, battery backup and interconnect','Loose or incorrect connections; cuts from tools','Terminate to manufacturer instructions. Check interconnect wiring and polarity.',EL],
+ ['Re-energise and test each alarm and interconnection using the test button','Shock during live testing; loud alarm noise','Complete dead tests first. Hearing protection if needed. Stop and fix any alarm that fails.',EL],
+ cln]),
+'Install ceiling fan':T(PPE+', safety glasses when working overhead',TOOLS+', step ladder, stud finder, cable fishing rods',ISO+' Switching off at the wall switch is not isolation.',[
+ ['Assess the job: ceiling height and structure, fixing point, existing circuit and switch','Fan fixed to weak structure and falling; asbestos in ceilings; hidden services','Locate joist or rated fan box. Check for asbestos before drilling. Check circuit capacity.',EL],
+ iso1,
+ ['Set up ladder, fit rated fan bracket or box to structure and run cable','Falls from height; dust; manual handling overhead; ceiling space heat and falls','Inspected ladder. Safety glasses. Fix to structure, not plasterboard. Walk on joists only.',EL],
+ ['Assemble and hang the fan, connect supply and controller','Fan falling; blade injury; loose or incorrect connections','Two-person lift where needed. Follow manufacturer instructions. Tighten all fixings and terminations.',EL],
+ ['Re-energise and test (polarity, insulation resistance, operation on all speeds, wobble check)','Shock during live testing; moving blades','Complete dead tests first. Keep clear of blades while testing.',EL],
+ cln]),
+'Install outdoor power point':T(PPE+', sun protection',TOOLS+', step ladder, masonry drill, conduit tools',ISO,[
+ ['Assess the job: location, weather exposure, IP rating, cable route, circuit and RCD protection','Water ingress; hidden or underground services; asbestos cladding; overloaded circuit','Choose suitable IP-rated fittings. Check for asbestos and services. Use Dial Before You Dig if excavating.',EL],
+ iso1,
+ ['Drill, run cable or conduit and mount the weatherproof enclosure','Drilling into services; dust; falls from ladder; sun and heat','Safety glasses and dust mask. Scan walls first. Inspected ladder. Take breaks, drink water.',EL],
+ ['Terminate and fit the outlet and seal all entries','Loose terminations; water ingress; cuts from tools','Tight terminations, earth sleeved. Seal entries and fit cover correctly.',EL],
+ ['Re-energise and test (polarity, earth continuity, insulation resistance, RCD)','Shock during live testing; wet conditions','Complete dead tests first. Do not test in rain. Stop and fix if any test fails.',EL],
+ cln]),
+'Install EV charger':T(PPE,TOOLS+', cable drum, conduit tools, trolley',ISO+' Check the supply and main switch before starting.',[
+ ['Assess the job: charger location, switchboard capacity and maximum demand, supply type, cable route and manufacturer requirements','Overloaded supply; undersized cable; hidden services; asbestos','Calculate demand. Select cable and protection to suit. Check charger instructions for RCD type and earthing.',EL],
+ iso1,
+ ['Install the dedicated circuit, cable and conduit, and fit protection at the switchboard','Live switchboard; cutting into services; sharp edges; manual handling of cable','Lock and tag before working in board. Scan before drilling. Two-person handling for heavy cable.',EL],
+ ['Mount the charger, terminate cables and fit enclosure covers','Heavy unit; loose terminations; incorrect earthing','Secure to suitable fixing. Torque terminations. Verify earthing arrangement.',EL],
+ ['Test (insulation resistance, earth continuity, loop impedance, RCD) and commission charger to manufacturer instructions','Shock during live testing; faulty charger; vehicle fault','Complete dead tests first. Follow commissioning steps. Stop and fix if any test fails.',EL],
+ ['Instruct customer, label circuit, complete certificate and notify the network if required','Incorrect use by customer; missing documentation','Show customer operation and isolation. Fit labels. Lodge CoES and any network notification.',EL]]),
+'Fault finding':T(PPE+', insulated gloves where required',TOOLS+', insulation resistance tester, loop impedance tester, RCD tester, thermal camera if available','Isolate the suspect circuit where possible, lock off and tag, PROVE-TEST-PROVE. Live testing only when necessary, by a competent person, with rated leads and instruments. Barricade or sign work area.',[
+ ['Gather information: what has failed, when, what is affected, recent work; inspect for obvious damage, burns or water','Unknown hazards; asbestos; damaged wiring','Ask the customer first. Look before touching. Stop if asbestos or serious damage is suspected.',EL],
+ ['Inspect the switchboard and protection devices, check what has tripped and identify affected circuits','Exposed live parts at the board; arc flash','Keep covers on. Use insulated tools and safety glasses. Do not work on live parts unless necessary.',EL],
+ ['Isolate the affected circuit, lock off and tag, then prove dead before opening fittings','Electric shock; back-feed from other circuits; circuit re-energised','Lock and tag. Prove tester on a known source before and after. Check for back-feed.',EL],
+ ['Locate the fault with dead tests (continuity, insulation resistance, polarity), working section by section','Faulty instrument; stored charge; damaging electronics during testing','Check instruments work. Disconnect electronic equipment before insulation tests. Record readings.',EL],
+ ['Repair or replace the faulty cable, fitting or device','Loose terminations; incorrect repair; cuts and dust','Use correct cable and fittings. Tight terminations. Do not leave temporary repairs.',EL],
+ ['Re-energise and retest (polarity, earth fault loop, RCD) and confirm the fault is cleared','Shock during live testing; fault remains','Complete dead tests first. Stop and re-isolate if fault persists. Test everything affected.',EL],
+ ['Clean up, advise customer of the cause and any recommendations, record the work','Slips and trips; customer unaware of ongoing risks','Remove waste. Explain cause and any further work needed. Complete certificate if required.',EL]]),
+'Test and tag':T('Safety glasses, safety boots, gloves as needed, high-visibility if required on site','PAT tester (in calibration), test tags and labeller, extension leads, tag attachments','Unplug equipment before inspecting. Do not test equipment that is hot, wet or damaged. Barricade or sign the test area. Get permission before disconnecting equipment that is in use.',[
+ ['Plan the job: scope, site contact, equipment list, test intervals and environment; complete site induction','Disconnecting equipment in use; unknown site hazards','Get permission from the site contact before unplugging anything. Follow site rules.',EL],
+ ['Set up a clear test area; check the tester, calibration date and test leads','Trip hazards; faulty tester or leads; unauthorised access','Check calibration and leads before use. Keep leads tidy. Sign or barricade the area.',EL],
+ ['Visually inspect each item: plug, lead, casing, switches, guards and rating','Cuts from damaged items; shock from damaged equipment','Do not plug in damaged items. Remove from service and tag. Wear gloves when needed.',EL],
+ ['Test each item (earth continuity, insulation resistance, polarity, RCD as required)','Shock or equipment starting unexpectedly during testing','Follow tester instructions. Keep hands clear during tests. Only test items in good condition.',EL],
+ ['Tag each item, record results and remove failed items from service','Failed items returned to use; wrong or missing tags','Tag with name, date and next test due. Isolate failed items and tell the site contact.',EL],
+ ['Reconnect equipment, clean up and provide the test report','Equipment left disconnected; trips and falls','Reconnect items as found. Check the area is clear. Send report to the customer.',EL]]),
+'Fault find dishwasher':T(PPE+', cut-resistant gloves for sharp sheet metal edges, knee pads',TOOLS+', multimeter, insulation resistance tester, screwdrivers / nut drivers, towels and bucket for water','Isolate at the switchboard or the dishwasher isolating switch / plug, lock off and tag, PROVE-TEST-PROVE dead. Turn off the water supply. Keep electrical tools and leads off wet floors. Barricade or sign work area if needed.',[
+ ['Gather information: fault symptoms, error codes, age of unit and recent work; check for water around the dishwasher','Water leaking near electrical parts; unknown damage; asbestos in old wall linings','Ask the customer first. Check the floor and cabinet for water before touching anything. Keep electrical items off wet floors.',EL],
+ ['Isolate the dishwasher circuit, lock off and tag, prove dead and turn off the water supply','Electric shock; circuit accidentally re-energised; water spray when hoses are moved','Lock and tag at switchboard. Test with proved tester before and after. Isolate water tap. Tell occupants.',EL],
+ ['Pull the dishwasher out and remove the kickboard and access panels','Sharp sheet metal edges; manual handling; crushing; trapped hoses or cable; water spill','Wear cut-resistant gloves. Two-person lift or lifting aid. Protect floor. Use towels and bucket for residual water.',EL],
+ ['Inspect wiring, terminals, door switch, pump, heating element and control board; carry out dead tests (continuity, insulation resistance, earth)','Sharp edges; water in electrics; stored charge on control boards; burnt or damaged wiring','Gloves and safety glasses. Let components cool and capacitors discharge. Do not touch control boards. Prove tester before use.',EL],
+ ['Repair or replace the faulty part and re-terminate connections','Loose terminations; wrong part; cuts from sheet metal and tools','Use correct manufacturer parts. Tight terminations, earth connected. Gloves for all internal work.',EL],
+ ['Reassemble, restore water, re-energise, test (earth continuity, insulation resistance, RCD) and run a cycle to confirm the fault is cleared','Shock during live testing; water leaks; hot surfaces and steam','Complete dead tests first. Check hoses and connections for leaks. Keep clear of hot parts. Stop and fix if any test fails.',EL],
+ ['Slide dishwasher back, clean up, advise customer of the cause and complete certificate if required','Manual handling; slips on wet floor; crushed hoses or cable','Two-person lift. Mop spills. Check hoses and cable are not trapped. Explain the fault and repair.',EL]])
+});}
+
+const LIB=[
+ ['Assess the job: inspect the site, existing wiring and circuit; check for asbestos and hidden services','Asbestos; hidden services; damaged or unknown wiring','Check for asbestos before cutting or drilling (stop if suspected). Scan walls for services.',EL],
+ ['Isolate the circuit, lock off and tag, then prove dead at the point of work','Electric shock; circuit accidentally re-energised','Lock and tag at switchboard. Test with proved tester before and after. Tell occupants.',EL],
+ ['Set up and use ladder or work platform','Falls from height; unstable ladder','Inspect ladder. Firm level ground. Three points of contact. Do not overreach.',EL],
+ ['Work in the ceiling space','Heat; insulation fibres; falling through ceiling; live cables','Walk on joists only. Dust mask, safety glasses. Take breaks in heat. Isolate nearby circuits.',EL],
+ ['Drill or cut into walls, ceilings or floors','Hidden services; dust; flying debris; noise','Scan first. Safety glasses, dust mask and hearing protection. Use dust control.',EL],
+ ['Run cable, conduit or fit clips','Cuts and strains; damaged cable; cable kinked','Use correct cable and support. Gloves. Do not overstrain cable.',EL],
+ ['Terminate cable and fit the accessory','Loose terminations; incorrect polarity or earthing; cuts','Tight terminations, earth sleeved, check polarity. Use correct tools.',EL],
+ ['Re-energise and test (polarity, earth continuity, insulation resistance, RCD)','Shock during live testing; faulty wiring','Complete dead tests first. Use leads in good condition. Stop and fix if any test fails.',EL],
+ ['Disconnect and remove the old fitting or equipment','Manual handling; sharp edges; hot surfaces; exposed conductors','Let equipment cool. Two-person lift. Gloves. Cap off and insulate unused conductors.',EL],
+ ['Move or lift heavy items','Back strain; crushing; dropped item','Two-person lift or lifting aid. Clear the path of travel. Lift with legs.',EL],
+ ['Work outdoors in heat or weather','Heat stress; sunburn; wet conditions; slips','Water, shade and breaks. Sunscreen and hat. Do not work on electrical gear in rain.',EL],
+ ['Make good, clean up, advise customer and complete certificate of electrical safety','Slips and trips; leftover debris and offcuts','Remove waste, check area is clear, explain use and RCD testing to customer, lodge CoES.',EL]];
+const sg=(nm,img)=>`<div class="ln${nm||img?' has':''}">${nm?`<span class="sn">${E(nm)}</span>`:''}${img?`<div class="si" style="background-image:url(${img})"></div>`:''}</div>`;
+function sheetHtml(D){D=D||J;
+ const n=Math.max(6,D.steps.length);let rows='';
+ for(let i=0;i<n;i++){const s=D.steps[i]||{};rows+=`<tr><td class="jn">${i+1}</td><td>${E(s.ins)}</td><td>${E(s.haz)}</td><td>${E(s.ctl)}</td><td>${E(s.who)}</td></tr>`}
+ const loc=[D.loc,D.det].map(x=>(x||'').trim()).filter(Boolean).join('\n');
  return `<div class="js-box">
-<div class="js-top"><div class="js-title"><div>DAY'S ELECTRICAL CONTRACTING PORTLAND<br>JOB SAFETY ANALYSIS</div></div><div class="js-jd"><div>JOB NUMBER <span class="val">${E(J.jn)}</span></div><div>DATE: <span class="val">${E(fd(J.date))}</span></div></div></div>
-<div class="js-r js-team">JSA TEAM: <span class="val">${E(J.team)}</span></div>
-<div class="js-r js-task">WORK ACTIVITY/TASK: <span class="val">${E(J.task)}</span></div>
+<div class="js-top"><div class="js-title"><div>DAY'S ELECTRICAL CONTRACTING PORTLAND<br>JOB SAFETY ANALYSIS</div></div><div class="js-jd"><div>JOB NUMBER <span class="val">${E(D.jn)}</span></div><div>DATE: <span class="val">${E(fd(D.date))}</span></div></div></div>
+<div class="js-r js-team">JSA TEAM: <span class="val">${E(D.team)}</span></div>
+<div class="js-r js-task">WORK ACTIVITY/TASK: <span class="val">${E(D.task)}</span></div>
 <div class="js-r js-loc"><div>JOB LOCATION &amp; DETAILS: <span class="val">${E(loc)}</span></div><div class="hint">(Eg: Dept, location, task, equipment, name &amp; number)</div></div>
 <div class="js-gap"></div>
 <div class="js-hd"><div>Personal Protection Requirements<br>Eg: Harness, safety suits, respiratory protection etc.</div><div>Plant, Equipment &amp; Tools Requirements<br>Eg: Elevating equipment, special tools etc.</div><div>Isolation, Tagging, Barricades &amp; Signs Requirements<br>Obtain clearance and safety work permits as required<br>Abide by the conditions, eg. Confined space etc.</div></div>
-<div class="js-ent"><div>${E(J.ppe)}</div><div>${E(J.plant)}</div><div>${E(J.iso)}</div></div>
+<div class="js-ent"><div>${E(D.ppe)}</div><div>${E(D.plant)}</div><div>${E(D.iso)}</div></div>
 <table class="js-t"><colgroup><col style="width:6.71%"><col style="width:26.7%"><col style="width:26.38%"><col style="width:20.1%"><col style="width:20.1%"></colgroup>
 <thead><tr><th>Step No.</th><th><b>Job Instruction</b><span>List the steps required to perform the<br>task in the sequence they are carried out</span></th><th><b>Hazards</b><span>List the potential hazards against<br>each step that could cause injury<br>when the tasks are performed</span></th><th><b>Hazard Control Measures</b><span>For each hazard identified, list the<br>control measures required to<br>eliminate or minimise the risk of injury</span></th><th><b>Person Responsible</b><span>Name of person responsible to<br>implement the control measure</span></th></tr></thead>
 <tbody>${rows}</tbody></table></div>
-<div class="js-sig"><div class="c1">Signature:</div><div class="ln"></div><div class="c3"><span>Manager</span><span>Signature:</span></div><div class="c45"><div class="ln"></div><span>Manager</span></div>
-<div></div><div class="ln"></div><div class="c3"><span>JSA Team Leader</span></div><div class="c45"><div class="ln"></div><span>JSA Team Leader</span></div></div>`;
+<div class="js-sig"><div class="c1">Signature:</div>${sg(D.mgr,D.sigM)}<div class="c3"><span>Manager</span><span>Signature:</span></div><div class="c45"><div class="ln"></div><span>Manager</span></div>
+<div></div>${sg(D.lead,D.sigL)}<div class="c3"><span>JSA Team Leader</span></div><div class="c45"><div class="ln"></div><span>JSA Team Leader</span></div></div>`;
 }
-function renderSheet(){const h=sheetHtml();$('#jsaSheet').innerHTML=h;const m=$('#jsaMeasure');m.innerHTML=h;const H=m.offsetHeight;const z=H>0?Math.max(.72,Math.min(1,725/H)):1;$('#jsaSheet').style.setProperty('--jz',z)}
+
+function renderSheet(D){D=D||J;const h=sheetHtml(D);$('#jsaSheet').innerHTML=h;const m=$('#jsaMeasure');m.innerHTML=h;const H=m.offsetHeight;const z=H>0?Math.max(.72,Math.min(1,660/H)):1;$('#jsaSheet').style.setProperty('--jz',z)}
 // ---------- editor ----------
-function stepsHtml(){return J.steps.map((s,i)=>`<div class="jstep" data-i="${i}"><div class="jsh"><b>Step ${i+1}</b><span><button class="s" data-a="up"${i?'':' disabled'}>&#9650;</button><button class="s" data-a="dn"${i<J.steps.length-1?'':' disabled'}>&#9660;</button><button class="s" data-a="rm">Remove</button></span></div>
+function stepsHtml(){return J.steps.map((s,i)=>`<div class="jstep" data-i="${i}"><div class="jsh"><b>Step ${i+1}</b><span><button class="s" data-a="up"${i?'':' disabled'}>&#9650;</button><button class="s" data-a="dn"${i<J.steps.length-1?'':' disabled'}>&#9660;</button><button class="s" data-a="lib">Save to library</button><button class="s" data-a="rm">Remove</button></span></div>
 <label class="f">Job instruction<textarea data-s="ins" rows="2">${E(s.ins)}</textarea></label>
 <label class="f">Hazards<textarea data-s="haz" rows="2">${E(s.haz)}</textarea></label>
 <label class="f">Hazard control measures<textarea data-s="ctl" rows="2">${E(s.ctl)}</textarea></label>
@@ -1350,15 +1447,21 @@ function locUI(){const L=defs.jsal||[];const own=ownMode||(J.loc&&!L.includes(J.
  $('#jlocOwnW').hidden=!own;if(own&&document.activeElement!==$('#jlocOwn'))$('#jlocOwn').value=J.loc;$('#jlSave').hidden=!(own&&(J.loc||'').trim()&&!L.includes(J.loc.trim()))}
 function tplUI(){const mine=Object.keys(defs.jsat||{}).sort();
  $('#jtpl').innerHTML='<option value="">Choose a template…</option><optgroup label="Starter JSAs">'+Object.keys(BUILTIN).map(k=>`<option value="b:${E(k)}">${E(k)}</option>`).join('')+'</optgroup>'+(mine.length?'<optgroup label="My templates">'+mine.map(k=>`<option value="u:${E(k)}">${E(k)}</option>`).join('')+'</optgroup>':'')}
-function fillFields(){$$('#jsa [data-j]').forEach(el=>{if(document.activeElement!==el)el.value=J[el.dataset.j]||''})}
+const teamArr=()=>(J.team||'').split(/\s*,\s*/).map(x=>x.trim()).filter(Boolean);
+function chipsUI(){const on=teamArr();const el=$('#jchips');if(el)el.innerHTML=teamList().map(n=>`<button class="s${on.includes(n)?' on':''}" data-nm="${E(n)}">${E(n)}</button>`).join('')}
+function sgUI(){['M','L'].forEach(k=>{const im=$('#jsi'+k);if(!im)return;const v=J['sig'+k];im.hidden=!v;if(v)im.src=v})}
+function fillFields(){$$('#jsa [data-j]').forEach(el=>{if(document.activeElement!==el)el.value=J[el.dataset.j]||''});chipsUI();sgUI()}
 function build(){$('#jsa').innerHTML=`<h1>Job Safety Analysis (JSA)</h1>
-<div class="sub"><span>Fill in, then Print / save PDF. The PDF copies your paper JSA form.</span></div>
+<div class="sub"><span>Fill in, then Print / save PDF. The PDF copies your paper JSA form. Everything is saved automatically.</span></div>
+<div class="row jbtns"><button class="s" id="jSaved">Saved JSAs</button><button class="s" id="jNew">New blank JSA</button></div>
 <div class="sec">Start from a template</div>
 <div class="row"><label class="f" style="flex:2">Template<select id="jtpl"></select></label></div>
-<div class="row jbtns"><button class="s" id="jtLoad">Load template</button><button class="s" id="jtSave">Save current as template</button><button class="s" id="jtDel">Delete my template</button><button class="s" id="jNew">New blank JSA</button></div>
+<div class="row jbtns"><button class="s" id="jtLoad">Load template</button><button class="s" id="jtSave">Save current as template</button><button class="s" id="jtDel">Delete my template</button></div>
 <div class="sec">Job details</div>
 <div class="row"><label class="f">Job number<input type="text" data-j="jn"></label><label class="f">Date<input type="date" data-j="date"></label></div>
 <div class="row"><label class="f" style="flex:2">JSA team<input type="text" data-j="team" placeholder="Names of everyone on the job"></label></div>
+<div class="jchips" id="jchips"></div>
+<div class="row jbtns"><input type="text" id="jtmNew" placeholder="Add a name" style="flex:1;min-width:120px"><button class="s" id="jtmAdd">Add to team</button><button class="s" id="jtmEdit">Edit team list</button></div>
 <div class="row"><label class="f" style="flex:2">Work activity / task<input type="text" data-j="task"></label></div>
 <div class="row"><label class="f" style="flex:2">Job location<select id="jloc"></select></label><label class="f" id="jlocOwnW" hidden>Type location<input type="text" id="jlocOwn"></label></div>
 <div class="row jbtns"><button class="s" id="jlSave" hidden>Save this location to my list</button><button class="s" id="jlEdit">Edit location list</button><button class="s" id="jlUse">Use current verification job</button></div>
@@ -1368,11 +1471,16 @@ function build(){$('#jsa').innerHTML=`<h1>Job Safety Analysis (JSA)</h1>
 <label class="f" style="margin-top:8px">Plant, equipment and tools requirements<textarea data-j="plant" rows="3"></textarea></label>
 <label class="f" style="margin-top:8px">Isolation, tagging, barricades and signs requirements<textarea data-j="iso" rows="3"></textarea></label>
 <div class="sec">Steps</div><div id="jsteps"></div>
-<div class="row jbtns"><button class="s" id="jAdd">+ Add step</button></div>
+<div class="row jbtns"><button class="s" id="jAdd">+ Add step</button><button class="s" id="jLib">Add from step library</button></div>
+<div class="sec">Names and signatures</div>
+<div class="row"><label class="f">Manager name<input type="text" data-j="mgr"></label><label class="f">Team leader name<input type="text" data-j="lead"></label></div>
+<div class="row jbtns"><span class="jsgb"><b>Manager</b><img id="jsiM" class="jsimg" alt="" hidden><button class="s" data-sg="M">Sign</button><button class="s" data-sg="Mx">Clear</button></span></div>
+<div class="row jbtns"><span class="jsgb"><b>Team leader</b><img id="jsiL" class="jsimg" alt="" hidden><button class="s" data-sg="L">Sign</button><button class="s" data-sg="Lu">Use my saved signature</button><button class="s" data-sg="Lx">Clear</button></span></div>
 <div class="row" style="margin-top:16px"><button id="jPrev">Preview</button><button class="p" id="jPrint">Print / save PDF</button></div>`;
  tplUI();locUI();fillFields();$('#jsteps').innerHTML=stepsHtml()}
 function steps(){$('#jsteps').innerHTML=stepsHtml();persist();renderSheet()}
-function setTab(t){document.body.classList.toggle('jsa-on',t==='jsa');$$('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));LS.set('ev_tab',t);if(t==='jsa'){if(!$('#jtpl'))build();else{tplUI();locUI();fillFields()}renderSheet()}else closePrev();window.scrollTo(0,0)}
+function setTab(t){document.body.classList.toggle('jsa-on',t==='jsa');$$('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));LS.set('ev_tab',t);if(t==='jsa'){if(!$('#jtpl'))build();else{tplUI();locUI();fillFields()}renderSheet()}else{closePrev();try{window.jsaLinkUI()}catch(e){}}window.scrollTo(0,0)}
+function loadJ(x){J=Object.assign(BLK(),JSON.parse(JSON.stringify(x)));if(!Array.isArray(J.steps)||!J.steps.length)J.steps=[emptyStep()];ownMode=false;LS.set(JK2,J);setTab('jsa');build();renderSheet();toast('JSA opened')}
 // ---------- preview + print ----------
 function fit(){const w=$('#jsaWrap'),sc=$('#jsaWrap .jscaler');sc.style.zoom=Math.min(1,(w.clientWidth-16)/(277/25.4*96))}
 function openPrev(){renderSheet();document.body.classList.add('jpv-on');fit();$('#jsaWrap').scrollTop=0}
@@ -1380,12 +1488,54 @@ function closePrev(){document.body.classList.remove('jpv-on')}
 window.addEventListener('resize',()=>{if(document.body.classList.contains('jpv-on'))fit()});
 const jname=()=>'JSA_'+[J.date||today(),slug(J.task||J.loc||'').slice(0,50)].filter(Boolean).join('_');
 function jsaPrint(){renderSheet();persist();const old=document.title;document.title=jname();const back=()=>{document.title=old;window.removeEventListener('afterprint',back)};window.addEventListener('afterprint',back);setTimeout(back,60000);try{window.print()}catch(e){back();toast('Printing is blocked here. Open the app as a file in Chrome.')}}
+// ---------- list dialog ----------
+let dCfg=null;
+function dShow(c){dCfg=c;$('#jdT').textContent=c.title;$('#jdN').textContent=c.note||'';$('#jdQ').value='';$('#jdQ').hidden=!c.search;$('#jsd').hidden=false;dDraw()}
+function dDraw(){const q=($('#jdQ').value||'').toLowerCase();const it=dCfg.items().filter(x=>!q||x.s.toLowerCase().includes(q));dCfg.v=it;$('#jdL').innerHTML=it.length?it.map((x,i)=>`<div class="jdi"><div class="jdt"><b>${E(x.t)}</b><span>${E(x.sub||'')}</span></div><div class="jda">${x.acts.map((a,k)=>`<button class="s" data-ai="${i}" data-ak="${k}">${E(a[0])}</button>`).join('')}</div></div>`).join(''):'<div class="note">Nothing here yet.</div>'}
+$('#jdQ').addEventListener('input',e=>{e.stopPropagation();dDraw()});
+$('#jdL').addEventListener('click',e=>{const b=e.target.closest('button[data-ak]');if(!b)return;const x=dCfg.v[+b.dataset.ai];if(!x)return;const r=x.acts[+b.dataset.ak][1]();if(r==='close')$('#jsd').hidden=true;else dDraw()});
+$('#jdX').onclick=()=>{$('#jsd').hidden=true};
+// saved JSAs
+const jsaItems=()=>Object.values(LS.get(SK,{})).sort((a,b)=>(b.updated||0)-(a.updated||0));
+function delJ(id){if(!confirm('Delete this saved JSA?'))return;const a=LS.get(SK,{}),t=LS.get(TK,{});delete a[id];t[id]=Date.now();LS.set(SK,a);LS.set(TK,t);if(state.jsaId===id){state.jsaId='';save();window.jsaLinkUI()}if(J.id===id){const keep=J.loc;J=BLK();J.loc=keep;LS.set(JK2,J);if($('#jtpl')){build();renderSheet()}}}
+function dupJ(x){const c=JSON.parse(JSON.stringify(x));c.id=nid();c.date=today();c.sigM='';c.sigL='';c.updated=Date.now();const a=LS.get(SK,{});a[c.id]=c;LS.set(SK,a);loadJ(c)}
+function linkTo(id){state.jsaId=id;save();window.jsaLinkUI();toast('JSA linked to this job')}
+function openSaved(pick){dShow({title:pick?'Link a saved JSA to this job':'Saved JSAs',note:pick?'':'Tap Open to edit one. Duplicate makes a copy for a new job.',search:1,items:()=>jsaItems().map(x=>({t:fd(x.date)+(x.jn?' · '+x.jn:'')+' · '+(x.task||'(no task)'),sub:x.loc||'',s:[x.jn,x.task,x.loc,x.date,fd(x.date)].join(' '),acts:pick?[['Link',()=>{linkTo(x.id);return 'close'}]]:[['Open',()=>{loadJ(x);return 'close'}],['Duplicate',()=>{dupJ(x);return 'close'}],['Delete',()=>{delJ(x.id)}]]}))})}
+// step library
+function openLib(){dShow({title:'Step library',note:'Tap Add to put a step on this JSA. Use Save to library on any step to keep your own.',search:1,items:()=>{const me=defs.jsast||[];return LIB.map(a=>({t:a[0],sub:'Built in',s:a.join(' '),acts:[['Add',()=>{J.steps=J.steps.filter(s=>s.ins||s.haz||s.ctl||s.who);J.steps.push({ins:a[0],haz:a[1],ctl:a[2],who:a[3]});steps();toast('Step added');return 'close'}]]})).concat(me.map((a,i)=>({t:a.ins,sub:'My step',s:[a.ins,a.haz,a.ctl].join(' '),acts:[['Add',()=>{J.steps=J.steps.filter(s=>s.ins||s.haz||s.ctl||s.who);J.steps.push(Object.assign({},a));steps();toast('Step added');return 'close'}],['Delete',()=>{defs.jsast.splice(i,1);saveDefs()}]]})))}})}
+// ---------- signatures ----------
+let sgFor='',drawing=false,inked=false,lastp=null;const cv=$('#jgC'),cx=cv.getContext('2d');
+const pt=e=>{const r=cv.getBoundingClientRect();return [(e.clientX-r.left)*cv.width/r.width,(e.clientY-r.top)*cv.height/r.height]};
+const clr=()=>{cx.clearRect(0,0,cv.width,cv.height);inked=false};
+cv.addEventListener('pointerdown',e=>{drawing=true;lastp=pt(e);try{cv.setPointerCapture(e.pointerId)}catch(x){}cx.fillStyle='#111';cx.beginPath();cx.arc(lastp[0],lastp[1],1.8,0,7);cx.fill();inked=true;e.preventDefault()});
+cv.addEventListener('pointermove',e=>{if(!drawing)return;const p=pt(e);cx.strokeStyle='#111';cx.lineWidth=3.6;cx.lineCap='round';cx.lineJoin='round';cx.beginPath();cx.moveTo(lastp[0],lastp[1]);cx.lineTo(p[0],p[1]);cx.stroke();lastp=p;e.preventDefault()});
+['pointerup','pointercancel'].forEach(t=>cv.addEventListener(t,()=>{drawing=false}));
+function cropSig(){const d=cx.getImageData(0,0,cv.width,cv.height).data;let x0=cv.width,y0=cv.height,x1=0,y1=0;for(let y=0;y<cv.height;y++)for(let x=0;x<cv.width;x++)if(d[(y*cv.width+x)*4+3]>20){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}if(x1<x0)return '';const p=6;x0=Math.max(0,x0-p);y0=Math.max(0,y0-p);x1=Math.min(cv.width-1,x1+p);y1=Math.min(cv.height-1,y1+p);const c=document.createElement('canvas');c.width=x1-x0+1;c.height=y1-y0+1;c.getContext('2d').drawImage(cv,x0,y0,c.width,c.height,0,0,c.width,c.height);return c.toDataURL('image/png')}
+function openSign(k){sgFor=k;clr();$('#jgT').textContent=k==='M'?'Manager signature':'Team leader signature';$('#jgRW').hidden=k!=='L';$('#jsg').hidden=false}
+$('#jgCl').onclick=clr;$('#jgX').onclick=()=>{$('#jsg').hidden=true};
+$('#jgS').onclick=()=>{if(!inked)return toast('Draw your signature first');const u=cropSig();if(!u)return;J['sig'+sgFor]=u;if(sgFor==='L'&&$('#jgR').checked){defs.jsaSigL=u;saveDefs()}persist();sgUI();renderSheet();$('#jsg').hidden=true;toast('Signature added')};
+// ---------- link to verification job ----------
+window.jsaLinkUI=function(){const b=$('#jsaOpen'),t=$('#jsaLinkT'),c=$('#jsaInc');if(!b)return;const x=state.jsaId&&LS.get(SK,{})[state.jsaId];b.textContent=x?'Open linked JSA':'Create JSA for this job';t.textContent=x?'Linked JSA: '+(x.task||'(no task)')+' · '+fd(x.date):'No JSA linked to this job yet.';c.disabled=!x;$('#jsaPick').textContent=x?'Change linked JSA…':'Link existing JSA…'};
+$('#jsaOpen').onclick=()=>{save();const x=state.jsaId&&LS.get(SK,{})[state.jsaId];if(x)return loadJ(x);J=BLK();J.jn=state.job||'';J.date=state.date||today();J.loc=state.addr||'';J.task=state.work||'';ownMode=false;persist(true);state.jsaId=J.id;save();window.jsaLinkUI();setTab('jsa');build();renderSheet();toast('New JSA created and linked to this job')};
+$('#jsaPick').onclick=()=>openSaved(true);
+// ---------- sync / backup ----------
+function mergeIn(ri,rt){const a=LS.get(SK,{}),t=LS.get(TK,{});Object.keys(rt||{}).forEach(id=>{if(!t[id]||t[id]<rt[id])t[id]=rt[id]});
+ Object.entries(ri||{}).forEach(([id,v])=>{if(t[id]&&t[id]>=(v.updated||0))return;if(!a[id]||(a[id].updated||0)<(v.updated||0))a[id]=v});
+ Object.keys(t).forEach(id=>{if(a[id]&&t[id]>=(a[id].updated||0))delete a[id];if(Date.now()-t[id]>90*864e5)delete t[id]});
+ LS.set(SK,a);LS.set(TK,t);
+ if(a[J.id]&&(a[J.id].updated||0)>(J.updated||0)){J=Object.assign(BLK(),a[J.id]);LS.set(JK2,J);if($('#jtpl')&&document.body.classList.contains('jsa-on')){build();renderSheet()}}
+ try{window.jsaLinkUI()}catch(e){}}
+window.jsaImport=items=>mergeIn(items,{});
+window.jsaSync=async function(tok,fid,files,gGet,gPut){const N='ev_jsa.json';let r=null;if(files[N])r=await gGet(tok,files[N].id);mergeIn(r&&r.items,r&&r.tomb);await gPut(tok,fid,files[N],N,{v:1,items:LS.get(SK,{}),tomb:LS.get(TK,{}),at:Date.now()})};
 // ---------- wiring ----------
 $('#tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-tab]');if(b)setTab(b.dataset.tab)});
-const prn0=$('#prn').onclick;$('#prn').onclick=function(e){if(document.body.classList.contains('jsa-on'))return jsaPrint();return prn0&&prn0.call(this,e)};
+const prn0=$('#prn').onclick;$('#prn').onclick=function(e){if(document.body.classList.contains('jsa-on'))return jsaPrint();
+ const x=(state.jsaInc&&state.jsaId)?LS.get(SK,{})[state.jsaId]:null;
+ if(x){renderSheet(x);document.body.classList.add('inc-jsa');const off=()=>{document.body.classList.remove('inc-jsa');window.removeEventListener('afterprint',off)};window.addEventListener('afterprint',off);setTimeout(off,120000)}
+ return prn0&&prn0.call(this,e)};
 const jsa=$('#jsa');
 function onEdit(e){const t=e.target;let ch=false;
- if(t.dataset&&t.dataset.j){J[t.dataset.j]=t.value;ch=true}
+ if(t.dataset&&t.dataset.j){J[t.dataset.j]=t.value;ch=true;if(t.dataset.j==='mgr'){defs.jsaMgr=t.value;saveDefs()}if(t.dataset.j==='lead'){defs.jsaLead=t.value;saveDefs()}if(t.dataset.j==='team')chipsUI()}
  else if(t.id==='jlocOwn'){J.loc=t.value;ch=true;$('#jlSave').hidden=!(t.value.trim()&&!(defs.jsal||[]).includes(t.value.trim()))}
  else if(t.dataset&&t.dataset.s){const st=t.closest('.jstep');if(st){J.steps[+st.dataset.i][t.dataset.s]=t.value;ch=true}}
  if(ch){persist();renderSheet()}
@@ -1394,25 +1544,36 @@ jsa.addEventListener('input',onEdit);
 jsa.addEventListener('change',e=>{const t=e.target;
  if(t.id==='jloc'){if(t.value==='__own'){ownMode=true;J.loc='';persist();renderSheet();locUI();$('#jlocOwn').focus()}else{ownMode=false;J.loc=t.value;persist();renderSheet();locUI()}}
  else onEdit(e);e.stopPropagation()});
-jsa.addEventListener('keydown',e=>e.stopPropagation());
+jsa.addEventListener('keydown',e=>{if(e.target.id==='jtmNew'&&e.key==='Enter'){e.preventDefault();$('#jtmAdd').click()}e.stopPropagation()});
+function addName(n){n=(n||'').trim();if(!n)return;const L=teamList().slice();if(!L.includes(n)){L.push(n);defs.jsaTeam=L;saveDefs()}const a=teamArr();if(!a.includes(n))a.push(n);J.team=a.join(', ');persist();fillFields();renderSheet()}
+let jxMode='loc';
+function openList(mode){jxMode=mode;const loc=mode==='loc';$('#jxt').textContent=loc?'Job locations':'JSA team members';$('#jxn').textContent=loc?'One location per line. These show in the JSA location list and sync with your other defaults.':'One name per line. Tap a name on the JSA screen to add or remove it from the team.';$('#jxl').value=(loc?(defs.jsal||[]):teamList()).join('\n');$('#jsx').hidden=false}
 jsa.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const id=b.id,a=b.dataset.a;
- if(a){const i=+b.closest('.jstep').dataset.i;if(a==='rm'){if(J.steps.length===1){J.steps=[{ins:'',haz:'',ctl:'',who:''}]}else J.steps.splice(i,1)}else if(a==='up'&&i>0)[J.steps[i-1],J.steps[i]]=[J.steps[i],J.steps[i-1]];else if(a==='dn'&&i<J.steps.length-1)[J.steps[i+1],J.steps[i]]=[J.steps[i],J.steps[i+1]];steps();return}
- if(id==='jAdd'){J.steps.push({ins:'',haz:'',ctl:'',who:''});steps();const t=$$('#jsteps textarea');t[t.length-3].focus();return}
+ if(b.dataset.nm!==undefined){const n=b.dataset.nm,arr=teamArr(),i=arr.indexOf(n);if(i>=0)arr.splice(i,1);else arr.push(n);J.team=arr.join(', ');persist();fillFields();renderSheet();return}
+ if(b.dataset.sg){const k=b.dataset.sg;if(k==='M'||k==='L')openSign(k);else if(k==='Mx'||k==='Lx'){J['sig'+k[0]]='';persist();sgUI();renderSheet()}else if(k==='Lu'){if(!defs.jsaSigL)return toast('No saved signature yet. Tap Sign first and leave Remember ticked.');J.sigL=defs.jsaSigL;persist();sgUI();renderSheet()}return}
+ if(a){const i=+b.closest('.jstep').dataset.i;
+  if(a==='lib'){const s=J.steps[i];if(!(s.ins||s.haz||s.ctl))return toast('Fill in the step first');defs.jsast=defs.jsast||[];defs.jsast.push({ins:s.ins,haz:s.haz,ctl:s.ctl,who:s.who});saveDefs();toast('Step saved to your library');return}
+  if(a==='rm'){if(J.steps.length===1){J.steps=[emptyStep()]}else J.steps.splice(i,1)}else if(a==='up'&&i>0)[J.steps[i-1],J.steps[i]]=[J.steps[i],J.steps[i-1]];else if(a==='dn'&&i<J.steps.length-1)[J.steps[i+1],J.steps[i]]=[J.steps[i],J.steps[i+1]];steps();return}
+ if(id==='jAdd'){J.steps.push(emptyStep());steps();const t=$$('#jsteps textarea');t[t.length-3].focus();return}
+ if(id==='jLib')return openLib();
+ if(id==='jSaved')return openSaved(false);
+ if(id==='jtmAdd'){addName($('#jtmNew').value);$('#jtmNew').value='';return}
+ if(id==='jtmEdit')return openList('team');
  if(id==='jPrev')return openPrev();
  if(id==='jPrint')return jsaPrint();
- if(id==='jNew'){if(hasContent()&&!confirm('Clear this JSA and start a blank one?'))return;const keep={loc:J.loc,det:''};J=BLK();J.loc=keep.loc;ownMode=false;persist();build();renderSheet();toast('New blank JSA');return}
+ if(id==='jNew'){persist();const keep=J.loc;J=BLK();J.loc=keep;ownMode=false;LS.set(JK2,J);build();renderSheet();toast('New blank JSA started. The previous one is in Saved JSAs.');return}
  if(id==='jtLoad'){const v=$('#jtpl').value;if(!v)return toast('Choose a template first');const k=v.slice(2),T=v[0]==='b'?BUILTIN[k]:(defs.jsat||{})[k];if(!T)return;if(hasContent()&&!confirm('Replace the task, requirements and steps with this template?'))return;
-  J.task=T.task||k;J.ppe=T.ppe||'';J.plant=T.plant||'';J.iso=T.iso||'';J.steps=(T.steps||[]).map(s=>Array.isArray(s)?{ins:s[0]||'',haz:s[1]||'',ctl:s[2]||'',who:s[3]||''}:{ins:s.ins||'',haz:s.haz||'',ctl:s.ctl||'',who:s.who||''});if(!J.steps.length)J.steps=[{ins:'',haz:'',ctl:'',who:''}];persist();build();renderSheet();toast('Template loaded. Check it suits this job.');return}
+  J.task=T.task||k;J.ppe=T.ppe||'';J.plant=T.plant||'';J.iso=T.iso||'';J.steps=(T.steps||[]).map(s=>Array.isArray(s)?{ins:s[0]||'',haz:s[1]||'',ctl:s[2]||'',who:s[3]||''}:{ins:s.ins||'',haz:s.haz||'',ctl:s.ctl||'',who:s.who||''});if(!J.steps.length)J.steps=[emptyStep()];persist();build();renderSheet();toast('Template loaded. Check it suits this job.');return}
  if(id==='jtSave'){const nm=(prompt('Template name (e.g. Replace ceiling fan)',J.task||'')||'').trim();if(!nm)return;defs.jsat=defs.jsat||{};if(defs.jsat[nm]&&!confirm('A template called "'+nm+'" exists. Replace it?'))return;defs.jsat[nm]={task:J.task,ppe:J.ppe,plant:J.plant,iso:J.iso,steps:J.steps.map(s=>({ins:s.ins,haz:s.haz,ctl:s.ctl,who:s.who}))};saveDefs();tplUI();$('#jtpl').value='u:'+nm;toast('Template saved');return}
  if(id==='jtDel'){const v=$('#jtpl').value;if(v[0]!=='u')return toast('Pick one of your own templates to delete');const k=v.slice(2);if(!confirm('Delete template "'+k+'"?'))return;delete defs.jsat[k];saveDefs();tplUI();toast('Template deleted');return}
  if(id==='jlSave'){const v=(J.loc||'').trim();if(!v)return;defs.jsal=defs.jsal||[];if(!defs.jsal.includes(v))defs.jsal.push(v);saveDefs();ownMode=false;locUI();toast('Location saved to your list');return}
- if(id==='jlEdit'){$('#jxl').value=(defs.jsal||[]).join('\n');$('#jsx').hidden=false;return}
- if(id==='jlUse'){try{const ad=$('#addr').value;if(ad&&ad!==NEW){J.loc=ad;ownMode=!(defs.jsal||[]).includes(ad)}if(!J.jn)J.jn=$('#job').value||'';if(!J.task)J.task=$('#work').value||''}catch(x){}persist();fillFields();locUI();renderSheet();toast('Filled from the current verification job');return}});
-$('#jxs').onclick=()=>{const L=[...new Set($('#jxl').value.split('\n').map(s=>s.trim()).filter(Boolean))];defs.jsal=L;saveDefs();$('#jsx').hidden=true;if(J.loc&&!L.includes(J.loc))ownMode=true;locUI();toast('Location list saved')};
+ if(id==='jlEdit')return openList('loc');
+ if(id==='jlUse'){try{const ad=$('#addr').value;if(ad&&ad!==NEW){J.loc=ad;ownMode=!(defs.jsal||[]).includes(ad)}if(!J.jn)J.jn=$('#job').value||'';if(!J.task)J.task=$('#work').value||'';J.date=$('#date').value||J.date}catch(x){}persist(true);try{state.jsaId=J.id;save();window.jsaLinkUI()}catch(x){}fillFields();locUI();renderSheet();toast('Filled from the current verification job and linked to it');return}});
+$('#jxs').onclick=()=>{const L=[...new Set($('#jxl').value.split('\n').map(s=>s.trim()).filter(Boolean))];if(jxMode==='loc'){defs.jsal=L;saveDefs();if(J.loc&&!L.includes(J.loc))ownMode=true;locUI();toast('Location list saved')}else{defs.jsaTeam=L.length?L:[ME];saveDefs();chipsUI();toast('Team list saved')}$('#jsx').hidden=true};
 $('#jxc').onclick=()=>{$('#jsx').hidden=true};
 $('#jpvClose').onclick=closePrev;$('#jpvPrint').onclick=jsaPrint;
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('jpv-on'))closePrev()});
-renderSheet();
+renderSheet();window.jsaLinkUI();
 if(LS.get('ev_tab','ver')==='jsa')setTab('jsa');
 })();
 </script>
